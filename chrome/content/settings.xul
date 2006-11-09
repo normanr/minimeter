@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://minimeter/content/settings.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://minimeter/locale/minimeter.dtd">
+
+<dialog
+    title="&settings.title;" 
+     
+    onload="initialize_settings();"
+
+    ondialogaccept="return setOptions();"
+    buttons="accept,cancel"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script src="chrome://minimeter/content/Credentials.js"/>
+  <script src="chrome://minimeter/content/settings.js"/>
+  <script src="chrome://minimeter/content/Utils.js"/>
+	
+	
+<tabbox>
+	<tabs>
+		<tab label="&tab.provider;" selected="true"/>
+		<tab label="&tab.statusbar;"/>
+		<tab label="&tab.checking;"/>
+	</tabs>
+	<tabpanels>
+	<tabpanel id="credentials" orient="vertical" height="110">
+    
+      <grid>
+      <rows>
+        <row>
+            <label control="provider" value="&label.provider;" />
+            <menulist id="provider" width="200" oncommand="updateForm()">
+              <menupopup > 
+              </menupopup>
+            </menulist>
+        </row>
+        <row>
+            <label width="70" control="username" value="&label.username;"/>
+            <textbox id="username" value="" />
+        </row>
+        <row>
+          <label control="password" value="&label.password;"/>
+          <textbox type="password" id="password" value="" />
+        </row>
+        <row id="capacityrow">
+          <label control="capacity" value="&label.capacity;"/>
+          <hbox>
+					<textbox id="capacity" style="max-width: 40px" value=""/>
+					<checkbox id="flatrate" checked="false" label="&checkbox.flatrate;" oncommand="setFlatrate(this.checked)"/>
+					</hbox>
+        </row>
+
+      </rows>
+      </grid>
+
+
+	</tabpanel>
+	
+	<tabpanel id="statusbar" orient="vertical">
+
+
+      <checkbox id="showtext" checked="true" label="&checkbox.numerical;"/>
+
+      <checkbox id="showmeter" checked="false" label="&checkbox.graphical;"/>
+
+			<description id="flatratedesc" hidden="true" width="200" >&desc.flatrate;</description>
+
+	</tabpanel>
+	
+	<tabpanel id="checking" orient="vertical">
+		
+	    <checkbox id="click_check" checked="false" label="&checkbox.onload;"/>
+	    <description width="200" >&desc.checking;</description>
+
+
+	</tabpanel>
+	
+	</tabpanels>
+</tabbox>
+
+</dialog>

@@ -1,0 +1,19 @@
+<!ENTITY settings.title "Minimeter ayarları">
+<!ENTITY tab.provider "İSS">
+<!ENTITY tab.statusbar "Durum Çubuğu">
+<!ENTITY tab.checking "Kontrol">
+<!ENTITY label.provider "İSS">
+<!ENTITY label.username "Kullanıcı Adı">
+<!ENTITY label.password "Şifre">
+
+<!ENTITY label.capacity "Kota (GB)">
+<!ENTITY checkbox.flatrate "Limitsiz">
+<!ENTITY checkbox.numerical "Rakamsal veri göster">
+<!ENTITY checkbox.graphical "Grafik çubuk göster">
+<!ENTITY desc.flatrate "Eğer bağlantınız limitsiz ise grafik gösterim işlevsiz olacaktır.">
+<!ENTITY checkbox.onload "Tarayıcının her açılışında kontrol etme">
+<!ENTITY desc.checking "Eğer seçerseniz, Minimeter bir saat süreyle son kota verisini belleğinde tutar.">
+
+<!ENTITY menu.refresh "Verileri güncelle">
+<!ENTITY menu.stats "ADSL kota sayfasını göster">
+<!ENTITY menu.preferences "Seçenekler">

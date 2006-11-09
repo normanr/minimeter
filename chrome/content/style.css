@@ -1,0 +1,3 @@
+#toolbarMeter, minimeter {
+  -moz-binding: url("chrome://minimeter/content/minimeter.xml#meter");
+}

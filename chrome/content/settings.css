@@ -1,0 +1,23 @@
+.menuitem-head, .menuitem-head:hover {
+color: MenuText !important; font-weight: bold !important; margin-top: 5px !important; 
+background: Menu !important;
+border-color:  Menu !important;
+}
+
+#provider menuitem[value], #provider menuitem[value]:hover {
+  background-repeat: no-repeat !important;
+  background-position: 4px 5px !important;
+  padding-left: 25px !important;
+  padding-top: 5px !important; padding-bottom: 5px !important;
+}
+
+row > label  { /* exclude checkbox'*/
+padding-top: 3px;
+}
+textbox { /*included since Deer Park A1*/
+padding: 2px 2px 3px 4px;
+}
+
+description {
+	margin-left: 10px; margin-top: 15px;
+}

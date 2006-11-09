@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<bindings 
+  xmlns="http://www.mozilla.org/xbl"
+  xmlns:xbl="http://www.mozilla.org/xbl"
+  xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:html="http://www.w3.org/1999/xhtml">
+  
+<binding id="meter">
+  <content>
+
+ 
+		<xul:label style="height: 16px; width: 16px; margin-left: 0; margin-right: 0 " />
+    
+    <xul:label xbl:inherits="value=label" style="margin: 0 2px 0 0; padding-top: 3px"></xul:label>
+
+    <xul:vbox style="height: 16px;padding-top: 0px; " collapsed="false">        
+	    <xul:hbox width="50" xbl:inherits="width=size"
+	            style="margin: 5px 5px 0 7px; height: 8px; overflow: hidden;
+	            border: 1px solid #aaa; background: white; -moz-border-radius: 2.2px">
+	      <xul:hbox 
+	            xbl:inherits="width=bar"
+	            style="background: url(chrome://minimeter/content/res/meter.png);">
+	      </xul:hbox>
+	    </xul:hbox>
+    </xul:vbox>
+
+  </content>
+
+  <implementation>
+    <field name="speed"/>
+    <field name="step"/>
+    <field name="busy"/>
+
+    <constructor>
+      <![CDATA[
+      	if(this.getAttribute("toolbar")){
+      		this.removeAttribute("style"); // clear the static icon
+      		document.getAnonymousNodes(this)[2].removeAttribute('collapsed'); // always meter visible
+      	}
+        this.value = this.getAttribute('value');
+        this.label = "";
+        this.busy = false;
+        this.speed = 110;
+        this.step = 0.1;
+        this.opacity = 0.9;
+        this.up = false; // is the current animation-opacity increasing
+
+				this.showProgressmeter = true;
+				this.showText = false;
+				this.showIcon = false; 
+				//alert("constructed");
+				
+				if(monitor != null){
+					monitor.addListener(this);
+				}
+
+      ]]>
+    </constructor>
+    
+
+
+    <property name="icon" onset="document.getAnonymousNodes(this)[0].style.background = 'url(chrome://minimeter/content/res/'+ val + ') no-repeat'; " />
+    <property name="label">  
+    	<getter>
+    		return this.getAttribute('label');
+    	</getter>
+    	<setter>
+    		<![CDATA[
+    		this.setAttribute('label', val);
+    		]]>
+    	</setter>
+    </property>
+    
+		<property name="showProgressmeter" onset="document.getAnonymousNodes(this)[2].setAttribute('hidden', !val);"/>  
+		<property name="showText" onset="document.getAnonymousNodes(this)[1].setAttribute('hidden', !val);"/>  							
+		<property name="showIcon" onset="document.getAnonymousNodes(this)[0].setAttribute('hidden', !val);"/>  
+
+    <property name="value"> 
+      <getter>
+        return 100 / this.getAttribute('size') * this.getAttribute('bar');
+      </getter>
+      <setter>
+				
+      	
+        var r = this.getAttribute('size') / 100;
+        this.setAttribute('bar', val * r);
+        return val;
+      </setter>
+    </property>
+
+		
+    <property name="procentLabel"> 
+      <getter>
+      <![CDATA[
+	      	if(monitor.totalVolume <= 0){
+	      		return "";
+	      	} else {
+	        	return  ( monitor.usedVolume / monitor.totalVolume * 100 ).toFixed(2) + "%";
+	        }
+    		]]>
+      </getter>
+    </property>
+    
+    <property name="textLabel"> 
+      <getter>
+      <![CDATA[
+	      	if(monitor.totalVolume <= 0){
+	      		return " " + monitor.usedVolume + monitor.measure;
+	      	} else {
+	        	return " " + monitor.usedVolume + " / " + monitor.totalVolume + monitor.measure ;
+	        }
+    		]]>
+      </getter>
+    </property>
+
+    <method name="update">
+      <parameter name="monitor"/>
+      <body>
+        <![CDATA[
+        	if(document.getAnonymousNodes(this) == null) return; // toolbaritem removed
+        	
+        	this.icon = monitor.image;
+        	this.setShaded(false);
+					if(monitor.state ==  monitor.STATE_BUSY){
+						
+					  this.setBusy(true);
+					}
+					if(monitor.state ==  monitor.STATE_ERROR){
+						this.label = "  " + getString("statusbar.error");
+						
+						this.setBusy(false);
+						this.value = 0;
+						this.setShaded(true);
+					}
+					if(monitor.state ==  monitor.STATE_DONE){
+						this.label =  this.textLabel ;
+						this.setBusy(false);
+						this.animate(monitor.usedVolume / monitor.totalVolume * 100);
+					}
+        ]]>
+      </body>
+    </method>
+
+  
+    <method name="animate">
+      <parameter name="newValue"/>
+      <body>
+        <![CDATA[
+        	if( monitor.totalVolume <= 0) newValue = 0;
+        	
+        	document.getAnonymousNodes(this)[2].removeAttribute('collapsed');
+          this.value = 0;
+          this.finish = newValue ;
+          this.animCallback();
+        ]]>
+      </body>
+    </method>
+    
+  
+    <method name="setBusy">
+    	<parameter name="value"/>
+      <body>
+        <![CDATA[
+        	if(value){
+	          if(this.busy)return;
+	          this.opacity = 0.9;
+	          this.busy = true;
+	          this.busyCallback();
+          } else {
+	          this.opacity = 1;
+	          this.busy = false;
+          }
+        ]]>
+      </body>
+    </method>
+    
+    <method name="setShaded">
+    	<parameter name="value"/>
+      <body>
+        <![CDATA[
+        	var pStyle = document.getAnonymousNodes(this)[2].childNodes[0].style;
+        	if(value){
+        			pStyle.border = "1px dashed #aaa";
+
+          } else {
+							pStyle.border = "1px solid #aaa";
+          }
+        ]]>
+      </body>
+    </method>
+
+		<!-- private methods -->
+
+    <method name="animCallback">
+      <body>
+        <![CDATA[
+          if(this.value++ < this.finish){
+            window.setTimeout(
+              function(x){x.animCallback();}, 20, this
+            );   
+          }
+        ]]>
+      </body>
+    </method>
+     
+    <method name="busyCallback">
+   
+      <body>
+        <![CDATA[
+
+          this.style.MozOpacity = this.opacity;
+          if(!this.busy) return;
+          
+          if(this.up) {
+            this.opacity = this.opacity + this.step; 
+          } else {
+            this.opacity = this.opacity - this.step;
+          }
+          
+          if(this.opacity > 0.9 || this.opacity < 0.3) { this.up = !this.up; }
+
+          window.setTimeout(
+            function(x){x.busyCallback();}, this.speed, this
+          );  
+  
+        ]]>
+      </body>
+    </method>    
+      
+  </implementation>
+
+</binding>
+</bindings>

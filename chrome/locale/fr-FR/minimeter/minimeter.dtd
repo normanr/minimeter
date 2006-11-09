@@ -1,0 +1,19 @@
+<!ENTITY settings.title "Paramètres de Minimeter">
+<!ENTITY tab.provider "Fournisseur d'accès">
+<!ENTITY tab.statusbar "Barre d'état">
+<!ENTITY tab.checking "Mise à jour">
+<!ENTITY label.provider "Fournisseur d'accès">
+<!ENTITY label.username "Nom d'utilisateur">
+<!ENTITY label.password "Mot de passe">
+
+<!ENTITY label.capacity "Capacité (Go)">
+<!ENTITY checkbox.flatrate "Illimité">
+<!ENTITY checkbox.numerical "Afficher les informations sous forme numérique">
+<!ENTITY checkbox.graphical "Afficher le compteur graphique">
+<!ENTITY desc.flatrate "Si vous possédez une connection illimitée le compteur graphique est inutile">
+<!ENTITY checkbox.onload "Ne pas mettre à jour à chaque démarrage de Firefox (déconseillé)">
+<!ENTITY desc.checking "Si la vérification au démarrage a lieu dans l'heure suivant la précédente, les données sont récupérées depuis le cache.">
+
+<!ENTITY menu.refresh "Mise à jour des informations">
+<!ENTITY menu.stats "Afficher la page web du Fournisseur">
+<!ENTITY menu.preferences "Préférences">

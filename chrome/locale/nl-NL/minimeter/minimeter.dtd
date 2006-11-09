@@ -1,0 +1,19 @@
+<!ENTITY settings.title "Minimeter instellingen">
+<!ENTITY tab.provider "Provider">
+<!ENTITY tab.statusbar "Statusbalk">
+<!ENTITY tab.checking "Synchronisatie">
+<!ENTITY label.provider "Provider">
+<!ENTITY label.username "Gebruiker">
+<!ENTITY label.password "Paswoord">
+
+<!ENTITY label.capacity "Capaciteit (GB)">
+<!ENTITY checkbox.flatrate "Geen limiet">
+<!ENTITY checkbox.numerical "Toon numerische informatie">
+<!ENTITY checkbox.graphical "Toon grafische meter">
+<!ENTITY desc.flatrate "De grafische meter is niet nuttig als u geen limiet heeft ">
+<!ENTITY checkbox.onload "Synchroniseer niet elke keer Firefox start">
+<!ENTITY desc.checking "Als de synchronisatie van minimeter bij het opstarten binnen geen uur verschilt met de vorige, dan haalt hij de gegevens uit de cache (geen verkeer)">
+
+<!ENTITY menu.refresh "Ververs gegevens">
+<!ENTITY menu.stats "Toon de provider webpagina">
+<!ENTITY menu.preferences "Instellingen">

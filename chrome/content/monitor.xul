@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<window
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    title="MiniMeter" 
+    style="padding: 0px 0px 10px 0px; " 
+    onload="initialize();"
+    >
+
+	<script>
+	<![CDATA[
+    function initialize(){
+    try{
+      var meter = document.getElementById("meter");
+      
+      ctx = meter.getContext("2d");
+      
+      ctx.fillStyle = "black";
+      ctx.fillStyle = "rgba(200,200,200,0.3)";
+      ctx.lineWidth = 2; 
+  
+      ctx.beginPath();
+      ctx.moveTo(30, 30);
+      ctx.lineTo(150, 170);
+      ctx.closePath();
+      ctx.fill();
+
+
+      }catch(e){alert(e);}
+    }
+	]]>
+	</script>
+  <html>
+	 <html:canvas id="meter" width="220" height="220"/>
+	</html>
+</window>

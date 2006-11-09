@@ -1,0 +1,19 @@
+<!ENTITY settings.title "Předvolby rozšíření Minimeter">
+<!ENTITY tab.provider "Poskytovatel">
+<!ENTITY tab.statusbar "Stavový řádek">
+<!ENTITY tab.checking "Kontrola">
+<!ENTITY label.provider "Poskytovatel">
+<!ENTITY label.username "Uživatelské jméno">
+<!ENTITY label.password "Heslo">
+
+<!ENTITY label.capacity "Max. objem v GB">
+<!ENTITY checkbox.flatrate "Bez limitu">
+<!ENTITY checkbox.numerical "Zobrazovat číselné hodnoty">
+<!ENTITY checkbox.graphical "Zobrazovat grafické počítadlo">
+<!ENTITY desc.flatrate "Při volbě bez limitu nemá grafické počítadlo smysl">
+<!ENTITY checkbox.onload "Nekontrolovat při každém spuštění prohlížeče">
+<!ENTITY desc.checking "Nastane-li spuštění prohlížeče během hodiny od předchozí kontroly, budou data načtena z vyrovnávací paměti.">
+
+<!ENTITY menu.refresh "Obnovit údaje">
+<!ENTITY menu.stats "Zobrazit statistiku">
+<!ENTITY menu.preferences "Předvolby">

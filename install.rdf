@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}</em:id>
+		<em:version>1.0.6.2</em:version>
+		<em:name>Minimeter</em:name>
+		
+		<em:description>Monitor your provider upload/download meter</em:description>
+		<em:creator>Tom Germeau</em:creator>
+    <em:contributor>Thomas Bertels (EDPnet + correction Skynet)</em:contributor>
+		<em:homepageURL>http://www.epigoon.com</em:homepageURL>
+    <em:updateURL>http://extensions.geckozone.org/updates/Minimeter.rdf</em:updateURL>
+		<em:optionsURL>chrome://minimeter/content/settings.xul</em:optionsURL>
+    <em:iconURL>chrome://minimeter/content/res/logo.png</em:iconURL>
+
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>0.8</em:minVersion>
+				<em:maxVersion>2.0.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication> 
+
+		<em:targetApplication>
+			<Description>
+				<em:id>{4669bfc0-2957-11da-8cd6-0800200c9a66}</em:id>
+				<em:minVersion>0.1</em:minVersion>
+				<em:maxVersion>1.0</em:maxVersion>
+			</Description>
+		</em:targetApplication> 
+		
+		<em:file>
+			<Description about="urn:mozilla:extension:file:minimeter.jar">
+				<em:package>content/</em:package>
+				<em:locale>locale/en-US/minimeter/</em:locale>
+				<em:locale>locale/nl-NL/minimeter/</em:locale>
+				<em:locale>locale/tr-TR/minimeter/</em:locale>
+				<em:locale>locale/fr-FR/minimeter/</em:locale>
+				<em:locale>locale/cs-CZss/minimeter/</em:locale>
+
+			</Description>
+		</em:file>
+		
+	</Description>
+</RDF>
