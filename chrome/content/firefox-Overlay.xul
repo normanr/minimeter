@@ -49,7 +49,7 @@
     <statusbarpanel context="minimeter-context-menu" id="minimeter-statusbar"  
          insertafter="statusbar-progresspanel"
          tooltip="minimeter-tooltip">
-      	<minimeter id="statusbarMeter" size="50" style=" padding-top: 1px;" onclick="clickIcon(event);"/>
+      	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);"/>
     </statusbarpanel>
   </statusbar>
 

@@ -3,7 +3,8 @@
 			_ = country
 			# = custom capacity
 		*/
-		var monitors = new Array(	"_Belgium", "Skynet:Skynet ADSL (nl)", "Skynetfr:Skynet ADSL (fr)", "Telenet", "Scarlet", "Fulladsl:Full ADSL", "#Edpnet:EDPnet",
+		var monitors = new Array(	"_Belgium", "Skynet:Skynet ADSL", "Telenet", "Scarlet", "Fulladsl:Full ADSL", "#Edpnet:EDPnet",
+															"_France","Orange",
 															"_Czech Republic", "#Karneval","#Chello","#InternetExpres",
 															"_New Zealand", "Xtra",
 															//"_Netherlands", "#Xs4all",
@@ -97,7 +98,7 @@
     	try{ click_check = prefs.getBoolPref('click_check'); } catch(ex) { click_check = false; }
     	try{ showtext = prefs.getBoolPref('showtext'); } catch(ex) { showtext = true; }
     	try{ showmeter = prefs.getBoolPref('showmeter'); } catch(ex) { showmeter = false; }
-    	try{ provider = prefs.getCharPref('provider'); } catch(ex) { provider = "skynet"; }
+    	try{ provider = prefs.getCharPref('provider'); } catch(ex) { provider = "skynetfr"; }
     	try{ capacity = prefs.getIntPref('capacity'); } catch(ex) { capacity = 10; }
     	
       document.getElementById('click_check').checked = click_check;

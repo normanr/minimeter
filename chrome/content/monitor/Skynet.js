@@ -18,23 +18,21 @@ Skynet.prototype.callback = function(step, reply) {
       {
          default:
          case 1:
-            var postdata = "fuseaction=CheckLoginConnection&form_login="+this.username+"&form_password="+this.password+"&Langue_Id=2&Submit=Inloggen";
-            http_post('https://e-care.skynet.be/index.cfm?function=connection.getVolume&language=nl', postdata,this, 2);
-            //this.callback(2, "c Gebruikt volume voor deze maand <strong>3 MB</strong> van de beschikbare <strong>20 GB</strong>");
+            var postdata = "fuseaction=CheckLoginConnection&form_login="+this.username+"&form_password="+this.password+"&Langue_Id=3&Submit=Connexion";
+            http_post('https://e-care.skynet.be/index.cfm?function=connection.getVolume&language=fr', postdata,this, 2);
+
             break;
          case 2:
            reply = unescape(reply);
-           var regmb = /Gebruikt volume voor deze maand\s*<strong>([0-9]+) MB<\/strong>\s*van de beschikbare\s*<strong>(.*) GB<\/strong>/;
-           var reggb = /Gebruikt volume voor deze maand\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*van de beschikbare\s*<strong>(.*) GB<\/strong>/;
-           var reggbl = /Gebruikt volume voor deze maand\s*<strong>([0-9]*) GB<\/strong>\s*van de beschikbare\s*<strong>(.*) GB<\/strong>/;
+           var regmb = /Volume mensuel utilis&eacute;\s*<strong>([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
+           var reggb = /Volume mensuel utilis&eacute;\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
+           var reggbl = /Volume mensuel utilis&eacute;\s*<strong>([0-9]*) GB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
 
-           var regmbv = /Gebruikt volume voor het lopende Volume Pack\s*<strong>([0-9]+) MB<\/strong>\s*van de beschikbare\s*<strong>(.*) GB<\/strong>/;
-           var reggbv = /Gebruikt volume voor het lopende Volume Pack\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*van de beschikbare\s*<strong>(.*) GB<\/strong>/;
-           var reggblv = /Gebruikt volume voor het lopende Volume Pack\s*<strong>([0-9]*) GB<\/strong>\s*van de beschikbare\s*<strong>(.*) GB<\/strong>/;
+           var regmbv = /Volume utilis&eacute; du Volume Pack en cours :\s*<strong>([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
+           var reggbv = /Volume utilis&eacute; du Volume Pack en cours :\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
+           var reggblv = /Volume utilis&eacute; du Volume Pack en cours :\s*<strong>([0-9]*) GB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
 
-           var regvps = /Bovendien heeft u nog recht op\s*<strong>([0-9]*)<\/strong>\s*niet gebruikt/;
-
-           //var type = /Soort verbinding&nbsp;:&nbsp;<span class="topInfoLine2">(.*)<\/span>/;
+           var regvps = /De plus, vous disposez encore de\s*<strong>([0-9]*)<\/strong>\s*Volume Pack(s) inutilis&eacute;(s)/;
           
            if( !reggb.test(reply) && !regmb.test(reply) && !reggbl.test(reply) ){
                this.notLoggedin();
@@ -55,7 +53,7 @@ Skynet.prototype.callback = function(step, reply) {
 
               if(reggbv.test(reply)){
                 volumepack = reggbv.exec(reply);
-                volumepackused = ((volumepack[1]*1000) + (volumepack[2]*1)) / 1000;
+                volumepackused = ((volumepack[1]*1000) + (volumepack[2]*1)) / 1000; 
                 volumepacktotal = volumepack[3];
              }else if(regmbv.test(reply)){
                 volumepack = regmbv.exec(reply);
@@ -88,7 +86,7 @@ Skynet.prototype.callback = function(step, reply) {
              this.totalVolume = (volumepacktotal*volumepackmulti);
          //for others cases : main volume is gived + eventual volumepack's of previous month
              }else{
-             this.usedVolume = Math.round((volumeused*1000) + (volumepackused*1000))/1000;
+             this.usedVolume = Math.round((volumeused*1000) + (volumepackused*1000))/1000; 
              this.totalVolume = (volumetotal*1) + (volumepacktotal*volumepackmulti);
              }
                    this.update(true);
@@ -97,3 +95,4 @@ Skynet.prototype.callback = function(step, reply) {
       }   
             
 }
+

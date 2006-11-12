@@ -9,13 +9,13 @@
   <content>
 
  
-		<xul:label style="height: 16px; width: 16px; margin-left: 0; margin-right: 0 " />
+		<xul:label id="1" style="height: 15px; width: 16px; margin-left: 0; margin-right: 0" />
     
-    <xul:label xbl:inherits="value=label" style="margin: 0 2px 0 0; padding-top: 3px"></xul:label>
+    <xul:label id="2" xbl:inherits="value=label" style="margin: 0 2px 0 0; padding-top: 2px"></xul:label>
 
-    <xul:vbox style="height: 16px;padding-top: 0px; " collapsed="false">        
+    <xul:vbox id="3" style="height: 16px;padding-top: 1px; " collapsed="false">        
 	    <xul:hbox width="50" xbl:inherits="width=size"
-	            style="margin: 5px 5px 0 7px; height: 8px; overflow: hidden;
+	            style="margin: 4px 4px 0 7px; height: 8px; overflow: hidden;
 	            border: 1px solid #aaa; background: white; -moz-border-radius: 2.2px">
 	      <xul:hbox 
 	            xbl:inherits="width=bar"
