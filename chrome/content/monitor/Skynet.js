@@ -53,11 +53,11 @@ Skynet.prototype.callback = function(step, reply) {
 
               if(reggbv.test(reply)){
                 volumepack = reggbv.exec(reply);
-                volumepackused = ((volumepack[1]*1000) + (volumepack[2]*1)) / 1000; 
+                volumepackused = ((volumepack[1]*1024) + (volumepack[2]*1)) / 1024; 
                 volumepacktotal = volumepack[3];
              }else if(regmbv.test(reply)){
                 volumepack = regmbv.exec(reply);
-                volumepackused = (volumepack[1] / 1000);
+                volumepackused = (volumepack[1] / 1024);
                 volumepacktotal = volumepack[2];
              }else if(reggblv.test(reply)){
                 volumepack = reggblv.exec(reply);
@@ -67,11 +67,11 @@ Skynet.prototype.callback = function(step, reply) {
 
               if(reggb.test(reply)){
                 volume = reggb.exec(reply);
-                volumeused = (volume[1]*1) + (volume[2] / 1000);
+                volumeused = (volume[1]*1) + (volume[2] / 1024);
                 volumetotal = volume[3];
              }else if(regmb.test(reply)){
                 volume = regmb.exec(reply);
-                volumeused = (volume[1] / 1000);
+                volumeused = (volume[1] / 1024);
                 volumetotal = volume[2];
              }else if(reggbl.test(reply)){
                 volume = reggbl.exec(reply);
@@ -82,7 +82,7 @@ Skynet.prototype.callback = function(step, reply) {
          //case main volume limit is reached and a volumepack is actually used :
          //only the volumepack values are shown
              if (volumeused == volumetotal && volumepacktotal != 0){
-             this.usedVolume = volumeused*1 + volumepackused*1;
+             this.usedVolume = Math.round((volumeused*1 + volumepackused*1)*1000)/1000;
              this.totalVolume = volumetotal*1 + (volumepacktotal*volumepackmulti);
          //for others cases : main volume is gived + eventual volumepack's of previous month
              }else{
