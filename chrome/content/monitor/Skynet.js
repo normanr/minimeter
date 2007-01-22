@@ -28,9 +28,9 @@ Skynet.prototype.callback = function(step, reply) {
            var reggb = /Volume mensuel utilis&eacute;\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
            var reggbl = /Volume mensuel utilis&eacute;\s*<strong>([0-9]*) GB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
 
-           var regmbv = /Volume utilis&eacute; du Volume Pack en cours :\s*<strong>([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
-           var reggbv = /Volume utilis&eacute; du Volume Pack en cours :\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
-           var reggblv = /Volume utilis&eacute; du Volume Pack en cours :\s*<strong>([0-9]*) GB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
+           var regmbv = /du Volume Pack en cours :\s*<strong>([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
+           var reggbv = /du Volume Pack en cours :\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
+           var reggblv = /du Volume Pack en cours :\s*<strong>([0-9]*) GB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
 
            var regvps = /De plus, vous disposez encore de\s*<strong>([0-9]*)<\/strong>\s*Volume Pack(s) inutilis&eacute;(s)/;
           
@@ -82,8 +82,8 @@ Skynet.prototype.callback = function(step, reply) {
          //case main volume limit is reached and a volumepack is actually used :
          //only the volumepack values are shown
              if (volumeused == volumetotal && volumepacktotal != 0){
-             this.usedVolume = volumepackused;
-             this.totalVolume = (volumepacktotal*volumepackmulti);
+             this.usedVolume = volumeused*1 + volumepackused*1;
+             this.totalVolume = volumetotal*1 + (volumepacktotal*volumepackmulti);
          //for others cases : main volume is gived + eventual volumepack's of previous month
              }else{
              this.usedVolume = Math.round((volumeused*1000) + (volumepackused*1000))/1000; 
