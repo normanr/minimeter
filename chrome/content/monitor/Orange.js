@@ -1,6 +1,7 @@
 function Orange(username, password) {
     this.username = username;
-    this.password = password;
+    this.password = password; 
+			if (username.indexOf('@') == -1) this.notLoggedin();
     this.image = "orange.png"; // does not belong in class
     this.name = "Orange";
     this.url = "http://compte.orange.fr/wanadoo_et_moi/compte/bin/compte.cgi";
@@ -17,9 +18,11 @@ Orange.prototype.callback = function(step, reply) {
     switch(step)
     {
        default:
-       case 1:
-		 http_get('http://compte.orange.fr/wanadoo_et_moi/compte/bin/compte.cgi', this, 2);
-		 break;
+			 case 1:
+          var postdata = "email="+this.username+"&pwd="+this.password+"&frame=2&save_user=on&valider.x=42&valider.y=10";
+          http_post('https://id.orange.fr/auth_user/bin/auth_user.cgi?action=valider&service=moncompte&url=http://r.orange.fr/r/Ocompte', postdata,this, 2);
+
+          break;
        case 2:
          reply = unescape(reply);
          var regRemaining = /consommer<\/td>\s*<td class="LigneOrange"><div align="right"><strong><nobr>([0-9.]*) Go<\/nobr>/;
