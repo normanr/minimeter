@@ -3,7 +3,7 @@
 			_ = country
 			# = custom capacity
 		*/
-		var monitors = new Array(	"_Belgium", "Skynet:Skynet ADSL", "Telenet", "Scarlet", "Fulladsl:Full ADSL", "#Edpnet:EDPnet",
+		var monitors = new Array(	"_Belgium", "Skynet:Belgacom ADSL", "Telenet", "Scarlet", "Fulladsl:Full ADSL", "#Edpnet:EDPnet", "Dommel",
 															"_France","Orange",
 															"_Czech Republic", "#Karneval","#Chello","#InternetExpres",
 															"_New Zealand", "Xtra",

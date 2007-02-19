@@ -4,8 +4,8 @@ overlay	chrome://browser/content/browser.xul	chrome://minimeter/content/firefox-
 overlay	chrome://messenger/content/mailWindowOverlay.xul	chrome://minimeter/content/firefox-Overlay.xul
 overlay	chrome://chat/content/roster.xul	chrome://minimeter/content/chat-Overlay.xul
 
+locale	minimeter	cs-CZ	chrome/locale/cs-CZ/minimeter/
 locale	minimeter	en-US	chrome/locale/en-US/minimeter/
+locale	minimeter	fr-FR	chrome/locale/fr-FR/minimeter/
 locale	minimeter	nl-NL	chrome/locale/nl-NL/minimeter/
 locale	minimeter	tr-TR	chrome/locale/tr-TR/minimeter/
-locale	minimeter	cs-CZ	chrome/locale/cs-CZ/minimeter/
-locale	minimeter	fr-FR	chrome/locale/fr-FR/minimeter/
