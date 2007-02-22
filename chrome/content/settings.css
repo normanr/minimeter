@@ -14,9 +14,9 @@ border-color:  Menu !important;
 row > label  { /* exclude checkbox'*/
 padding-top: 3px;
 }
-textbox { /*included since Deer Park A1*/
-padding: 2px 2px 3px 4px;
-}
+/*textbox { /*included since Deer Park A1*/
+/*padding: 2px 2px 3px 4px;
+}*/
 
 description {
 	margin-left: 10px; margin-top: 15px;

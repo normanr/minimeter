@@ -28,6 +28,7 @@ Orange.prototype.callback = function(step, reply) {
         
          if( !regRemaining.test(reply) ){
              this.notLoggedin();
+             break;
          } else {
         
             var volume = null;
@@ -45,6 +46,7 @@ Orange.prototype.callback = function(step, reply) {
              this.totalVolume = Math.round(volumetotal[1]);
 
          }
+         this.interval = getInterval("firstDayNextMonth");
          this.update(true);
     }
 }

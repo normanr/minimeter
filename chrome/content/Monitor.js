@@ -4,9 +4,8 @@ function Monitor(){
   this.state = this.STATE_DONE;	
   this.errorMessage = "";
 	this.extraMessage = null;
+	this.remaining = null;
 	this.useCache = true;
-	this.measure = " " + getString("unit.GB");
-
 
 }
 
@@ -93,7 +92,7 @@ Monitor.prototype.hasCache = function(seconds){
 
 	    cache = cache.split(";");
 
-	    if(cache.length == 5){
+	    if(cache.length >= 5){
 	    	// check time
 	    	
 	    	
@@ -109,14 +108,16 @@ Monitor.prototype.hasCache = function(seconds){
 }
 
 Monitor.prototype.loadCache = function(){
-	    try{provider = prefs.getCharPref('provider');}catch(e){provider = "Telenet";} 
+	    try{provider = prefs.getCharPref('provider');}catch(e){provider = "skynet";} 
 	    try{cache = prefs.getCharPref('cache');}catch(e){cache = "";} 
 
 	    cache = cache.split(";");
 	    this.usedVolume = cache[2];
 	    this.totalVolume = cache[3];
-	    if(cache[4].length > 0)
-	    	this.extraMessage = cache[4];
+	    if(cache[4] != '')
+	    	this.remaining = cache[4];
+	    if(cache[5] != '')
+	    	this.extraMessage = cache[5];
 
 	    //this.extraMessage += "(from cache)";
 	    
@@ -124,7 +125,7 @@ Monitor.prototype.loadCache = function(){
 }
 
 Monitor.prototype.storeCache = function(){
-	    try{provider = prefs.getCharPref('provider');}catch(e){provider = "Telenet";} 
+	    try{provider = prefs.getCharPref('provider');}catch(e){provider = "skynet";} 
 	    
 	    cache = new Array();
 	    
@@ -132,8 +133,8 @@ Monitor.prototype.storeCache = function(){
 			cache[1] = new Date().getTime();
 	    cache[2] = this.usedVolume;
 	    cache[3] = this.totalVolume;
-	    cache[4] = this.extraMessage;	
-
+	    cache[4] = this.remaining;
+	    cache[5] = this.extraMessage;
 	    
 	    prefs.setCharPref('cache', cache.join(";"));
 }

@@ -3,7 +3,7 @@
 			_ = country
 			# = custom capacity
 		*/
-		var monitors = new Array(	"_Belgium", "Skynet:Belgacom ADSL", "Telenet", "Scarlet", "Fulladsl:Full ADSL", "#Edpnet:EDPnet", "Dommel",
+		var monitors = new Array(	"_Belgium", "Skynet:Belgacom ADSL", "Dommel", "#Edpnet:EDPnet", "Fulladsl:Full ADSL","Scarlet","Telenet",   
 															"_France","Orange",
 															"_Czech Republic", "#Karneval","#Chello","#InternetExpres",
 															"_New Zealand", "Xtra",
@@ -75,6 +75,8 @@
               document.getElementById('showtext').checked);
           prefs.setBoolPref("showmeter", 
               document.getElementById('showmeter').checked);
+          prefs.setBoolPref("useSI", 
+              document.getElementById('useSI').checked);
           prefs.setCharPref("provider", provider.value);
           prefs.setIntPref("capacity", capacity);      
           credentials.store(
@@ -98,12 +100,14 @@
     	try{ click_check = prefs.getBoolPref('click_check'); } catch(ex) { click_check = false; }
     	try{ showtext = prefs.getBoolPref('showtext'); } catch(ex) { showtext = true; }
     	try{ showmeter = prefs.getBoolPref('showmeter'); } catch(ex) { showmeter = false; }
-    	try{ provider = prefs.getCharPref('provider'); } catch(ex) { provider = "skynetfr"; }
+    	try{ useSI = prefs.getBoolPref('useSI'); } catch(ex) { useSI = true; }
+    	try{ provider = prefs.getCharPref('provider'); } catch(ex) { provider = "skynet"; }
     	try{ capacity = prefs.getIntPref('capacity'); } catch(ex) { capacity = 10; }
     	
       document.getElementById('click_check').checked = click_check;
       document.getElementById('showtext').checked = showtext;
       document.getElementById('showmeter').checked = showmeter;
+      document.getElementById('useSI').checked = useSI;
       document.getElementById('provider').value = provider;
       
 

@@ -32,7 +32,10 @@
     </popup>
     <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="fillTooltip(this)">
         <hbox>  
-          <description style="height: 16px;padding-left: 22px; padding-top: 2px" id="message"/>
+          <description style="padding-left: 22px; padding-top: 2px" id="message"/>
+        </hbox>
+        <hbox id="remainingBox" collapsed="true">  
+          <description style="padding-left: 22px; padding-top: 2px" id="remaining"/>
         </hbox>
         <hbox id="rateBox">  
           <description style="padding-left: 22px;" id="rate"/>

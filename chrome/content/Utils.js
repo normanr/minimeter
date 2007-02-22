@@ -37,6 +37,28 @@ JArray.prototype.clear = function() {
 };
 
 
+function getInterval(endDateText){
+  var nowDate = new Date();
+  var interval = 0;
+  if (endDateText == "firstDayNextMonth"){
+    var dd = 1;
+    var mm = nowDate.getMonth() + 1;
+    var yyyy = nowDate.getFullYear();
+  }
+  else{
+    var dd = endDateText.substring(0,2);
+    var mm = endDateText.substring(3,5);
+    var yyyy = endDateText.substring(6,10);
+  }
+    if(mm == 12){
+      mm = 0;
+      yyyy++;
+    }
+    var endDate = new Date(yyyy,mm,dd);
+  interval = Math.floor((endDate.getTime() - nowDate.getTime()) / (86400000)); // 86400000 = 24*60*60*1000
+  return interval;
+}
+
 
 function http_get(purl, callback, step){
 

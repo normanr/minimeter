@@ -107,6 +107,7 @@ Dommel.prototype.callback = function(step, reply) {
         }
         break;					
 			case 5:
+        this.interval = getInterval("firstDayNextMonth");
      		this.update(true);	
 			  break;
 		}	

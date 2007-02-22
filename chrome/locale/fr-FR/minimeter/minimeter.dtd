@@ -6,10 +6,11 @@
 <!ENTITY label.username "Nom d'utilisateur">
 <!ENTITY label.password "Mot de passe">
 
-<!ENTITY label.capacity "Capacité (Go)">
+<!ENTITY label.capacity "Capacité (Gio)">
 <!ENTITY checkbox.flatrate "Illimité">
 <!ENTITY checkbox.numerical "Afficher les informations sous forme numérique">
 <!ENTITY checkbox.graphical "Afficher le compteur graphique">
+<!ENTITY checkbox.useSI "Utiliser les unités du Système international">
 <!ENTITY desc.flatrate "Si vous possédez une connection illimitée le compteur graphique est inutile">
 <!ENTITY checkbox.onload "Ne pas mettre à jour à chaque démarrage de Firefox (déconseillé)">
 <!ENTITY desc.checking "Si la vérification au démarrage a lieu dans l'heure suivant la précédente, les données sont récupérées depuis le cache.">

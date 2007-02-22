@@ -10,6 +10,7 @@
 <!ENTITY checkbox.flatrate "Geen limiet">
 <!ENTITY checkbox.numerical "Toon numerische informatie">
 <!ENTITY checkbox.graphical "Toon grafische meter">
+<!ENTITY checkbox.useSI "Use International system units">
 <!ENTITY desc.flatrate "De grafische meter is niet nuttig als u geen limiet heeft ">
 <!ENTITY checkbox.onload "Synchroniseer niet elke keer Firefox start">
 <!ENTITY desc.checking "Als de synchronisatie van minimeter bij het opstarten binnen geen uur verschilt met de vorige, dan haalt hij de gegevens uit de cache (geen verkeer)">

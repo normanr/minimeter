@@ -2,7 +2,7 @@ function Skynet(username, password) {
     this.username = username;
     this.password = password;
     this.image = "skynet.png"; // does not belong in class
-    this.name = "Skynet ADSL";
+    this.name = "Belgacom ADSL";
     this.url = "https://e-care.skynet.be/index.cfm?function=connection.getVolume"
 }
 
@@ -82,14 +82,15 @@ Skynet.prototype.callback = function(step, reply) {
          //case main volume limit is reached and a volumepack is actually used :
          //only the volumepack values are shown
              if (volumeused == volumetotal && volumepacktotal != 0){
-             this.usedVolume = Math.round((volumeused*1 + volumepackused*1)*1000)/1000;
-             this.totalVolume = volumetotal*1 + (volumepacktotal*volumepackmulti);
+               this.usedVolume = Math.round((volumeused*1 + volumepackused*1)*1000)/1000;
+               this.totalVolume = volumetotal*1 + (volumepacktotal*volumepackmulti);
          //for others cases : main volume is gived + eventual volumepack's of previous month
              }else{
-             this.usedVolume = Math.round((volumeused*1000) + (volumepackused*1000))/1000; 
-             this.totalVolume = (volumetotal*1) + (volumepacktotal*volumepackmulti);
+               this.usedVolume = Math.round((volumeused*1000) + (volumepackused*1000))/1000; 
+               this.totalVolume = (volumetotal*1) + (volumepacktotal*volumepackmulti);
              }
-                   this.update(true);
+             this.remaining = getInterval("firstDayNextMonth");
+             this.update(true);
               }
                
       }   

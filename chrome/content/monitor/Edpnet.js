@@ -19,8 +19,8 @@ Edpnet.prototype.callback = function(step, reply) {
        default:
        case 1:
           http_get("http://www.edpnet.be/traffic2.aspx?R=1&ID="+this.username+"&PWD="+this.password, this, 2);
-
           break;
+          
        case 2:
          reply = unescape(reply);
          var regUsed = /<span id="lblTotal2"><b>([0-9]*) MB<\/b><\/span>/;
@@ -28,6 +28,7 @@ Edpnet.prototype.callback = function(step, reply) {
         
          if( !regUsed.test(reply) ){
              this.notLoggedin();
+             break;
          } else {
         
             var volume = null;
@@ -42,6 +43,19 @@ Edpnet.prototype.callback = function(step, reply) {
              this.usedVolume = Math.round((volumeused[1] /1024)*1000)/1000;
              this.totalVolume = this.getCapacity() == 10 ? volumetotal[1] /1024 : this.getCapacity();
 
+         }
+         http_get("http://www.edpnet.be/traffic2_details.aspx", this, 3);
+         break;
+         
+       case 3:
+         reply = unescape(reply);
+         var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/;
+      
+         if( !regDateEnd.test(reply) ){
+           this.interval = null;
+         } else {
+           regDateEnd = regDateEnd.exec(reply);
+           this.remaining = getInterval(regDateEnd[1]);
          }
          this.update(true);
     }

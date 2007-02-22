@@ -68,11 +68,18 @@ function configureMonitors(){
 		if(statusbarMeter != null){
     	try{ showtext = prefs.getBoolPref('showtext'); } catch(ex) { showtext = true; }
     	try{ showmeter = prefs.getBoolPref('showmeter'); } catch(ex) { showmeter = false; }
-    	
+			try{ useSI = prefs.getBoolPref('useSI'); } catch(ex) { useSI = true; }
+			
 			statusbarMeter.showProgressmeter = showmeter;
 			statusbarMeter.showText = showtext;
 			statusbarMeter.showIcon = true;
 			monitor.addListener(statusbarMeter);
+			if (useSI)
+				monitor.measure = " " + getString("unitSI.GiB");
+			else
+				monitor.measure = " " + getString("unit.GB");
+
+
 		}
 		
 }
@@ -105,16 +112,30 @@ function fillTooltip(tooltip){
     var box = document.getElementById("errorBox");
     var ebox = document.getElementById("extraBox");
     var rbox = document.getElementById("rateBox");
+    var remainingBox = document.getElementById("remainingBox");
     var error = document.getElementById("errorMessage");
     var message = document.getElementById("message");
+    var remaining = document.getElementById("remaining");
     var rate = document.getElementById("rate");
     var extra = document.getElementById("extra");
     
     var total = "";
+    remainingBox.collapsed = true;
     if(monitor.state == monitor.STATE_DONE && monitor.usedVolume != null){
       total = ": " + statusbarMeter.procentLabel;
       //rate.value = monitor.usedVolume + " / " + monitor.totalVolume + " GB" ;
       rate.value = statusbarMeter.textLabel;
+      if (monitor.remaining != null){
+        if (monitor.remaining > 1)
+          remaining.value = getString("info.remainingDays").replace ("%d", monitor.remaining);
+        else
+          if (monitor.remaining == 1)
+            remaining.value = getString("info.remainingOneDay");
+          else
+            if (monitor.remaining < 1)
+              remaining.value = getString("info.remainingLessOneDay");
+        remainingBox.collapsed = false;
+      }
       rbox.collapsed = false;
     } else {
     	rbox.collapsed = true;
@@ -133,13 +154,13 @@ function fillTooltip(tooltip){
     message.value = monitor.name + total;
     message.style.background = "url(chrome://minimeter/content/res/"+monitor.image+") 0px 0px no-repeat";
 
-    ebox.collapsed = (monitor.extraMessage == null);
-    setMultilineDescription(extra, monitor.extraMessage);
+    if (monitor.extraMessage != null)
+      setMultilineDescription(extra, monitor.extraMessage);
+    ebox.collapsed = (monitor.extraMessage == '');
     if(!canLogin()){
       box.collapsed = false;
       error.value = getString("warning.fillInCredentials");
     }
-    
 
 }
 

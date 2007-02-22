@@ -67,6 +67,8 @@
       <checkbox id="showmeter" checked="false" label="&checkbox.graphical;"/>
 
 			<description id="flatratedesc" hidden="true" width="200" >&desc.flatrate;</description>
+			
+      <checkbox id="useSI" checked="true" label="&checkbox.useSI;"/>
 
 	</tabpanel>
 	

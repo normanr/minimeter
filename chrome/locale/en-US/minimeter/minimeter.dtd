@@ -10,6 +10,7 @@
 <!ENTITY checkbox.flatrate "Flatrate">
 <!ENTITY checkbox.numerical "Show numerical information">
 <!ENTITY checkbox.graphical "Show graphical meter">
+<!ENTITY checkbox.useSI "Use International system units">
 <!ENTITY desc.flatrate "If you have a flatrate account the graphical meter is not usefull">
 <!ENTITY checkbox.onload "Do not check everytime the browser loads">
 <!ENTITY desc.checking "If 'the check on load' is within an hour of the previous check it will get the data from cache.">
