@@ -32,7 +32,7 @@ Skynet.prototype.callback = function(step, reply) {
            var reggbv = /du Volume Pack en cours :\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
            var reggblv = /du Volume Pack en cours :\s*<strong>([0-9]*) GB<\/strong>\s*sur\s*<strong>(.*) GB<\/strong>/;
 
-           var regvps = /De plus, vous disposez encore de\s*<strong>([0-9]*)<\/strong>\s*Volume Pack(s) inutilis&eacute;(s)/;
+           var regvps = /De plus, vous disposez encore de\s*<strong>([0-9]*)<\/strong>\s*Volume Pack\(s\) inutilis&eacute;\(s\)/;
           
            if( !reggb.test(reply) && !regmb.test(reply) && !reggbl.test(reply) ){
                this.notLoggedin();

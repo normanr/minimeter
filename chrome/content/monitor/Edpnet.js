@@ -51,9 +51,7 @@ Edpnet.prototype.callback = function(step, reply) {
          reply = unescape(reply);
          var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/;
       
-         if( !regDateEnd.test(reply) ){
-           this.interval = null;
-         } else {
+         if( regDateEnd.test(reply) ){
            regDateEnd = regDateEnd.exec(reply);
            this.remaining = getInterval(regDateEnd[1]);
          }

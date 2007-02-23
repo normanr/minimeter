@@ -46,7 +46,7 @@ Orange.prototype.callback = function(step, reply) {
              this.totalVolume = Math.round(volumetotal[1]);
 
          }
-         this.interval = getInterval("firstDayNextMonth");
+         this.remaining = getInterval("firstDayNextMonth");
          this.update(true);
     }
 }
