@@ -1,5 +1,5 @@
 function Skynet(username, password) {
-    this.username = username;
+    this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "skynet.png"; // does not belong in class
     this.name = "Belgacom ADSL";
@@ -35,6 +35,12 @@ Skynet.prototype.callback = function(step, reply) {
            var regvps = /De plus, vous disposez encore de\s*<strong>([0-9]*)<\/strong>\s*Volume Pack\(s\) inutilis&eacute;\(s\)/;
           
            if( !reggb.test(reply) && !regmb.test(reply) && !reggbl.test(reply) ){
+             var regErrorLogin=/ese21Z-2/;
+             if (regErrorLogin.test(reply)) {
+               this.badLoginOrPass();
+               break;
+             }
+             else            
                this.notLoggedin();
            } else {
           

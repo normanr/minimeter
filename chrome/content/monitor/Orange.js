@@ -39,10 +39,13 @@ Orange.prototype.callback = function(step, reply) {
             if(regRemaining.test(reply) && regTotal.test(reply)){
               volumeremain = regRemaining.exec(reply);
               volumetotal = regTotal.exec(reply);
-              volumesupp = regSupp.exec(reply);
+              if(regSupp.test(reply)) {
+                volumesupp = regSupp.exec(reply);
+                volumesupp = volumesupp[1];
+              }
             }
 
-             this.usedVolume = (volumetotal[1]*1000 - volumeremain[1]*1000 + volumesupp[1]*1000)/1000;
+             this.usedVolume = (volumetotal[1]*1000 - volumeremain[1]*1000 + volumesupp*1000)/1000;
              this.totalVolume = Math.round(volumetotal[1]);
 
          }

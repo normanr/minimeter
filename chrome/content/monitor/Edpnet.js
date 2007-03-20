@@ -27,11 +27,17 @@ Edpnet.prototype.callback = function(step, reply) {
          var regAllowed = /<span id="lblAllowed2"><b>([0-9]*) MB<\/b><\/span>/;
         
          if( !regUsed.test(reply) ){
+           var regErrorLogin=/Invalid username or password/;
+           if (regErrorLogin.test(reply)) {
+             this.badLoginOrPass();
+             break;
+           }
+           else {
              this.notLoggedin();
              break;
-         } else {
-        
-            var volume = null;
+           }
+         } 
+         else {
             var volumeused = 0;
             var volumetotal = 0;
             
@@ -44,12 +50,13 @@ Edpnet.prototype.callback = function(step, reply) {
              this.totalVolume = this.getCapacity() == 10 ? volumetotal[1] /1024 : this.getCapacity();
 
          }
-         http_get("http://www.edpnet.be/traffic2_details.aspx", this, 3);
+         http_get("http://www.edpnet.be/traffic2_history.aspx", this, 3);
          break;
          
        case 3:
          reply = unescape(reply);
-         var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/;
+         //var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/;
+         var regDateEnd = /Upload<\/b><\/td><\/tr><tr><td>([0-9/]*)&nbsp;/;
       
          if( regDateEnd.test(reply) ){
            regDateEnd = regDateEnd.exec(reply);

@@ -77,7 +77,6 @@ function http_get(purl, callback, step){
   		
       req.open("GET", purl, true, null, null);
 		req.setRequestHeader('Cookie', 'usageConfirm=true');
-    
 		  req.send('');	
 			
 		}catch(ex){alert(ex);}			

@@ -34,6 +34,11 @@ Monitor.prototype.notLoggedin = function(){
 	this.errorMessage = getString("error.login");
 	this.update(false);
 }
+
+Monitor.prototype.badLoginOrPass = function(){
+	this.errorMessage = getString("error.badLoginOrPass");
+	this.update(false);
+}
 /*
  * Is called at the end of the transaction
  */ 
