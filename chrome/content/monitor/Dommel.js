@@ -33,6 +33,11 @@ Dommel.prototype.callback = function(step, reply) {
 				break;
 			case 2:
 			  reply = unescape(reply);
+        var regErrorLogin=/your login is incorrect/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
+          break;
+        }
 			  http_get('https://crm.schedom-europe.net/user.php?op=view&tile=mypackages', this, 3);
 			  break;
 			case 3:
@@ -51,26 +56,28 @@ Dommel.prototype.callback = function(step, reply) {
 			  break;
 			case 4:
 			  reply = unescape(reply);
- 			  var reg_broad_DL = /broadband download : ([0-9\.]+) gb/;
- 			  var reg_broad_UP = /broadband upload : ([0-9\.]+) gb/;
+
+ 			  var reg_connection_type = /<td><b>type :<\/b><\/td>\s*<td>(broadband|mediumband)<\/td>/;
+ 			  //var reg_broad_DL = /broadband download : ([0-9\.]+) gb/;
+ 			  //var reg_broad_UP = /broadband upload : ([0-9\.]+) gb/;
  			  var reg_broad_TOTAL = /total traffic downloaded in broadband: ([0-9\.]+) gb/;
+ 			  //var reg_medium_DL = /medium\/smallband download : ([0-9\.]+) gb/;
+ 			  //var reg_medium_UP = /medium\/smallband upload : ([0-9\.]+) gb/;
+ 			  //var reg_medium_TOTAL = /total transferred in medium\/smallband : ([0-9\.]+) gb/;
+ 			  //var reg_overall = /overall transferred during the current period : ([0-9\.]+) gb/;
  			  var reg_broad_REMAINING = /remaining : <\/b>([0-9\.]+) gb/;
- 			  var reg_medium_DL = /medium\/smallband download : ([0-9\.]+) gb/;
- 			  var reg_medium_UP = /medium\/smallband upload : ([0-9\.]+) gb/;
- 			  var reg_medium_TOTAL = /total transferred in medium\/smallband : ([0-9\.]+) gb/;
- 			  var reg_overall = /overall transferred during the current period : ([0-9\.]+) gb/;
         var reg_remaining = /days remaining: ([0-9]+)/;
         
-			  if( !reg_broad_DL.test(reply) || !reg_broad_UP.test(reply) || !reg_broad_TOTAL.test(reply)) {
+			  if( !reg_connection_type.test(reply)) {
 
 					this.notLoggedin();
 
 			  } else {
 
- 			    var broad_DLValue = reg_broad_DL.exec(reply);
- 			    var broad_UPValue = reg_broad_UP.exec(reply);
- 			    var broad_TOTALValue = reg_broad_TOTAL.exec(reply);
- 			    
+ 			   // Grab connection type (broadband|mediumband)
+ 			   var connection_typeValue = reg_connection_type.exec(reply);
+
+ 			   // Grab remaining days before reset
          if( !reg_remaining.test(reply) ) {
            this.remaining = null;
          } else {
@@ -78,44 +85,58 @@ Dommel.prototype.callback = function(step, reply) {
            this.remaining = remainingValue[1];
          }
 
-			    if( reg_broad_REMAINING.test(reply)) {
+  			 // Grab common info to broadband & mediumband
+ 			   //var broad_DLValue = reg_broad_DL.exec(reply);
+ 			   //var broad_UPValue = reg_broad_UP.exec(reply);
+ 			   var broad_TOTALValue = reg_broad_TOTAL.exec(reply);  
+
+  			 // Grab info in broadband
+			   if( connection_typeValue[1] == "broadband") {
 			  
-  			    var broad_REMAININGValue = reg_broad_REMAINING.exec(reply);
-  
-        		var down = (broad_DLValue[1]*1).toFixed(2);
-        		var up = (broad_UPValue[1]*1).toFixed(2);
-        		this.usedVolume = (broad_TOTALValue[1]*1).toFixed(2);
-        		var remainingVolume = (broad_REMAININGValue[1]*1).toFixed(2);
-        		this.totalVolume = ((this.usedVolume*1) + (remainingVolume*1)).toFixed(2);
-        		this.extraMessage = "Download: " + down +" GB, Upload: " + up +" GB";
-    			  http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
-    			  
-    			} else {
-  			    if( reg_medium_DL.test(reply) && reg_medium_UP.test(reply) && reg_medium_TOTAL.test(reply) && reg_overall.test(reply)) {
+    		 // Grab remaining volume before mediumband
+    		 var remainingVolume = 0;
+         if( reg_broad_REMAINING.test(reply) ) {
+  			  var broad_REMAININGValue = reg_broad_REMAINING.exec(reply);
+          remainingVolume = (broad_REMAININGValue[1]*1).toFixed(2);
+         }
+          	
+         //var down = (broad_DLValue[1]*1).toFixed(2);
+         //var up = (broad_UPValue[1]*1).toFixed(2);
+         this.usedVolume = (broad_TOTALValue[1]*1).toFixed(2);
+         this.totalVolume = ((this.usedVolume*1) + (remainingVolume*1)).toFixed(2);
+         //this.extraMessage = "Download: " + down +" GB, Upload: " + up +" GB";
+        	this.extraMessage = "Download: " + this.usedVolume +" GB\nConnection type : " + connection_typeValue[1];
+    		 http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
+ 			  
+    		} 
+ 			  // Grab info in mediumband
+    		else if( connection_typeValue[1] == "mediumband") {
   			  
-    			    var medium_DLValue = reg_medium_DL.exec(reply);
-    			    var medium_UPValue = reg_medium_UP.exec(reply);
-    			    var medium_TOTALValue = reg_medium_TOTAL.exec(reply);
-    			    var overallValue = reg_overall.exec(reply);
+    		  //var medium_DLValue = reg_medium_DL.exec(reply);
+    		  //var medium_UPValue = reg_medium_UP.exec(reply);
+    		  //var medium_TOTALValue = reg_medium_TOTAL.exec(reply);
+    		  //var overallValue = reg_overall.exec(reply);
     
-          		var down1 = (broad_DLValue[1]*1).toFixed(2);
-          		var up1 = (broad_UPValue[1]*1).toFixed(2);
-          		var down2 = (medium_DLValue[1]*1).toFixed(2);
-          		var up2 = (medium_UPValue[1]*1).toFixed(2);
-          		var overall = (overallValue[1]*1).toFixed(2);
-          		this.usedVolume = (broad_TOTALValue[1]*1 + medium_TOTALValue[1]*1).toFixed(2);
-          		this.totalVolume = this.usedVolume;
-          		this.extraMessage = "Broadband download : " + down1 +" GB, Up: " + up1 +" GB\n" + "Mediumband download : " + down2 +" GB, Up: " + up2 +" GB\n" + "Overall transfer : " + overall +" GB";
-      			  http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
+         	//var down1 = (broad_DLValue[1]*1).toFixed(2);
+         	//var up1 = (broad_UPValue[1]*1).toFixed(2);
+         	//var down2 = (medium_DLValue[1]*1).toFixed(2);
+         	//var up2 = (medium_UPValue[1]*1).toFixed(2);
+         	//var overall = (overallValue[1]*1).toFixed(2);
+         	//this.usedVolume = (broad_TOTALValue[1]*1 + medium_TOTALValue[1]*1).toFixed(2);
+         	//this.totalVolume = this.usedVolume;
+         	//this.extraMessage = "Broadband download : " + down1 +" GB, Up: " + up1 +" GB\n" + "Mediumband download : " + down2 +" GB, Up: " + up2 +" GB\n" + "Overall transfer : " + overall +" GB";
+
+        	this.usedVolume = (broad_TOTALValue[1]*1).toFixed(2);
+          this.totalVolume = this.usedVolume;
+        	this.extraMessage = "Download: " + this.usedVolume +" GB\nConnection type : " + connection_typeValue[1];
+      		 http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
       			  
-      			} else {
-    					this.notLoggedin();
-    				}
-          }
-        }
-        break;					
+      	} else {
+    			this.notLoggedin();
+    		}
+      }
+      break;					
 			case 5:
-//        this.remaining = getInterval("firstDayNextMonth");
      		this.update(true);	
 		}	
 }
