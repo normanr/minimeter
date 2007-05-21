@@ -27,14 +27,14 @@ Belcenter.prototype.callback = function(step, reply) {
          var regQuota = /<b> ([0-9.]*)GB <\/font><\/b> sur ([0-9]*) GB disponibles/;
          var regSupp = /Provision restante<\/b> : <b>([0-9.]*)GB<\/b>/;
         
-         if( !regQuota.test(reply) ){
+         if(!regQuota.test(reply)){
            var regErrorLogin=/Erreur de login ou de mot de passe/;
            if (regErrorLogin.test(reply)) {
              this.badLoginOrPass();
              break;
            }
            else {
-             this.notLoggedin();
+             this.unknownError(step,this.name);
              break;
            }
          } 
@@ -44,9 +44,7 @@ Belcenter.prototype.callback = function(step, reply) {
             var volumeTotal = 0;
             var volumeSupp = 0;
             
-            if(regQuota.test(reply)){
-              volumeQuota = regQuota.exec(reply);
-            }
+            volumeQuota = regQuota.exec(reply);
             
             if(regSupp.test(reply)){
               volumeSupp = regSupp.exec(reply);

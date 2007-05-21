@@ -3,7 +3,7 @@ function Orange(username, password) {
     this.password = password;
     this.image = "orange.png"; // does not belong in class
     this.name = "Orange";
-    this.url = "http://compte.orange.fr/wanadoo_et_moi/compte/bin/compte.cgi";
+    this.url = "http://compte.orange.fr/moninternet/compte/bin/compte.cgi";
 }
 
 Orange.prototype = new Monitor();
@@ -18,35 +18,32 @@ Orange.prototype.callback = function(step, reply) {
     {
        default:
        case 1:
-		 http_get('http://compte.orange.fr/wanadoo_et_moi/compte/bin/compte.cgi', this, 2);
+		 http_get('http://compte.orange.fr/moninternet/compte/bin/compte.cgi', this, 2);
 		 break;
        case 2:
          reply = unescape(reply);
-         var regRemaining = /consommer<\/td>\s*<td class="LigneOrange"><div align="right"><strong><nobr>([0-9.]*) Go<\/nobr>/;
-         var regTotal = /mois<\/td>\s*<td class="LigneBlanche"><div align="right"><strong><nobr>([0-9.]*) Go<\/nobr>/;
-         var regSupp = /dit<\/td>\s*<td class="LigneBlanche"><div align="right"><strong><nobr>([0-9.]*) Go<\/nobr>/;
+         var regRemaining = /consommer :&nbsp;<\/td>\s*<td class="ligne_orange"><strong><nobr>([0-9.]*) Go/;
+         var regTotal = /mois :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
+         var regSupp = /dit :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
         
-         if( !regRemaining.test(reply) ){
+         if(!regRemaining.test(reply) || !regTotal.test(reply)){
              this.notLoggedin();
              break;
          } else {
-        
-            var volume = null;
-            var volumeremain = 0;
-            var volumetotal = 0;
-            var volumesupp = 0;
+             var volume = null;
+             var volumeremain = 0;
+             var volumetotal = 0;
+             var volumesupp = 0;
             
-            if(regRemaining.test(reply) && regTotal.test(reply)){
-              volumeremain = regRemaining.exec(reply);
-              volumetotal = regTotal.exec(reply);
-              if(regSupp.test(reply)) {
-                volumesupp = regSupp.exec(reply);
-                volumesupp = volumesupp[1];
-              }
-            }
+             volumeremain = regRemaining.exec(reply);
+             volumetotal = regTotal.exec(reply);
+             if(regSupp.test(reply)) {
+               volumesupp = regSupp.exec(reply);
+               volumesupp = volumesupp[1];
+             }
 
-             this.usedVolume = (volumetotal[1]*1000 - volumeremain[1]*1000 + volumesupp*1000)/1000;
-             this.totalVolume = Math.round(volumetotal[1]);
+             this.usedVolume = Math.round(volumetotal[1]*1000 - volumeremain[1]*1000 + volumesupp*1000)/1000;
+             this.totalVolume = volumetotal[1];
 
          }
          this.remaining = getInterval("firstDayNextMonth");

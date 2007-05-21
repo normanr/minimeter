@@ -17,7 +17,7 @@
 	
 	<toolbarpalette id="BrowserToolbarPalette">                                            
 		<toolbaritem tooltip="minimeter-tooltip" id="minimeter-container" class="chromeclass-toolbar-additional" title="MiniMeter"  align="center">
-    	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="clickIcon(event);"/>
+    	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="clickIcon(event);" ondblclick="loadPage();"/>
     	
 		</toolbaritem>
 	</toolbarpalette>
@@ -52,7 +52,7 @@
     <statusbarpanel context="minimeter-context-menu" id="minimeter-statusbar"  
          insertafter="statusbar-progresspanel"
          tooltip="minimeter-tooltip">
-      	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);"/>
+      	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);" ondblclick="loadPage();"/>
     </statusbarpanel>
   </statusbar>
 

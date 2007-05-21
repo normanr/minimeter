@@ -3,6 +3,7 @@ var monitor = null;
 var prefs = null;
 var toolbarMeter = null;
 var statusbarMeter = null;
+var singleClick = true;
 
 function initialize(){
 
@@ -122,7 +123,7 @@ function fillTooltip(tooltip){
     var total = "";
     remainingBox.collapsed = true;
     if(monitor.state == monitor.STATE_DONE && monitor.usedVolume != null){
-      total = ": " + statusbarMeter.procentLabel;
+      total = " : " + statusbarMeter.procentLabel;
       //rate.value = monitor.usedVolume + " / " + monitor.totalVolume + " GB" ;
       rate.value = statusbarMeter.textLabel;
       if (monitor.remaining != null){
@@ -205,7 +206,8 @@ function checkNow(){
 
 function clickIcon(event){
   if(event.button == 0){
-    checkNow();
+    singleClick = true;
+      setTimeout("if (singleClick) { checkNow(); }", 400);
   }
 }
 function loadPrefWindow(){
@@ -218,6 +220,7 @@ function loadPrefWindow(){
 }    
 
 function loadPage(){
+  singleClick = false;
   getBrowser().loadURI(monitor.url);
 
 }

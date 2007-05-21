@@ -47,7 +47,7 @@ Dommel.prototype.callback = function(step, reply) {
 			    var servidValue = servid.exec(reply);
 			    var client_idValue = client_id.exec(reply);
 			  if( !servid.test(reply) || !client_id.test(reply) ){
-					this.notLoggedin();
+					this.unknownError(step,this.name);
 			  } else {
 			    var servidValue = servid.exec(reply);
 			    var client_idValue = client_id.exec(reply);
@@ -70,7 +70,7 @@ Dommel.prototype.callback = function(step, reply) {
         
 			  if( !reg_connection_type.test(reply)) {
 
-					this.notLoggedin();
+					this.unknownError(step,this.name);
 
 			  } else {
 
@@ -132,7 +132,7 @@ Dommel.prototype.callback = function(step, reply) {
       		 http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
       			  
       	} else {
-    			this.notLoggedin();
+    			this.unknownError(step,this.name);
     		}
       }
       break;					

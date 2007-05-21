@@ -39,6 +39,20 @@ Monitor.prototype.badLoginOrPass = function(){
 	this.errorMessage = getString("error.badLoginOrPass");
 	this.update(false);
 }
+
+Monitor.prototype.badLoginOrPass = function(){
+	this.errorMessage = getString("error.badLoginOrPass");
+	this.update(false);
+}
+
+Monitor.prototype.unknownError = function(step,monitor){
+	this.errorMessage = getString("error.unknownError");
+	var dumpMessage = getString("error.unknownErrorDump").replace ("%step", step);
+	dumpMessage = dumpMessage.replace ("%monitor", monitor);
+	consoleDump(dumpMessage);
+	this.update(false);
+}
+
 /*
  * Is called at the end of the transaction
  */ 
