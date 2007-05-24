@@ -5,6 +5,7 @@
 		*/
 		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom ADSL", "#Chellobe:Chello", "Dommel", "#Edpnet:EDPnet", "Fulladsl:Full ADSL","Scarlet","Telenet", "Tvcablenet",   
 															"_France","Orange",
+															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval","#Chello","#InternetExpres",
 															"_New Zealand", "Xtra",
 															//"_Netherlands", "#Xs4all",
