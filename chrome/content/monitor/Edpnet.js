@@ -44,7 +44,7 @@ Edpnet.prototype.callback = function(step, reply) {
            volumeused = regUsed.exec(reply);
            volumetotal = regAllowed.exec(reply);
 
-           this.usedVolume = Math.round((volumeused[1] /1024)*1000)/1000;
+           this.usedVolume = Math.round(volumeused[1]/1024*1000)/1000;
            this.totalVolume = this.getCapacity() == 10 ? volumetotal[1] /1024 : this.getCapacity();
          }
          //http_get("http://www.edpnet.be/traffic2_history.aspx", this, 3);

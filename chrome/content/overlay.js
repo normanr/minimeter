@@ -119,6 +119,7 @@ function fillTooltip(tooltip){
     var remaining = document.getElementById("remaining");
     var rate = document.getElementById("rate");
     var extra = document.getElementById("extra");
+    var mtIcon = document.getElementById("mtIcon");
     
     var total = "";
     remainingBox.collapsed = true;
@@ -151,9 +152,8 @@ function fillTooltip(tooltip){
     error.value = monitor.errorMessage;
     
     
-    
+    mtIcon.setAttribute("src", "chrome://minimeter/content/res/"+monitor.image);
     message.value = monitor.name + total;
-    message.style.background = "url(chrome://minimeter/content/res/"+monitor.image+") 0px 0px no-repeat";
 
     if (monitor.extraMessage != null)
       setMultilineDescription(extra, monitor.extraMessage);

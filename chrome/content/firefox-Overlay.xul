@@ -30,9 +30,10 @@
       <menuseparator/>
       <menuitem label="&menu.preferences;" oncommand="loadPrefWindow();"/>
     </popup>
-    <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="fillTooltip(this)">
-        <hbox>  
-          <description style="padding-left: 22px; padding-top: 2px" id="message"/>
+    <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="fillTooltip(this)" noautohide="true">
+        <hbox style="padding-left: 4px; padding-top: 2px">  
+          <image id="mtIcon" style="max-width: 16px; max-height: 16px;"/>
+          <description style="padding-left: 2px;" id="message"/>
         </hbox>
         <hbox id="remainingBox" collapsed="true">  
           <description style="padding-left: 22px; padding-top: 2px" id="remaining"/>

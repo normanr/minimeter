@@ -9,7 +9,7 @@
   <content>
 
  
-		<xul:label id="1" style="height: 15px; width: 16px; margin-left: 0; margin-right: 0" />
+		<xul:label id="1" style="height: 16px; width: 16px; margin-left: 0; margin-right: 0" />
     
     <xul:label id="2" xbl:inherits="value=label" style="margin: 0 2px 0 0; padding-top: 2px"></xul:label>
 

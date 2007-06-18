@@ -40,11 +40,6 @@ Monitor.prototype.badLoginOrPass = function(){
 	this.update(false);
 }
 
-Monitor.prototype.badLoginOrPass = function(){
-	this.errorMessage = getString("error.badLoginOrPass");
-	this.update(false);
-}
-
 Monitor.prototype.unknownError = function(step,monitor){
 	this.errorMessage = getString("error.unknownError");
 	var dumpMessage = getString("error.unknownErrorDump").replace ("%step", step);
