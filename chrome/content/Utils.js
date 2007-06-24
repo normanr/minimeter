@@ -59,6 +59,15 @@ function getInterval(endDateText){
   return interval;
 }
 
+function isUseSI(){
+  var prefs = null;
+  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+               .getService(Components.interfaces.nsIPrefService);
+  prefs = prefService.getBranch("extensions.minimeter.");
+
+  try{ useSI = prefs.getBoolPref('useSI'); } catch(ex) { useSI = true; }
+  return (useSI);
+}
 
 function http_get(purl, callback, step){
 
@@ -82,7 +91,7 @@ function http_get(purl, callback, step){
 		}catch(ex){alert(ex);}			
 }
 
-function http_post(purl, postdata, callback, step){
+function http_post(purl, postdata, callback, step, cookie){
 		try{
   		var req = new XMLHttpRequest();
   		
@@ -97,6 +106,8 @@ function http_post(purl, postdata, callback, step){
 		
 			req.open("POST", purl, true, null, null);
 			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			if(cookie!=null)
+        req.setRequestHeader('Cookie', cookie);
 			req.send(postdata);		
 			
 		}catch(ex){alert("Error posting: " + ex);}			
@@ -119,7 +130,7 @@ function http_auth(purl, username, password, callback, step){
 		  path = httphost.substr(end);
 			httphost = httphost.substr(0, end  );
 			var auth = "\nAuthorization: Basic " + encode64(username+':'+password);
-		  readAllFromSocket(httphost,80,"GET "+ path +" HTTP/1.1\nHost: " + httphost + auth + "\n\n",listener);
+		  readAllFromSocket(httphost,80,"GET "+ path +" HTTP/1.0\nHost: " + httphost + auth + "\n\n",listener);
 			
 			
 		}catch(ex){alert(ex);}			
@@ -210,17 +221,13 @@ function readAllFromSocket(host,port,outputData,listener)
       data : "",
       onStartRequest: function(request, context){},
       onStopRequest: function(request, context, status){
-				this.done();
+        instream.close();
+        outstream.close();
+        listener.finished(this.data);
       },
       onDataAvailable: function(request, context, inputStream, offset, count){
         this.data += instream.read(count);
-        this.done();
       },
-      done : function(){
-      	instream.close();
-        outstream.close();
-        listener.finished(this.data);
-      }
     };
 
     var pump = Components.

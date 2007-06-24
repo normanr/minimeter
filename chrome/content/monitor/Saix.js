@@ -27,24 +27,26 @@ Saix.prototype.callback = function(step, reply) {
 			case 2:
 
 			  reply = unescape(reply);
-			  var reg = /<th>Combined \(Bytes\)<\/th><tr><td>([0-9]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td>/;
+			  var reg = /<th>Combined \(Bytes\)<\/th><tr><td>([0-9\.]*)<\/td><td>([0-9]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td>/;
 
-			  
 			  if(!reg.test(reply)){
 					this.notLoggedin();
 			  } else {
 			    var volume = reg.exec(reply);
-			    strVol = volume[4].replace(/ /g, "");
-			    strVol /= 1073741824;
-			    
-      		this.usedVolume = strVol.toFixed(2);
-      		this.totalVolume = this.getCapacity();
+			    var sessions = volume[1];
+			    var hours = (volume[2].replace(/ /g, "")/3600).toFixed(0);
+			    var up = (volume[3].replace(/ /g, "")/1073741824).toFixed(2);
+			    var down = (volume[4].replace(/ /g, "")/1073741824).toFixed(2);
+			    var both = (volume[5].replace(/ /g, "")/1073741824).toFixed(2);
+			    this.extraMessage = "Connected: " + sessions + " sessions, " + hours + " hours\nUp: " + up +" GB, Down: " + down +" GB";
+			    this.usedVolume = both;
+			    this.totalVolume = this.getCapacity();
 
-      		this.update(true);	
-        }
-					
-		}	
-				
+			    this.update(true);	
+			  }
+
+		}
+
 }
 
 // http://stats.imaginet.co.za/adsl/
