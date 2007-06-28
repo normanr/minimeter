@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://minimeter/content/style.css" type="text/css"?>
+<?xml-stylesheet href="chrome://minimeter/skin/style.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://minimeter/locale/minimeter.dtd">
 
 
@@ -12,6 +12,10 @@
 
   <script src="chrome://minimeter/content/settings.js"/>
   <script src="chrome://minimeter/content/overlay.js"/>
+  <script type="application/x-javascript">
+    window.addEventListener("load", initialize, false);
+    window.addEventListener("unload", unloadObserver, false);
+  </script>
 
 
 	
@@ -37,6 +41,9 @@
         </hbox>
         <hbox id="remainingBox" collapsed="true">  
           <description style="padding-left: 22px; padding-top: 2px" id="remaining"/>
+        </hbox>
+        <hbox id="amountToPayBox" collapsed="true">  
+          <description style="padding-left: 22px; padding-top: 2px" id="amountToPay"/>
         </hbox>
         <hbox id="rateBox">  
           <description style="padding-left: 22px;" id="rate"/>

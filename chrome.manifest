@@ -1,4 +1,5 @@
 content	minimeter	chrome/content/
+skin	minimeter	classic/1.0 chrome/skin/
 
 overlay	chrome://browser/content/browser.xul	chrome://minimeter/content/firefox-Overlay.xul
 

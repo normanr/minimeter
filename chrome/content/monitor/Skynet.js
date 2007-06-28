@@ -2,7 +2,7 @@ function Skynet(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "skynet.png"; // does not belong in class
-    this.name = "Belgacom ADSL";
+    this.name = "Belgacom";
     this.url = "https://e-care.skynet.be/index.cfm?function=connection.getVolume"
 }
 

@@ -3,7 +3,7 @@
 			_ = country
 			# = custom capacity
 		*/
-		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom ADSL", "#Chellobe:Chello", "Dommel", "#Edpnet:EDPnet", "Euphony", "Fulladsl:Full ADSL","Scarlet","Telenet"/*, "Tvcablenet"*/, "#Voo",   
+		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom", "#Chellobe:Chello", "Dommel", "#Edpnet:EDPnet", "Euphony", "Fulladsl:Full ADSL", "Mobistar", "Scarlet","Telenet"/*, "Tvcablenet"*/, "#Voo",   
 															"_France","Orange",
 															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval","#Chello","#InternetExpres",
@@ -70,8 +70,8 @@
 						return false;
 					}
 					
-          prefs.setBoolPref("click_check", 
-              document.getElementById('click_check').checked);
+          prefs.setIntPref("updateTimeout", 
+              document.getElementById('updateTimeout').value);
           prefs.setBoolPref("showtext", 
               document.getElementById('showtext').checked);
           prefs.setBoolPref("showmeter", 
@@ -98,14 +98,14 @@
     
     function initOptions()
     {
-    	try{ click_check = prefs.getBoolPref('click_check'); } catch(ex) { click_check = false; }
-    	try{ showtext = prefs.getBoolPref('showtext'); } catch(ex) { showtext = true; }
-    	try{ showmeter = prefs.getBoolPref('showmeter'); } catch(ex) { showmeter = false; }
-    	try{ useSI = prefs.getBoolPref('useSI'); } catch(ex) { useSI = true; }
-    	try{ provider = prefs.getCharPref('provider'); } catch(ex) { provider = "skynet"; }
-    	try{ capacity = prefs.getIntPref('capacity'); } catch(ex) { capacity = 10; }
+    	updateTimeout = prefs.getIntPref('updateTimeout');
+    	showtext = prefs.getBoolPref('showtext');
+    	showmeter = prefs.getBoolPref('showmeter');
+    	useSI = prefs.getBoolPref('useSI');
+    	provider = prefs.getCharPref('provider');
+    	capacity = prefs.getIntPref('capacity');
     	
-      document.getElementById('click_check').checked = click_check;
+      document.getElementById('updateTimeout').value = updateTimeout;
       document.getElementById('showtext').checked = showtext;
       document.getElementById('showmeter').checked = showmeter;
       document.getElementById('useSI').checked = useSI;
@@ -181,7 +181,7 @@
 	}
 	
 	function setFlatrate(val){
-		try{ capacity = prefs.getIntPref('capacity'); } catch(ex) { capacity = 10; }
+		capacity = prefs.getIntPref('capacity');
 		
 		var field = document.getElementById('capacity');
 		if(val) field.setAttribute("disabled", true); else field.removeAttribute("disabled");

@@ -46,19 +46,25 @@ Edpnet.prototype.callback = function(step, reply) {
 
            this.usedVolume = Math.round(volumeused[1]/1024*1000)/1000;
            this.totalVolume = this.getCapacity() == 10 ? volumetotal[1] /1024 : this.getCapacity();
+           
+           if(this.usedVolume > this.totalVolume)
+             this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*0.25*100)/100 + " EUR";
          }
-         //http_get("http://www.edpnet.be/traffic2_history.aspx", this, 3);
-         http_get("http://www.edpnet.be/traffic2_details.aspx", this, 3);
+         http_get("http://www.edpnet.be/traffic2_history.aspx", this, 3);
+         //http_get("http://www.edpnet.be/traffic2_details.aspx", this, 3);
          break;
          
        case 3:
          reply = unescape(reply);
-         var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/; // traffic2_details.aspx
+         //var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/; // traffic2_details.aspx
+         var regDateEnd = /<tr><td>([0-9]*)\//;
+         
+         
          //var regDateEnd = /Upload<\/b><\/td><\/tr><tr><td>([0-9/]*)&nbsp;-&nbsp;([0-9/]*)<\/td>/; //traffic2_history.aspx
       
          if( regDateEnd.test(reply) ){
            regDateEnd = regDateEnd.exec(reply);
-           this.remaining = getInterval(regDateEnd[1]);
+           this.remaining = getInterval("nearestOccurence", regDateEnd[1]);
          }
          this.update(true);
     }

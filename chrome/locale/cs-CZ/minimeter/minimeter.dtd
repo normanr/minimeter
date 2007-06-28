@@ -12,8 +12,7 @@
 <!ENTITY checkbox.graphical "Zobrazovat grafické počítadlo">
 <!ENTITY checkbox.useSI "Use International system units">
 <!ENTITY desc.flatrate "Při volbě bez limitu nemá grafické počítadlo smysl">
-<!ENTITY checkbox.onload "Nekontrolovat při každém spuštění prohlížeče">
-<!ENTITY desc.checking "Nastane-li spuštění prohlížeče během hodiny od předchozí kontroly, budou data načtena z vyrovnávací paměti.">
+<!ENTITY label.updateTimeout "Update the informations every (hours) :">
 
 <!ENTITY menu.refresh "Obnovit údaje">
 <!ENTITY menu.stats "Zobrazit statistiku">

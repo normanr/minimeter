@@ -37,7 +37,7 @@ JArray.prototype.clear = function() {
 };
 
 
-function getInterval(endDateText){
+function getInterval(endDateText, dayNum){
   var nowDate = new Date();
   var interval = 0;
   if (endDateText == "firstDayNextMonth"){
@@ -45,16 +45,25 @@ function getInterval(endDateText){
     var mm = nowDate.getMonth() + 1;
     var yyyy = nowDate.getFullYear();
   }
+  else
+    if (endDateText == "nearestOccurence"){
+      var dd = nowDate.getDate();
+      var mm = nowDate.getMonth();
+      var yyyy = nowDate.getFullYear();
+      if(dd > dayNum) // date dépassée, donc reset le mois suivant
+        mm++;
+      dd = dayNum;
+  }
   else{
     var dd = endDateText.substring(0,2);
     var mm = endDateText.substring(3,5);
     var yyyy = endDateText.substring(6,10);
   }
-    if(mm == 12){
-      mm = 0;
-      yyyy++;
-    }
-    var endDate = new Date(yyyy,mm,dd);
+  if(mm == 12){
+    mm = 0;
+    yyyy++;
+  }
+  var endDate = new Date(yyyy,mm,dd);
   interval = Math.floor((endDate.getTime() - nowDate.getTime()) / (86400000)); // 86400000 = 24*60*60*1000
   return interval;
 }
@@ -65,7 +74,7 @@ function isUseSI(){
                .getService(Components.interfaces.nsIPrefService);
   prefs = prefService.getBranch("extensions.minimeter.");
 
-  try{ useSI = prefs.getBoolPref('useSI'); } catch(ex) { useSI = true; }
+  useSI = prefs.getBoolPref('useSI');
   return (useSI);
 }
 

@@ -136,7 +136,7 @@
 					if(monitor.state ==  monitor.STATE_DONE){
 						this.label =  this.textLabel ;
 						this.setBusy(false);
-						this.animate(monitor.usedVolume / monitor.totalVolume * 100);
+						this.animate(monitor.usedVolume / monitor.totalVolume * 100, monitor.newData);
 					}
         ]]>
       </body>
@@ -145,14 +145,21 @@
   
     <method name="animate">
       <parameter name="newValue"/>
+      <parameter name="newData"/>
       <body>
         <![CDATA[
         	if( monitor.totalVolume <= 0) newValue = 0;
         	
         	document.getAnonymousNodes(this)[2].removeAttribute('collapsed');
-          this.value = 0;
-          this.finish = newValue ;
-          this.animCallback();
+        	
+        	if(!newData)
+            this.value = newValue;
+          else
+          {
+            this.value = 0;
+            this.finish = newValue ;
+            this.animCallback();
+          }
         ]]>
       </body>
     </method>
@@ -195,7 +202,7 @@
     <method name="animCallback">
       <body>
         <![CDATA[
-          if(this.value++ < this.finish){
+          if((++this.value + 2) < this.finish){
             window.setTimeout(
               function(x){x.animCallback();}, 20, this
             );   
