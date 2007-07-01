@@ -1,7 +1,7 @@
 <!ENTITY settings.title "Minimeter settings">
 <!ENTITY tab.provider "Provider">
 <!ENTITY tab.statusbar "Statusbar">
-<!ENTITY tab.checking "Checking">
+<!ENTITY tab.checking "Miscellaneous">
 <!ENTITY label.provider "Provider">
 <!ENTITY label.username "Username">
 <!ENTITY label.password "Password">
@@ -11,6 +11,7 @@
 <!ENTITY checkbox.numerical "Show numerical information">
 <!ENTITY checkbox.graphical "Show graphical meter">
 <!ENTITY checkbox.useSI "Use International system units">
+<!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "If you have a flatrate account the graphical meter is not usefull">
 <!ENTITY label.updateTimeout "Update the informations every (hours) :">
 

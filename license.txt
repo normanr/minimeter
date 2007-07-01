@@ -23,6 +23,7 @@ Contributor(s):
   Thomas Bertels <tbertels@gmail.com>
   Norman Rasmussen <norman@rasmussen.co.za>
   pcjco <pcjco@yahoo.com>
+  Michal Matyska <michal.matyska@gmail.com>
   byblo <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=749>
   myster_e <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=3897>
 

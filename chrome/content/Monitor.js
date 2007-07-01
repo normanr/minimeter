@@ -6,7 +6,7 @@ function Monitor(){
 	this.extraMessage = null;
 	this.remaining = null;
 	this.amountToPay = null;
-	this.useCache = true;
+	this.remainingAverage = null
 	this.newData = false; // is the new data different from the old one ? (for the animation)
 
 }
@@ -62,10 +62,12 @@ Monitor.prototype.update = function(success) {
           
   if(success){
     this.state = this.STATE_DONE;
-    if(this.useCache) this.storeCache();
+    if(this.remaining != null && this.usedVolume < this.totalVolume)
+      monitor.remainingAverage = Math.round((monitor.totalVolume - monitor.usedVolume) / monitor.remaining * 1000) /1000 + monitor.measure + " " + getString("info.remainingAverage");
+    this.storeCache();
   } else {
     this.state = this.STATE_ERROR;
-    if(this.useCache) this.clearCache();
+    this.clearCache();
   }
   
   this.notify();
@@ -136,25 +138,31 @@ Monitor.prototype.checkCache = function(calledByTimeout){
 }
 
 Monitor.prototype.loadCache = function(isNotNewWindow){
-  provider = prefs.getCharPref('provider');
-  cache = prefs.getCharPref('cache');
-
+  var cache = prefs.getCharPref('cache');
   cache = cache.split(";");
-  this.usedVolume = cache[2];
-  this.totalVolume = cache[3];
-  if(cache[4] != '')
-    this.remaining = cache[4];
-  if(cache[5] != '')
-    this.extraMessage = cache[5];
-  if(cache[7] != '') // 6 is newData
-    this.amountToPay = cache[7];
-
-  //this.extraMessage += "(from cache)";
+  if(cache.length > 1) {
+    this.state = this.STATE_DONE;
+    this.usedVolume = cache[2];
+    this.totalVolume = cache[3];
+    if(cache[4] != '')
+      this.remaining = cache[4];
+    if(cache[5] != '')
+      this.extraMessage = cache[5];
+    if(cache[7] != '') // 6 is newData
+      this.amountToPay = cache[7];
+    if(cache[8] != '')
+      this.remainingAverage = cache[8];
   
-  if(isNotNewWindow == true)
-    this.checkIfDataIsNew(true);
-  else
-    this.newData = false;
+    //this.extraMessage += "(from cache)";
+    
+    if(isNotNewWindow == true)
+      this.checkIfDataIsNew(true);
+    else
+      this.newData = false;
+  }
+  else {
+    this.state = this.STATE_ERROR;
+  }
     
   this.notify();
 }
@@ -165,7 +173,7 @@ Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
   cache = cache.split(";");
   if(!checkCacheNewData)
   {
-    if(this.usedVolume != cache[2] || this.totalVolume != cache[3])
+    if(this.usedVolume != cache[2] || this.totalVolume != cache[3] || this.remaining != cache[4])
       this.newData = true;
   }
   else
@@ -187,6 +195,7 @@ Monitor.prototype.storeCache = function(){
   cache[5] = this.extraMessage;
   cache[6] = this.newData;
   cache[7] = this.amountToPay;
+  cache[8] = this.remainingAverage;
   
   prefs.setCharPref('cache', cache.join(";"));
 }

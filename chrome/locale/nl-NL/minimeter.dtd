@@ -1,7 +1,7 @@
 <!ENTITY settings.title "Minimeter instellingen">
 <!ENTITY tab.provider "Provider">
 <!ENTITY tab.statusbar "Statusbalk">
-<!ENTITY tab.checking "Synchronisatie">
+<!ENTITY tab.checking "Miscellaneous">
 <!ENTITY label.provider "Provider">
 <!ENTITY label.username "Gebruiker">
 <!ENTITY label.password "Paswoord">
@@ -11,6 +11,7 @@
 <!ENTITY checkbox.numerical "Toon numerische informatie">
 <!ENTITY checkbox.graphical "Toon grafische meter">
 <!ENTITY checkbox.useSI "De eenheden van het Internationale systeem gebruiken">
+<!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "De grafische meter is niet nuttig als u geen limiet heeft">
 <!ENTITY label.updateTimeout "Synchroniseer elke (uren) :">
 

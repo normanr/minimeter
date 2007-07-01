@@ -6,7 +6,7 @@
 		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom", "#Chellobe:Chello", "Dommel", "#Edpnet:EDPnet", "Euphony", "Fulladsl:Full ADSL", "Mobistar", "Scarlet","Telenet"/*, "Tvcablenet"*/, "#Voo",   
 															"_France","Orange",
 															"_Canada","#Videotron:Vidéotron",
-															"_Czech Republic", "#Karneval","#Chello","#InternetExpres",
+															"_Czech Republic", "#Karneval", "#Chello", "#InternetExpres", "#Gtsnovera:GTS Novera",
 															"_New Zealand", "Xtra",
 															//"_Netherlands", "#Xs4all",
 															"_Russia", "Omsk:Omsk TeleCommunications", //"#Stream",
@@ -78,6 +78,8 @@
               document.getElementById('showmeter').checked);
           prefs.setBoolPref("useSI", 
               document.getElementById('useSI').checked);
+          prefs.setBoolPref("showRemainingAverage", 
+              document.getElementById('showRemainingAverage').checked);
           prefs.setCharPref("provider", provider.value);
           prefs.setIntPref("capacity", capacity);      
           credentials.store(
@@ -102,6 +104,7 @@
     	showtext = prefs.getBoolPref('showtext');
     	showmeter = prefs.getBoolPref('showmeter');
     	useSI = prefs.getBoolPref('useSI');
+    	showRemainingAverage = prefs.getBoolPref('showRemainingAverage');
     	provider = prefs.getCharPref('provider');
     	capacity = prefs.getIntPref('capacity');
     	
@@ -109,6 +112,7 @@
       document.getElementById('showtext').checked = showtext;
       document.getElementById('showmeter').checked = showmeter;
       document.getElementById('useSI').checked = useSI;
+      document.getElementById('showRemainingAverage').checked = showRemainingAverage;
       document.getElementById('provider').value = provider;
       
 

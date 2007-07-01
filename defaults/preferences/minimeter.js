@@ -11,3 +11,4 @@ pref("extensions.minimeter.showmeter", true);
 pref("extensions.minimeter.showtext", true);
 pref("extensions.minimeter.useSI", true);
 pref("extensions.minimeter.updateTimeout", 1);
+pref("extensions.minimeter.showRemainingAverage", false);

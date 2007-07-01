@@ -1,7 +1,7 @@
 <!ENTITY settings.title "Paramètres de Minimeter">
 <!ENTITY tab.provider "Fournisseur d'accès">
 <!ENTITY tab.statusbar "Barre d'état">
-<!ENTITY tab.checking "Mise à jour">
+<!ENTITY tab.checking "Divers">
 <!ENTITY label.provider "Fournisseur d'accès">
 <!ENTITY label.username "Nom d'utilisateur">
 <!ENTITY label.password "Mot de passe">
@@ -11,6 +11,7 @@
 <!ENTITY checkbox.numerical "Afficher les informations sous forme numérique">
 <!ENTITY checkbox.graphical "Afficher le compteur graphique">
 <!ENTITY checkbox.useSI "Utiliser les unités du Système international">
+<!ENTITY checkbox.remainingAverage "Indiquer la moyenne restante par jour">
 <!ENTITY desc.flatrate "Si vous possédez une connection illimitée le compteur graphique est inutile">
 <!ENTITY label.updateTimeout "Mettre à jour les informations toutes les (heures) :">
 

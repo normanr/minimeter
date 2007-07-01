@@ -65,7 +65,7 @@ function getInterval(endDateText, dayNum){
   }
   var endDate = new Date(yyyy,mm,dd);
   interval = Math.floor((endDate.getTime() - nowDate.getTime()) / (86400000)); // 86400000 = 24*60*60*1000
-  return interval;
+  return interval +1;
 }
 
 function isUseSI(){

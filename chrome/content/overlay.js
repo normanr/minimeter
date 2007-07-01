@@ -40,8 +40,8 @@ function loadMonitors(){
       if(m[0] == "#"){ // remove flat sign
         m = m.substr(1)
       }  
-
-      scriptinc.loadSubScript("chrome://minimeter/content/monitor/"+m+".js");
+      if(m.toLowerCase() == prefs.getCharPref('provider'))
+        scriptinc.loadSubScript("chrome://minimeter/content/monitor/"+m+".js");
     }
 
   }
@@ -104,10 +104,12 @@ function fillTooltip(tooltip){
   var rbox = document.getElementById("rateBox");
   var remainingBox = document.getElementById("remainingBox");
   var amountToPayBox = document.getElementById("amountToPayBox");
+  var remainingAverageBox = document.getElementById("remainingAverageBox");
   var error = document.getElementById("errorMessage");
   var message = document.getElementById("message");
   var remaining = document.getElementById("remaining");
   var amountToPay = document.getElementById("amountToPay");
+  var remainingAverage = document.getElementById("remainingAverage");
   var rate = document.getElementById("rate");
   var extra = document.getElementById("extra");
   var mtIcon = document.getElementById("mtIcon");
@@ -115,6 +117,7 @@ function fillTooltip(tooltip){
   var total = "";
   remainingBox.collapsed = true;
   amountToPayBox.collapsed = true;
+  remainingAverageBox.collapsed = true;
   if(monitor.state == monitor.STATE_DONE && monitor.usedVolume != null){
     total = " : " + statusbarMeter.procentLabel;
     //rate.value = monitor.usedVolume + " / " + monitor.totalVolume + " GB" ;
@@ -137,6 +140,10 @@ function fillTooltip(tooltip){
       amountToPayBox.collapsed = false;
     }
     rbox.collapsed = false;
+    if (prefs.getBoolPref('showRemainingAverage') && monitor.remainingAverage != null) {
+      remainingAverage.value = monitor.remainingAverage;
+      remainingAverageBox.collapsed = false;
+    }
   } else {
     rbox.collapsed = true;
   }
@@ -188,6 +195,7 @@ function canLogin(){
 
 function checkNow(){
   try{
+      loadMonitors();
       loadMonitor();
 			configureMonitors();
       if(canLogin()){
@@ -250,9 +258,8 @@ var myPrefObserver =
     if(aTopic != "nsPref:changed") return;
     switch (aData) {
       case "cache":
-        if(monitor != null)
-          monitor.loadCache(true);
-        break;
+        monitor.loadCache(true);
+      break;
     }
   }
 }

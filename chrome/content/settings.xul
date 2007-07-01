@@ -64,7 +64,7 @@
 
       <checkbox id="showtext" checked="true" label="&checkbox.numerical;"/>
 
-      <checkbox id="showmeter" checked="false" label="&checkbox.graphical;"/>
+      <checkbox id="showmeter" checked="true" label="&checkbox.graphical;"/>
 
 			<description id="flatratedesc" hidden="true" width="200" >&desc.flatrate;</description>
 			
@@ -83,6 +83,7 @@
       </row>
     </rows>
     </grid>
+    <checkbox id="showRemainingAverage" checked="false" label="&checkbox.remainingAverage;"/>
 	</tabpanel>
 	
 	</tabpanels>

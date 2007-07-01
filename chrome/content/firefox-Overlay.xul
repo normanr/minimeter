@@ -45,6 +45,9 @@
         <hbox id="amountToPayBox" collapsed="true">  
           <description style="padding-left: 22px; padding-top: 2px" id="amountToPay"/>
         </hbox>
+        <hbox id="remainingAverageBox" collapsed="true">  
+          <description style="padding-left: 22px; padding-top: 2px" id="remainingAverage"/>
+        </hbox>
         <hbox id="rateBox">  
           <description style="padding-left: 22px;" id="rate"/>
         </hbox>
