@@ -4,7 +4,7 @@ function Chello(username, password) {
     this.password = password;
     this.image = "chello.png";
     this.name = "Chello";
-    this.url = "https://kraken.dkm.cz/"
+    this.url = "https://registrace.upc.cz/"
 }
 
 Chello.prototype = new Monitor();
@@ -19,7 +19,7 @@ Chello.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "login="+this.username+"&pass="+this.password;
-				http_post('https://kraken.dkm.cz/', postdata,this, 2);
+				http_post('https://registrace.upc.cz/', postdata,this, 2);
 				break;
 			case 2:
 				reply = unescape(reply);

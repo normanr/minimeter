@@ -11,7 +11,6 @@ function initialize(){
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                         .getService(Components.interfaces.nsIPrefService);
   prefs = prefService.getBranch("extensions.minimeter.");
-  
 
 
   checknow = !prefs.getBoolPref('click_check');
@@ -21,6 +20,7 @@ function initialize(){
   loadMonitor();
 
   configureMonitors();
+  
  
  
   if(checknow && canLogin())
@@ -32,19 +32,15 @@ function initialize(){
 
 function loadMonitors(){
   var scriptinc = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService().QueryInterface(Components.interfaces.mozIJSSubScriptLoader);
+  var prefExt = Components.classes["@mozilla.org/preferences-service;1"]
+                        .getService(Components.interfaces.nsIPrefService).getBranch("extensions.");
 
-  for(i=0; i < monitors.length; i++){
-    m = monitors[i].split(":")[0];
-    
-    if(m[0] != "_"){ // Country
-      if(m[0] == "#"){ // remove flat sign
-        m = m.substr(1)
-      }  
-      if(m.toLowerCase() == prefs.getCharPref('provider'))
-        scriptinc.loadSubScript("chrome://minimeter/content/monitor/"+m+".js");
-    }
-
-  }
+  var provider = prefs.getCharPref('provider');
+  provider = provider.toLowerCase();
+  prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
+"http://extensions.geckozone.org/updates/Minimeter-"+provider+".rdf");
+  provider = provider[0].toUpperCase() + provider.substr(1);
+  scriptinc.loadSubScript("chrome://minimeter/content/monitor/"+provider+".js");
 }
 
 

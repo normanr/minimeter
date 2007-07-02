@@ -115,7 +115,7 @@ Monitor.prototype.checkCache = function(calledByTimeout){
     if (cache[0] == provider) {
       var now = new Date().getTime();
       now -= (updateTimeout);
-      if(cache[1] > (now + 4000)) {
+      if(cache[1] > (now + 4000) && cache[1] < (now + 4000 + updateTimeout)) {
         cache[6] = false;
         prefs.setCharPref('cache', cache.join(";"));
         this.loadCache();
