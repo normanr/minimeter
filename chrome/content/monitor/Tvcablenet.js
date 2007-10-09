@@ -73,7 +73,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
            
           this.usedVolume = volumeUsed[1].replace(",",".")*1;
           this.totalVolume = volumeQuota[1].replace(",",".")*1;
-          this.remaining = getInterval("firstDayNextMonth");
+          this.remainingDays = getInterval("firstDayNextMonth");
           this.update(true);
         }
     }

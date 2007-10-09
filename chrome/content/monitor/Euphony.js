@@ -32,7 +32,7 @@ Euphony.prototype.callback = function(step, reply) {
           var volumeUsedAllowed = regUsedAllowed.exec(reply);
           this.usedVolume = volumeUsedAllowed[1];
           this.totalVolume = volumeUsedAllowed[2];
-          this.remaining = getInterval("firstDayNextMonth");
+          this.remainingDays = getInterval("firstDayNextMonth");
           this.update(true);
         }
 		}	

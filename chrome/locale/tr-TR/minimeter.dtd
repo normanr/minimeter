@@ -11,6 +11,8 @@
 <!ENTITY checkbox.numerical "Rakamsal veri göster">
 <!ENTITY checkbox.graphical "Grafik çubuk göster">
 <!ENTITY checkbox.useSI "Use International system units">
+<!ENTITY checkbox.remainingDays "Show the remaining days before reset">
+<!ENTITY checkbox.amountToPay "Show the extra to pay">
 <!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "Eğer bağlantınız limitsiz ise grafik gösterim işlevsiz olacaktır.">
 <!ENTITY label.updateTimeout "Update the informations every (hours) :">

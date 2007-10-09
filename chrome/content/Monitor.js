@@ -4,9 +4,9 @@ function Monitor(){
   this.state = this.STATE_DONE;	
   this.errorMessage = "";
 	this.extraMessage = null;
-	this.remaining = null;
+	this.remainingDays = null;
 	this.amountToPay = null;
-	this.remainingAverage = null
+	this.remainingAverage = null;
 	this.newData = false; // is the new data different from the old one ? (for the animation)
 
 }
@@ -38,8 +38,10 @@ Monitor.prototype.notLoggedin = function(){
 	this.update(false);
 }
 
-Monitor.prototype.badLoginOrPass = function(){
-	this.errorMessage = getString("error.badLoginOrPass");
+Monitor.prototype.badLoginOrPass = function(provider){
+  this.errorMessage = getString("error.badLoginOrPass");
+  if(provider=="belgacom")
+    this.extraMessage = getString("error.badLoginOrPassBg");
 	this.update(false);
 }
 
@@ -62,8 +64,11 @@ Monitor.prototype.update = function(success) {
           
   if(success){
     this.state = this.STATE_DONE;
-    if(this.remaining != null && this.usedVolume < this.totalVolume)
-      monitor.remainingAverage = Math.round((monitor.totalVolume - monitor.usedVolume) / monitor.remaining * 1000) /1000 + monitor.measure + " " + getString("info.remainingAverage");
+    if(this.remainingDays != null && (this.totalVolume - this.usedVolume) > 0) {
+      var remainingGB = Math.floor((monitor.totalVolume - monitor.usedVolume) / monitor.remainingDays * 1000) /1000;
+      var remainingMB = Math.floor((remainingGB - Math.floor(remainingGB)) *1024);
+      monitor.remainingAverage = (remainingGB>=1 ? Math.floor(remainingGB) + monitor.measure + " " : "") + remainingMB + monitor.measureMB + " " + getString("info.remainingAverage");
+    }
     this.storeCache();
   } else {
     this.state = this.STATE_ERROR;
@@ -145,7 +150,7 @@ Monitor.prototype.loadCache = function(isNotNewWindow){
     this.usedVolume = cache[2];
     this.totalVolume = cache[3];
     if(cache[4] != '')
-      this.remaining = cache[4];
+      this.remainingDays = cache[4];
     if(cache[5] != '')
       this.extraMessage = cache[5];
     if(cache[7] != '') // 6 is newData
@@ -173,7 +178,7 @@ Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
   cache = cache.split(";");
   if(!checkCacheNewData)
   {
-    if(this.usedVolume != cache[2] || this.totalVolume != cache[3] || this.remaining != cache[4])
+    if(this.usedVolume != cache[2] || this.totalVolume != cache[3] || this.remainingDays != cache[4])
       this.newData = true;
   }
   else
@@ -191,7 +196,7 @@ Monitor.prototype.storeCache = function(){
   cache[1] = new Date().getTime();
   cache[2] = this.usedVolume;
   cache[3] = this.totalVolume;
-  cache[4] = this.remaining;
+  cache[4] = this.remainingDays;
   cache[5] = this.extraMessage;
   cache[6] = this.newData;
   cache[7] = this.amountToPay;

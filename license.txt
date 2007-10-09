@@ -21,9 +21,11 @@ the Initial Developer. All Rights Reserved.
 Contributor(s):
   Tom Germeau <tom.germeau@gmail.com>
   Thomas Bertels <tbertels@gmail.com>
+  Lukáš Drozdík <soptik.cz@seznam.cz>
   Norman Rasmussen <norman@rasmussen.co.za>
   pcjco <pcjco@yahoo.com>
   Michal Matyska <michal.matyska@gmail.com>
+  Jindřich Pozlovský <jindrich@pozlovsky.net>
   byblo <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=749>
   myster_e <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=3897>
 

@@ -64,10 +64,14 @@ function configureMonitors(){
     statusbarMeter.showText = showtext;
     statusbarMeter.showIcon = true;
     monitor.addListener(statusbarMeter);
-    if (useSI)
+    if (useSI) {
       monitor.measure = " " + getString("unitSI.GiB");
-    else
+      monitor.measureMB = " " + getString("unitSI.MiB");
+    }
+    else {
       monitor.measure = " " + getString("unit.GB");
+      monitor.measureMB = " " + getString("unit.MB");
+    }
   }
 }
 
@@ -98,12 +102,12 @@ function fillTooltip(tooltip){
   var box = document.getElementById("errorBox");
   var ebox = document.getElementById("extraBox");
   var rbox = document.getElementById("rateBox");
-  var remainingBox = document.getElementById("remainingBox");
+  var remainingDaysBox = document.getElementById("remainingDaysBox");
   var amountToPayBox = document.getElementById("amountToPayBox");
   var remainingAverageBox = document.getElementById("remainingAverageBox");
   var error = document.getElementById("errorMessage");
   var message = document.getElementById("message");
-  var remaining = document.getElementById("remaining");
+  var remainingDays = document.getElementById("remainingDays");
   var amountToPay = document.getElementById("amountToPay");
   var remainingAverage = document.getElementById("remainingAverage");
   var rate = document.getElementById("rate");
@@ -111,25 +115,25 @@ function fillTooltip(tooltip){
   var mtIcon = document.getElementById("mtIcon");
   
   var total = "";
-  remainingBox.collapsed = true;
+  remainingDaysBox.collapsed = true;
   amountToPayBox.collapsed = true;
   remainingAverageBox.collapsed = true;
   if(monitor.state == monitor.STATE_DONE && monitor.usedVolume != null){
     total = " : " + statusbarMeter.procentLabel;
     //rate.value = monitor.usedVolume + " / " + monitor.totalVolume + " GB" ;
     rate.value = statusbarMeter.textLabel;
-    if (monitor.remaining != null){
-      if (monitor.remaining > 1)
-        remaining.value = getString("info.remainingDays").replace ("%d", monitor.remaining);
+    if (prefs.getBoolPref('showRemainingDays') && monitor.remainingDays != null){
+      if (monitor.remainingDays > 1)
+        remainingDays.value = getString("info.remainingDays").replace ("%d", monitor.remainingDays);
       else
-        if (monitor.remaining == 1)
-          remaining.value = getString("info.remainingOneDay");
+        if (monitor.remainingDays == 1)
+          remainingDays.value = getString("info.remainingOneDay");
         else
-          if (monitor.remaining < 1)
-            remaining.value = getString("info.remainingLessOneDay");
-      remainingBox.collapsed = false;
+          if (monitor.remainingDays < 1)
+            remainingDays.value = getString("info.remainingLessOneDay");
+      remainingDaysBox.collapsed = false;
     }
-    if (monitor.amountToPay != null) {
+    if (prefs.getBoolPref('showAmountToPay') && monitor.amountToPay != null) {
       amountToPay.value = monitor.amountToPay;
       amountToPay.value = amountToPay.value.replace ("EUR", "€");
       amountToPay.value = amountToPay.value + " " + getString("info.amountToPay");

@@ -6,10 +6,12 @@
 <!DOCTYPE dialog SYSTEM "chrome://minimeter/locale/minimeter.dtd">
 
 <dialog
+    id="minimeter-pref-dialog"
     title="&settings.title;" 
      
     onload="initialize_settings();"
 
+    persist="screenX,screenY"
     ondialogaccept="return setOptions();"
     buttons="accept,cancel"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -32,7 +34,7 @@
       <rows>
         <row>
             <label control="provider" value="&label.provider;" />
-            <menulist id="provider" width="200" oncommand="updateForm()">
+            <menulist id="provider" width="203" sizetopopup="true" oncommand="updateForm()">
               <menupopup > 
               </menupopup>
             </menulist>
@@ -83,7 +85,12 @@
       </row>
     </rows>
     </grid>
+    <checkbox id="showRemainingDays" checked="true" label="&checkbox.remainingDays;"/>
+    
+    <checkbox id="showAmountToPay" checked="true" label="&checkbox.amountToPay;"/>
+    
     <checkbox id="showRemainingAverage" checked="false" label="&checkbox.remainingAverage;"/>
+    
 	</tabpanel>
 	
 	</tabpanels>

@@ -11,6 +11,8 @@
 <!ENTITY checkbox.numerical "Toon numerische informatie">
 <!ENTITY checkbox.graphical "Toon grafische meter">
 <!ENTITY checkbox.useSI "De eenheden van het Internationale systeem gebruiken">
+<!ENTITY checkbox.remainingDays "Show the remaining days before reset">
+<!ENTITY checkbox.amountToPay "Show the extra to pay">
 <!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "De grafische meter is niet nuttig als u geen limiet heeft">
 <!ENTITY label.updateTimeout "Synchroniseer elke (uren) :">

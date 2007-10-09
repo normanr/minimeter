@@ -14,10 +14,10 @@ Telenet.prototype = new Monitor();
  * Called when we want the meter value to be set or updated.
  * @force If true, we shouldn't use a stored value, but really go look for a new one.   
  */ 
-Telenet.prototype.check = function(/* force? */) {
+Telenet.prototype.callback = function(/* force? */) {
 
     /* Set the view in busy state */
-    this.state = this.STATE_BUSY;
+  /*  this.state = this.STATE_BUSY;
 		this.notify();
      
     /* Prepare to make a SOAP call, prepare parameters. */
@@ -58,115 +58,61 @@ Telenet.prototype.handleResponse = function(returnObject , call , status , last)
       var limits = doc.getElementsByTagName("limits");
       var totals = doc.getElementsByTagName("totalusage");
       
-      var limitsUp = limits.item(0).childNodes.item(0).textContent;
-      var limitsDown = limits.item(0).childNodes.item(1).textContent;
-      
-      var totalsUp = totals.item(0).childNodes.item(0).textContent;
-      var totalsDown = totals.item(0).childNodes.item(1).textContent;
-      
       /* Valid values. */
-      if (doc.getElementsByTagName("totalusage").length != 0) {  
+      if (totals.length != 0) {  
+      
+        //var limitsUp = limits.item(0).childNodes.item(0).textContent;
+        var limitsDown = limits.item(0).childNodes.item(0).textContent;
+        
+        //var totalsUp = totals.item(0).childNodes.item(0).textContent;
+        var totalsDown = totals.item(0).childNodes.item(0).textContent;
+      
       	  
         this.usedVolume = ((totalsDown) / 1024).toFixed(1);
         this.totalVolume = parseInt(limitsDown / 1024);
-        this.percentVolume = (this.usedVolume * 100 / this.totalVolume).toFixed(1);
+        //this.percentVolume = (this.usedVolume * 100 / this.totalVolume).toFixed(1);
+        
+        var dateEnd = doc.getElementsByTagName("usage").item(0).getAttribute("day");
+        dateEnd = dateEnd.substr(6, 2);
+        this.remainingDays = getInterval("nearestOccurence", dateEnd);
 
-        this.usedUpload = totalsUp / 1024;
-        this.totalUpload = limitsUp / 1024;
-        this.percentUpload = (this.usedUpload * 100 / this.totalUpload).toFixed(1);
+
+        //this.usedUpload = totalsUp / 1024;
+        //this.totalUpload = limitsUp / 1024;
+        //this.percentUpload = (this.usedUpload * 100 / this.totalUpload).toFixed(1);
         
-        this.status = doc.getElementsByTagName("status").item(0).textContent;
+        //this.status = doc.getElementsByTagName("status").item(0).textContent;
         
-        this.storeCache();
       }
       
       /* Service error. */
       else { 
       
-        error = doc.getElementsByTagName("status").item(0).textContent.split(":");
+        var error = doc.getElementsByTagName("status").item(0).textContent.split(":");
+        error[2] = error[2].replace(/\s/g,"");
         
-		    /* Unexpected system error. */
-		    if (error[0] == "SYSERR_00001" || error[0] == "ERRTM4TLS_00001")
-          this.errorMessage = "Unexpected system error.";
         
-        /* Invalid input */
-		    else if (error[0] == "ERRTM4TLS_00002")
-          this.errorMessage = "Invalid input.";
-        
-        /* Login does not exist. */
-		    else if (error[0] == "ERRTM4TLS_00003")
-          this.errorMessage = "Login does not exist.";
-        
-        /* Login is not active. */
-		    else if (error[0] == "ERRTM4TLS_00004")
-          this.errorMessage = "Login is not active.";
-        
-        /* Password incorrect */
-		    else if (error[0] == "ERRTM4TLS_00005")
-          this.errorMessage = "Password incorrect.";
-        
-        /* Lime limit reached. */
-        else if (error[0] == "ERRTM4TLS_00006") {
-          if (!this.loadCache())
-            this.errorMessage = "Time limit reached, no cache found (check later)";
-        }
+        /* Too much requests (more than 2) for the last 60 minutes */
+		    if (error[2] == "ERRTLMTLS_00003")
+          this.errorMessage = "Expiry time not reached, please check later.";
+          
+        /* Incorrect Login or Password */
+		    else
+		     if (error[2] == "ERRTLMTLS_00004")
+          this.badLoginOrPass();
         
         /* Another error. */
         else {
-        	alert(doc.textContent);
-          this.errorMessage = "Webservice error : "+ doc;
+          this.errorMessage = "Webservice error : " + error[4];
+          consoleDump(error[2] + " " + error[4]);
         }
       }      
     }
     
-    if (!this.errorMessage) {
+    /*if (!this.errorMessage) {
       this.extraMessage = "Upload : "+ this.percentUpload +"% ("+ (this.totalUpload - this.usedUpload).toFixed(2) +"GB left).";
-    }
+    }*/
     
     this.update (!this.errorMessage);
 }
 
-
-Telenet.prototype.loadCache = function(){
-
-    var telenetPrefService = Components.classes["@mozilla.org/preferences-service;1"]
-                          .getService(Components.interfaces.nsIPrefService);
-                          
-    var prefs = telenetPrefService.getBranch("extensions.minimeter.");
-    
-    try{cache = prefs.getCharPref("telenetCache");}catch(e){
-      /* not set yet */
-      return false;
-    }
-    
-    cache = cache.split(":");
-    if(cache.length == 7){
-      this.usedVolume = cache[0];
-      this.totalVolume = cache[1];
-      this.percentVolume = cache[2];
-      this.usedUpload = cache[3];
-      this.totalUpload = cache[4];
-      this.percentUpload = cache[5];
-      this.status = cache[6];
-      return true;
-    } else {
-      return false;
-    }
-    
-}
-
-Telenet.prototype.storeCache = function(){
-
-    var telenetPrefService = Components.classes["@mozilla.org/preferences-service;1"]
-                          .getService(Components.interfaces.nsIPrefService);
-                          
-    var prefs = telenetPrefService.getBranch("extensions.minimeter.");
-    var values = this.usedVolume 
-      + ":" + this.totalVolume 
-      + ":" + this.percentVolume 
-      + ":" + this.usedUpload 
-      + ":" + this.totalUpload 
-      + ":" + this.percentUpload 
-      + ":" + this.status;
-    prefs.setCharPref("telenetCache", values);
-}

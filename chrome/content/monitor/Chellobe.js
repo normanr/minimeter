@@ -41,7 +41,7 @@ Chellobe.prototype.callback = function(step, reply) {
             var volumeused = regused.exec(reply);
             this.usedVolume = Math.round(volumeused[1]*1000/1024)/1000;
             this.totalVolume = this.getCapacity();
-            this.remaining = getInterval("firstDayNextMonth");
+            this.remainingDays = getInterval("firstDayNextMonth");
             this.update(true);
 				}
 					

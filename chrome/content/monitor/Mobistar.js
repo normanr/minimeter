@@ -63,11 +63,11 @@ Mobistar.prototype.callback = function(step, reply) {
             this.amountToPay = amountToPay + " EUR";
           }
           var volumeAllowed = regAllowed.exec(reply);
-          this.usedVolume = volumeUsed;
-          this.totalVolume = volumeAllowed[1];
+          this.usedVolume = volumeUsed*1;
+          this.totalVolume = volumeAllowed[1]*1;
           
           dateEnd = regDateEnd.exec(reply);
-          this.remaining = getInterval("nearestOccurence", dateEnd[1]);
+          this.remainingDays = getInterval("nearestOccurence", dateEnd[1]);
           
           this.update(true);
         }

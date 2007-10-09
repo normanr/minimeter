@@ -52,7 +52,7 @@ Belcenter.prototype.callback = function(step, reply) {
             }
              this.usedVolume = volumeQuota[1];
              this.totalVolume = volumeTotal + (volumeQuota[2]*1);
-             this.remaining = getInterval("firstDayNextMonth");
+             this.remainingDays = getInterval("firstDayNextMonth");
              this.update(true);
          }
     }

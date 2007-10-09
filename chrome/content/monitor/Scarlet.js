@@ -1,6 +1,5 @@
 
 function Scarlet(username, password) {
-		this.version = "1.1";
     this.username = username;
     this.password = password;
     this.image = "scarlet.png"; // does not belong in class

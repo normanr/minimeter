@@ -39,8 +39,8 @@
           <image id="mtIcon" style="max-width: 16px; max-height: 16px;"/>
           <description style="padding-left: 2px;" id="message"/>
         </hbox>
-        <hbox id="remainingBox" collapsed="true">  
-          <description style="padding-left: 22px; padding-top: 2px" id="remaining"/>
+        <hbox id="remainingDaysBox" collapsed="true">  
+          <description style="padding-left: 22px; padding-top: 2px" id="remainingDays"/>
         </hbox>
         <hbox id="amountToPayBox" collapsed="true">  
           <description style="padding-left: 22px; padding-top: 2px" id="amountToPay"/>
@@ -51,12 +51,11 @@
         <hbox id="rateBox">  
           <description style="padding-left: 22px;" id="rate"/>
         </hbox>
-        <hbox id="extraBox">  
-          <vbox style="padding-top: 2px; " id="extra"/>
-
-        </hbox>
         <hbox id="errorBox">
           <description style="color: red" id="errorMessage"/>
+        </hbox>
+        <hbox id="extraBox">  
+          <vbox style="padding-top: 2px; " id="extra"/>
         </hbox>
     </tooltip> 
     

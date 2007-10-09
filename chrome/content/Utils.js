@@ -50,7 +50,7 @@ function getInterval(endDateText, dayNum){
       var dd = nowDate.getDate();
       var mm = nowDate.getMonth();
       var yyyy = nowDate.getFullYear();
-      if(dd > dayNum) // date dépassée, donc reset le mois suivant
+      if(dd >= dayNum) // date dépassée, donc reset le mois suivant
         mm++;
       dd = dayNum;
   }
@@ -76,6 +76,10 @@ function isUseSI(){
 
   useSI = prefs.getBoolPref('useSI');
   return (useSI);
+}
+
+function tryAgain(callback, step){
+  callback.callback(step);
 }
 
 function http_get(purl, callback, step){
@@ -205,7 +209,7 @@ function debug(va){
 function consoleDump(aMessage) {
   var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                        .getService(Components.interfaces.nsIConsoleService);
-  consoleService.logStringMessage("Minimeter: " + aMessage);
+  consoleService.logStringMessage("Minimeter : " + aMessage);
 }
 
 

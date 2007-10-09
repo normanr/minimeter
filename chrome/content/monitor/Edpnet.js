@@ -27,7 +27,7 @@ Edpnet.prototype.callback = function(step, reply) {
          var regAllowed = /<span id="lblAllowed2"><b>([0-9]*) MB<\/b><\/span>/;
         
          if(!regUsed.test(reply) || !regAllowed.test(reply)){
-           var regErrorLogin=/Invalid username or password/;
+           var regErrorLogin=/(Invalid username or password|Nom d'utilisateur et mot de passe incorrect|Incorrecte gebruikersnaam en wachtwoord)/;
            if (regErrorLogin.test(reply)) {
              this.badLoginOrPass();
              break;
@@ -64,7 +64,7 @@ Edpnet.prototype.callback = function(step, reply) {
       
          if( regDateEnd.test(reply) ){
            regDateEnd = regDateEnd.exec(reply);
-           this.remaining = getInterval("nearestOccurence", regDateEnd[1]);
+           this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
          }
          this.update(true);
     }

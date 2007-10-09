@@ -54,6 +54,9 @@ Voo.prototype.callback = function(step, reply) {
 				break;
       case 4:
         var regused=/<td align="right" width="20%">([0-9.,]*)<\/td>\s*<td align="left" width="10%">&nbsp;&nbsp;M/;
+        var regConnTypeUnPeu = /Internet Un Peu/;
+        var regConnTypeBcp = /Internet Beaucoup/;
+        var regConnTypePassio = /Internet Passionn/;
         reply = unescape(reply);
 				if (!regused.test(reply)) {
           this.notLoggedin();
@@ -63,8 +66,21 @@ Voo.prototype.callback = function(step, reply) {
           volumeused = volumeused.replace(',','.');
           volumeused = Math.round(volumeused/1024*1000)/1000;
           this.usedVolume = volumeused;
-          this.totalVolume = this.getCapacity();
-          this.remaining = getInterval("firstDayNextMonth");
+          if(regConnTypeUnPeu.test(reply)) {
+            this.totalVolume = 0.5;
+            if(this.usedVolume > this.totalVolume)
+              this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*2*100)/100 + " EUR";
+          }
+          else
+            if(regConnTypeBcp.test(reply))
+              this.totalVolume = 0;
+            else
+              if(regConnTypePassio.test(reply)) {
+                this.totalVolume = 10;
+                if(this.usedVolume > this.totalVolume)
+                  this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*100)/100 + " EUR";
+              }
+          this.remainingDays = getInterval("firstDayNextMonth");
           this.update(true);
 				}
 		}	
