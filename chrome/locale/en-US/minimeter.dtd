@@ -6,7 +6,7 @@
 <!ENTITY label.username "Username">
 <!ENTITY label.password "Password">
 
-<!ENTITY label.capacity "Capacity (GB)">
+<!ENTITY label.capacity "Capacity (GiB)">
 <!ENTITY checkbox.flatrate "Flatrate">
 <!ENTITY checkbox.numerical "Show numerical information">
 <!ENTITY checkbox.graphical "Show graphical meter">

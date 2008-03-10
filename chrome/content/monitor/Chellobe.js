@@ -1,4 +1,3 @@
-
 function Chellobe(username, password) {
     this.username = username;
     this.password = password;
@@ -25,10 +24,9 @@ Chellobe.prototype.callback = function(step, reply) {
 				var regused=/<font size="\+1">\s*([0-9]*)\s*<\/font><\/font><\/b>/;
         reply = unescape(reply);
 				if (!regused.test(reply)) {
-          var regError500=/Internal Server Error/;
           var regErrorUnknown=/1130/;
           var regErrorLogin=/1122/;
-          if (regError500.test(reply) || regErrorUnknown.test(reply)) {
+          if (regErrorUnknown.test(reply)) {
             this.errorMessage = "Le serveur de Chello est indisponible";
             this.update(false);
           }
@@ -36,7 +34,7 @@ Chellobe.prototype.callback = function(step, reply) {
             this.badLoginOrPass();
           }
           else
-            this.notLoggedin();
+            this.reportError();
 				} else {
             var volumeused = regused.exec(reply);
             this.usedVolume = Math.round(volumeused[1]*1000/1024)/1000;

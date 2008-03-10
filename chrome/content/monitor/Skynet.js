@@ -48,7 +48,7 @@ Skynet.prototype.callback = function(step, reply) {
               tryAgain(this, 2);
             }
             else
-              this.notLoggedin();
+              this.reportError();
          }
          else {
            var adrQuota = regAdrQuota.exec(reply);
@@ -121,7 +121,7 @@ Skynet.prototype.callback = function(step, reply) {
            
            
             var belgacomVP
-            try {belgacomVP = prefs.getCharPref('belgacomVP');} catch(e){belgacomVP = "-1;0;0;0;0;0"};// lastUpdateMonth;totalVP;lastShowedVP;boughtLastMonth;lastCurrentVPUsedState;VPSizeSaved
+            try {belgacomVP = minimeterprefs.getCharPref('belgacomVP');} catch(e){belgacomVP = "-1;0;0;0;0;0"};// lastUpdateMonth;totalVP;lastShowedVP;boughtLastMonth;lastCurrentVPUsedState;VPSizeSaved
             var nowMonth = new Date();
             nowMonth = nowMonth.getMonth();
             belgacomVP = belgacomVP.split(";");
@@ -147,7 +147,7 @@ Skynet.prototype.callback = function(step, reply) {
             else
               VPSize=belgacomVP[5];
             
-            prefs.setCharPref('belgacomVP', belgacomVP.join(";"));
+            minimeterprefs.setCharPref('belgacomVP', belgacomVP.join(";"));
 
 
            this.usedVolume = Math.round((volumeused*1 + currentVpUse*1 + VPSize*(belgacomVP[1] - nbofVPShowed))*1000)/1000;

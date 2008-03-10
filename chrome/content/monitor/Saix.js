@@ -28,7 +28,7 @@ Saix.prototype.callback = function(step, reply) {
 			  var reg = /<th>Combined \(Bytes\).*?<tr><td>([0-9\.]*)<\/td><td>([0-9]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td>/;
 
 			  if(!reg.test(reply)){
-					this.notLoggedin();
+					this.reportError();
 			  } else {
 			    var volume = reg.exec(reply);
 			    var sessions = volume[1];
@@ -45,6 +45,7 @@ Saix.prototype.callback = function(step, reply) {
 			    this.extraMessage = "Connected: " + sessions + " sessions, " + hours + " hours\nUp: " + up +" " + gb + ", Down: " + down +" " + gb;
 			    this.usedVolume = both;
 			    this.totalVolume = this.getCapacity();
+			    this.remainingDays = getInterval("firstDayNextMonth");
 
 			    this.update(true);	
 			  }

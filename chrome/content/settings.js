@@ -3,7 +3,7 @@
 			_ = country
 			# = custom capacity
 		*/
-		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom", "#Chellobe:Chello", "Clearwire", "Dommel", "#Edpnet:EDPnet", "Euphony", "Fulladsl:Full ADSL", "Happymany:HappyMany", "Mobistar", "Scarlet","Telenet"/*, "Tvcablenet"*/, "Voo",   
+		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom", "#Chellobe:Chello", "Clearwire", "Coditel", "Dommel", "#Edpnet:EDPnet", "#Eleven:E-leven", "Euphony", "Fulladsl:FullADSL", "Happymany:HappyMany", "Mobistar", "Scarlet", "Tele2", "Telenet"/*, "Tvcablenet"*/, "Voo",   
 															"_France","Orange","Izi:iZi",
 															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "#InternetExpres", "#Gtsnovera:GTS Novera",
@@ -19,7 +19,7 @@
 
 		
 
-    var prefs = null; 
+    var minimeterprefs = null; 
     var credentials = null;
     var obj = null;
     
@@ -33,7 +33,7 @@
 
       var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                             .getService(Components.interfaces.nsIPrefService);
-      prefs = prefService.getBranch("extensions.minimeter.");
+      minimeterprefs = prefService.getBranch("extensions.minimeter.");
       credentials = new Credentials("chrome://minimeter/");
       initOptions();
       document.getElementById("username").focus();
@@ -52,14 +52,18 @@
           
 	    		var capacity = document.getElementById('capacity').value;
 
-	    		if(document.getElementById('flatrate').checked && capacity == ""){
-	    			capacity = 0;
-	    		}
-	    		
-	    		if(!isInteger(capacity)){
-						alert(getString("error.capacityDecimal"));
-						return false;
-					}
+	    		if(document.getElementById('flatrate').checked && capacity == "") {
+            if(capacity == "")
+              capacity = 0;
+          }
+          else {
+            capacity = capacity.replace(",",".");
+            if(!parseFloat(capacity)){
+              alert(getString("error.capacityDecimal"));
+              return false;
+              capacity = parseFloat(capacity);
+            }
+          }
 					if(!document.getElementById('flatrate').checked && capacity <= 0){
 						alert(getString("error.capacityNotZero"));
 						return false;
@@ -70,22 +74,22 @@
 						return false;
 					}
 					
-          prefs.setIntPref("updateTimeout", 
+          minimeterprefs.setIntPref("updateTimeout", 
               document.getElementById('updateTimeout').value);
-          prefs.setBoolPref("showtext", 
+          minimeterprefs.setBoolPref("showtext", 
               document.getElementById('showtext').checked);
-          prefs.setBoolPref("showmeter", 
+          minimeterprefs.setBoolPref("showmeter", 
               document.getElementById('showmeter').checked);
-          prefs.setBoolPref("useSI", 
+          minimeterprefs.setBoolPref("useSI", 
               document.getElementById('useSI').checked);
-          prefs.setBoolPref("showRemainingDays", 
+          minimeterprefs.setBoolPref("showRemainingDays", 
               document.getElementById('showRemainingDays').checked);
-          prefs.setBoolPref("showAmountToPay", 
+          minimeterprefs.setBoolPref("showAmountToPay", 
               document.getElementById('showAmountToPay').checked);
-          prefs.setBoolPref("showRemainingAverage", 
+          minimeterprefs.setBoolPref("showRemainingAverage", 
               document.getElementById('showRemainingAverage').checked);
-          prefs.setCharPref("provider", provider.value);
-          prefs.setIntPref("capacity", capacity);      
+          minimeterprefs.setCharPref("provider", provider.value);
+          minimeterprefs.setCharPref("capacitychar", capacity);      
           credentials.store(
               username ,
               document.getElementById("password").value);  
@@ -104,15 +108,22 @@
     
     function initOptions()
     {
-    	updateTimeout = prefs.getIntPref('updateTimeout');
-    	showtext = prefs.getBoolPref('showtext');
-    	showmeter = prefs.getBoolPref('showmeter');
-    	useSI = prefs.getBoolPref('useSI');
-    	showRemainingDays = prefs.getBoolPref('showRemainingDays');
-    	showAmountToPay = prefs.getBoolPref('showAmountToPay');
-    	showRemainingAverage = prefs.getBoolPref('showRemainingAverage');
-    	provider = prefs.getCharPref('provider');
-    	capacity = prefs.getIntPref('capacity');
+    	updateTimeout = minimeterprefs.getIntPref('updateTimeout');
+    	showtext = minimeterprefs.getBoolPref('showtext');
+    	showmeter = minimeterprefs.getBoolPref('showmeter');
+    	useSI = minimeterprefs.getBoolPref('useSI');
+    	showRemainingDays = minimeterprefs.getBoolPref('showRemainingDays');
+    	showAmountToPay = minimeterprefs.getBoolPref('showAmountToPay');
+    	showRemainingAverage = minimeterprefs.getBoolPref('showRemainingAverage');
+    	provider = minimeterprefs.getCharPref('provider');
+      try {
+        capacity = minimeterprefs.getIntPref('capacity');
+        minimeterprefs.setCharPref('capacitychar',capacity);
+        minimeterprefs.clearUserPref('capacity');
+      }
+      catch(e) {}
+      
+      capacity = minimeterprefs.getCharPref('capacitychar');
     	
       document.getElementById('updateTimeout').value = updateTimeout;
       document.getElementById('showtext').checked = showtext;
@@ -156,7 +167,8 @@
 	    		if(!m.split(":")[1]) m = m.split(":")[0]; else m = m.split(":")[1];
 	    		isp.setAttribute( "label" , m);
 	    		isp.setAttribute( "value" , ml);
-	    		isp.setAttribute( "src" , "chrome://minimeter/content/res/" + ml + ".png");
+	    		isp.setAttribute( "src" , "chrome://minimeter/content/res/" + ml + ".png"); // < Firefox 3
+	    		isp.setAttribute( "image" , "chrome://minimeter/content/res/" + ml + ".png"); // >= Firefox 3
 	    		isp.setAttribute( "style" , "background-image: url(chrome://minimeter/content/res/" + ml + ".png) !important");
     		}
     		list.appendChild(isp);
@@ -187,18 +199,16 @@
   		}
   	}
   	
-  	
-	function isInteger(value) {
-  		return (parseInt(value) == value);
-	}
-	
+
 	function setFlatrate(val){
-		capacity = prefs.getIntPref('capacity');
+		capacity = minimeterprefs.getCharPref('capacitychar');
 		
 		var field = document.getElementById('capacity');
 		if(val) field.setAttribute("disabled", true); else field.removeAttribute("disabled");
 		if(val) field.value = ""; else field.value = capacity;
 		document.getElementById('flatrate').checked = val;
+		if(val)
+      document.getElementById('showmeter').checked = !val;
 	
 		document.getElementById('flatratedesc').hidden = !val;
 	}

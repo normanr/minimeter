@@ -33,7 +33,7 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			  var reg = /ACCOUNT HISTORY.*<td>([0-9]+):.*<td>([0-9\.]+) MB.*<td>([0-9\.]+) MB.*<td>([0-9\.]+) MB/;
 
 			  if(!reg.test(reply)){
-			    this.notLoggedin();
+			    this.reportError();
 			  } else {
 			    var volume = reg.exec(reply);
 			    var hours = volume[1];
@@ -49,6 +49,7 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			    this.extraMessage = "Connected: " + hours + " hours\nUp: " + up +" " + gb + ", Down: " + down +" " + gb;
 			    this.usedVolume = both;
 			    this.totalVolume = this.getCapacity();
+			    this.remainingDays = getInterval("firstDayNextMonth");
 
 			    this.update(true);	
 			  }

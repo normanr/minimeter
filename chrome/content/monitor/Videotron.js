@@ -32,7 +32,7 @@ Videotron.prototype.callback = function(step, reply) {
              break;
            }
            else {
-             this.notLoggedin();
+             this.reportError();
              break;
            }
          } 

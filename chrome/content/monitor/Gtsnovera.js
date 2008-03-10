@@ -35,7 +35,7 @@ Gtsnovera.prototype.callback = function(step, reply) {
 			if (reg_c.test(reply)){
 				this.callback(1,reply);
 			} else {
-				this.notLoggedin();
+				this.reportError();
 			}
 		} else {
 			var volume = reg.exec(reply);

@@ -1,6 +1,6 @@
 
 var monitor = null;
-var prefs = null;
+var minimeterprefs = null;
 var toolbarMeter = null;
 var statusbarMeter = null;
 var singleClick = true;
@@ -10,10 +10,10 @@ function initialize(){
 
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                         .getService(Components.interfaces.nsIPrefService);
-  prefs = prefService.getBranch("extensions.minimeter.");
+  minimeterprefs = prefService.getBranch("extensions.minimeter.");
 
 
-  checknow = !prefs.getBoolPref('click_check');
+  checknow = !minimeterprefs.getBoolPref('click_check');
 
   loadMonitors();
 
@@ -27,6 +27,9 @@ function initialize(){
     monitor.checkCache();
   else
     statusbarMeter.icon = monitor.image;
+    
+    myPrefObserver.register();
+
 
 }
 
@@ -35,7 +38,7 @@ function loadMonitors(){
   var prefExt = Components.classes["@mozilla.org/preferences-service;1"]
                         .getService(Components.interfaces.nsIPrefService).getBranch("extensions.");
 
-  var provider = prefs.getCharPref('provider');
+  var provider = minimeterprefs.getCharPref('provider');
   provider = provider.toLowerCase();
   prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
 "http://extensions.geckozone.org/updates/Minimeter-"+provider+".rdf");
@@ -56,9 +59,9 @@ function configureMonitors(){
   
   statusbarMeter = document.getElementById("statusbarMeter");
   if(statusbarMeter != null){
-    showtext = prefs.getBoolPref('showtext');
-    showmeter = prefs.getBoolPref('showmeter');
-    useSI = prefs.getBoolPref('useSI');
+    showtext = minimeterprefs.getBoolPref('showtext');
+    showmeter = minimeterprefs.getBoolPref('showmeter');
+    useSI = minimeterprefs.getBoolPref('useSI');
     
     statusbarMeter.showProgressmeter = showmeter;
     statusbarMeter.showText = showtext;
@@ -79,7 +82,7 @@ function configureMonitors(){
 
 function loadMonitor(){
 
-  provider = prefs.getCharPref('provider');
+  provider = minimeterprefs.getCharPref('provider');
 
   var credentials = new Credentials("chrome://minimeter/");
   var user = credentials.load();	
@@ -119,10 +122,10 @@ function fillTooltip(tooltip){
   amountToPayBox.collapsed = true;
   remainingAverageBox.collapsed = true;
   if(monitor.state == monitor.STATE_DONE && monitor.usedVolume != null){
-    total = " : " + statusbarMeter.procentLabel;
+    total = " : " + statusbarMeter.percentageLabel;
     //rate.value = monitor.usedVolume + " / " + monitor.totalVolume + " GB" ;
     rate.value = statusbarMeter.textLabel;
-    if (prefs.getBoolPref('showRemainingDays') && monitor.remainingDays != null){
+    if (minimeterprefs.getBoolPref('showRemainingDays') && monitor.remainingDays != null){
       if (monitor.remainingDays > 1)
         remainingDays.value = getString("info.remainingDays").replace ("%d", monitor.remainingDays);
       else
@@ -133,14 +136,14 @@ function fillTooltip(tooltip){
             remainingDays.value = getString("info.remainingLessOneDay");
       remainingDaysBox.collapsed = false;
     }
-    if (prefs.getBoolPref('showAmountToPay') && monitor.amountToPay != null) {
-      amountToPay.value = monitor.amountToPay;
+    if (minimeterprefs.getBoolPref('showAmountToPay') && monitor.amountToPay != '') {
+      amountToPay.value = monitor.amountToPay.replace(".",",");
       amountToPay.value = amountToPay.value.replace ("EUR", "€");
       amountToPay.value = amountToPay.value + " " + getString("info.amountToPay");
       amountToPayBox.collapsed = false;
     }
     rbox.collapsed = false;
-    if (prefs.getBoolPref('showRemainingAverage') && monitor.remainingAverage != null) {
+    if (minimeterprefs.getBoolPref('showRemainingAverage') && monitor.remainingAverage != '') {
       remainingAverage.value = monitor.remainingAverage;
       remainingAverageBox.collapsed = false;
     }
@@ -148,7 +151,7 @@ function fillTooltip(tooltip){
     rbox.collapsed = true;
   }
   
-  showtext = prefs.getBoolPref('showtext');
+  showtext = minimeterprefs.getBoolPref('showtext');
   if(showtext){
     rbox.collapsed = true;
   }
@@ -204,7 +207,7 @@ function checkNow(){
          loadPrefWindow();
       }    
   } catch(e){
-    alert(e);
+    consoleDump(e);
   }
 }
 
@@ -227,8 +230,8 @@ function loadPrefWindow(){
 
 function loadPage(){
   singleClick = false;
-  getBrowser().loadURI(monitor.url);
-
+  if (monitor.url != null)
+    getBrowser().loadURI(monitor.url);
 }
 
 function unloadObserver()
@@ -256,12 +259,41 @@ var myPrefObserver =
   observe: function(aSubject, aTopic, aData)
   {
     if(aTopic != "nsPref:changed") return;
-    switch (aData) {
-      case "cache":
-        monitor.loadCache(true);
-      break;
-    }
+    try {
+      switch (aData) {
+        case "error":
+          errorpref = minimeterprefs.getCharPref('error');
+          if(errorpref == "isit") {
+            if (monitor.state == monitor.STATE_ERROR || monitor.state == monitor.STATE_BUSY)
+              minimeterprefs.setCharPref("error", monitor.error);
+          }
+          else
+            if (errorpref != "no" && errorpref != "checking") {
+              monitor.error = errorpref;
+              monitor.errorMessage = getString("error."+errorpref);
+              monitor.state = monitor.STATE_ERROR;
+              monitor.notify();
+            }
+          break;
+        case "provider":
+          try{
+            loadMonitors();
+            loadMonitor();
+            configureMonitors();
+          } catch(ex){consoleDump(ex);}
+          //monitor.image = minimeterprefs.getCharPref('provider')+".png";
+          //document.getElementById("statusbarMeter").icon = monitor.image;
+          break;
+        case "cache":
+          if(minimeterprefs.getCharPref('error') == "no")
+            monitor.loadCache(true);
+          break;
+        case "errorExtraMessage":
+          var errorExtraMessage = minimeterprefs.getCharPref('errorExtraMessage');
+          if (errorExtraMessage != '')
+            monitor.extraMessage = getString("error."+errorExtraMessage);
+          break;
+      }
+    }catch(ex){consoleDump(ex);}
   }
 }
-
-myPrefObserver.register();

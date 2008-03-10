@@ -25,7 +25,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
         reply = unescape(reply);
         var regSessionId = /sessionId" value="(.*)" type/;
         if(!regSessionId.test(reply)){
-          this.notLoggedin();
+          this.reportError();
           break;
         }
         var valSessionId = regSessionId.exec(reply);
@@ -44,7 +44,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
         var regServiceProviderId = /serviceProviderId" value="(.*)" type/;
         var regAccountNumber = /accountNumber" value="(.*)" type/;
         if(!regSubscriberId.test(reply) || !regServiceProviderId.test(reply) || !regAccountNumber.test(reply)){
-          this.unknownError(step,this.name);
+          this.reportError(step,this.name);
           break;
         }
         var valSubscriberId = regSubscriberId.exec(reply);
@@ -61,7 +61,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
         var regUsed = /mois en cours:<\/span><\/a>[A-Za-z]*<\/td>\s*<td class="label" valign="top">&nbsp;&nbsp;&nbsp;:&nbsp;<\/td>\s*<td class="sectionTitleValue">([0-9,]*) Gb<\/td>/;
         
         if(!regQuota.test(reply) || !regUsed.test(reply)){
-          this.unknownError(step,this.name);
+          this.reportError(step,this.name);
           break;
         } 
         else {

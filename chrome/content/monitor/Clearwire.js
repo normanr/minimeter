@@ -33,7 +33,7 @@ Clearwire.prototype.callback = function(step, reply) {
             this.badLoginOrPass();
           }
           else
-            this.notLoggedin();
+            this.reportError();
 				} else {
             var volumeused = regused.exec(reply);
             var volumetotal = regtotal.exec(reply);

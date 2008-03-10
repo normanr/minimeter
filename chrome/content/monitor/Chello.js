@@ -38,7 +38,7 @@ Chello.prototype.callback = function(step, reply) {
 					var zpr2="P\u0159ijat\u00E1";
 				}
 				if(!prihlasen){
-					this.notLoggedin();
+					this.reportError();
 				} else {
 					var volume = reg.exec(reply);
 					this.extraMessage = zpr1+ " data: " + volume[2] + " GB\n" + zpr2 + " data: " + volume[4] +" GB";

@@ -29,7 +29,7 @@ Stream.prototype.callback = function(step, reply) {
 
 			  
 			  if(!reg.test(reply)){
-			     this.notLoggedin();
+			     this.reportError();
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = (volume[1]/1000).toFixed(2);

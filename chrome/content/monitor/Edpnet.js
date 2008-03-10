@@ -33,7 +33,7 @@ Edpnet.prototype.callback = function(step, reply) {
              break;
            }
            else {
-             this.notLoggedin();
+             this.reportError();
              break;
            }
          } 
@@ -46,6 +46,8 @@ Edpnet.prototype.callback = function(step, reply) {
 
            this.usedVolume = Math.round(volumeused[1]/1024*1000)/1000;
            this.totalVolume = this.getCapacity() == 10 ? volumetotal[1] /1024 : this.getCapacity();
+           if((volumetotal[1] /1024 >= 60 && volumetotal[1] /1024 <= 62) && this.getCapacity() == 10)
+             this.totalVolume = 20;
            
            if(this.usedVolume > this.totalVolume)
              this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*0.25*100)/100 + " EUR";

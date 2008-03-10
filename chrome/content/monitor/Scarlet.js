@@ -1,10 +1,15 @@
 
 function Scarlet(username, password) {
-    this.username = username;
+    this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "scarlet.png"; // does not belong in class
     this.name = "Scarlet ADSL";
     this.url = "http://customercare.scarlet.be/usage/dispatch.do";
+    this.nextCase = 2;
+    if(username.indexOf(",") > 0)
+      this.contrat = username.substr(username.indexOf(",")+1);
+    else 
+      this.nextCase = 3;
 }
 
 Scarlet.prototype = new Monitor();
@@ -27,19 +32,21 @@ Scarlet.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, 2);
+				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, this.nextCase);
 				break;
-			case 2:
-			  http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
-			  //http_get('http://www.epigoon.com/mozilla/minimeter/testing/scarlet.htm', this, 3);
+      case 2:
+        http_get('http://customercare.scarlet.be/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, 3);
+        break;
+   		case 3:
+			  http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 4);
 			  break;
-			case 3:
+			case 4:
 			  reply = unescape(reply);
 			  var total = /verbruik staat momenteel ingesteld op <b>(.*)  GB<\/b>/;
 			  var used = /<th class="digit">(.*)  ([MG])B<\/th>\s*<\/tr>\s*<\/table>/;
 			  
 			  if( !total.test(reply) || !used.test(reply) ){
-					this.notLoggedin();
+					this.reportError();
 			  } else {
           
 			    var totalValue = total.exec(reply);

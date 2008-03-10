@@ -89,11 +89,13 @@ function http_get(purl, callback, step){
   
   		if(callback != null){
   			req.onreadystatechange = function(){
-  				try{
             if (req.readyState == 4){
+              try{
+                if(req.status == 500)
+                  monitor.error = "server";
+              }catch(ex){monitor.error = "connection";}
               callback.callback(step, escape(req.responseText));
             }
-  				}catch(ex){alert(ex);}
   			}
   		}
   		
@@ -101,32 +103,40 @@ function http_get(purl, callback, step){
 		req.setRequestHeader('Cookie', 'usageConfirm=true');
 		  req.send('');	
 			
-		}catch(ex){alert(ex);}			
+		}catch(ex){consoleDump(ex);}			
 }
 
-function http_post(purl, postdata, callback, step, cookie){
+function http_post(purl, postdata, callback, step, cookie, contenttype){
 		try{
   		var req = new XMLHttpRequest();
   		
   		if(callback != null){
   			req.onreadystatechange = function(){
   				if (req.readyState == 4){
-            if (callback == "notLoggedin")
-              monitor.notLoggedin("backfrompost", escape(req.responseText));
+            try{
+              if(req.status == 500)
+                monitor.error = "server";
+            }catch(ex){monitor.error = "connection";}
+            if (callback == "reportError")
+              monitor.reportError(null, null, escape(req.responseText));
             else
-              callback.callback(step, escape(req.responseText));
+              if(callback != "errorPing")
+                callback.callback(step, escape(req.responseText));
   				}
   			}
   		}
 		
 		
 			req.open("POST", purl, true, null, null);
-			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			if(contenttype != null)
+        req.setRequestHeader('Content-Type', contenttype);
+      else
+        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			if(cookie!=null)
         req.setRequestHeader('Cookie', cookie);
 			req.send(postdata);		
 			
-		}catch(ex){alert("Error posting: " + ex);}			
+		}catch(ex){consoleDump("Error posting: " + ex);}			
 		
 }	
 
@@ -149,7 +159,7 @@ function http_auth(purl, username, password, callback, step){
 		  readAllFromSocket(httphost,80,"GET "+ path +" HTTP/1.0\nHost: " + httphost + auth + "\n\n",listener);
 			
 			
-		}catch(ex){alert(ex);}			
+		}catch(ex){consoleDump(ex);}			
 }
 
 function encode64(str) {
@@ -206,7 +216,7 @@ function debug(va){
     			res += list + ", ";
 	    }
 
-        alert(res);
+        consoleDump(res);
 }
 
 function consoleDump(aMessage) {

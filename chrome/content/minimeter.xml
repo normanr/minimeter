@@ -89,13 +89,13 @@
     </property>
 
 		
-    <property name="procentLabel"> 
+    <property name="percentageLabel"> 
       <getter>
       <![CDATA[
 	      	if(monitor.totalVolume <= 0){
 	      		return "";
 	      	} else {
-	        	return  ( monitor.usedVolume / monitor.totalVolume * 100 ).toFixed(2) + "%";
+	        	return (Math.round(monitor.usedVolume / monitor.totalVolume * 10000)/100).toLocaleString() + "%";
 	        }
     		]]>
       </getter>
@@ -106,9 +106,9 @@
       <getter>
       <![CDATA[
 	      	if(monitor.totalVolume <= 0){
-	      		return " " + monitor.usedVolume + monitor.measure;
+	      		return " " + parseFloat(monitor.usedVolume).toLocaleString() + monitor.measure;
 	      	} else {
-	        	return " " + monitor.usedVolume + " / " + monitor.totalVolume + monitor.measure ;
+	        	return " " + parseFloat(monitor.usedVolume).toLocaleString() + " / " + parseFloat(monitor.totalVolume).toLocaleString() + monitor.measure ;
 	        }
     		]]>
       </getter>

@@ -36,16 +36,23 @@ Izi.prototype.callback = function(step, reply) {
 				var regAllowed = /97.647058823529px;">([0-9]*) Go<\/div>/;
 				var regDateEnd = /du ([0-9]*)[0-9\/]* au [0-9\/]*/;
 				if (!regused.test(reply) || !regAllowed.test(reply))
-          this.notLoggedin();
+          this.reportError();
 			  else {
           var volumeused = regused.exec(reply);
           var volumetotal = regAllowed.exec(reply);
           this.usedVolume = volumeused[1];
           this.totalVolume = volumetotal[1];
-          if( regDateEnd.test(reply) ){
+          if (regDateEnd.test(reply)){
             regDateEnd = regDateEnd.exec(reply);
             this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
           }
+          if (this.usedVolume > this.totalVolume) {
+            this.amountToPay = Math.ceil(this.usedVolume - this.totalVolume)*3;
+            if (this.amountToPay > 30)
+              this.amountToPay = 30;
+            this.amountToPay = this.amountToPay + " EUR";
+          }
+         
           this.update(true);
 				}
 					

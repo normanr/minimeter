@@ -32,7 +32,7 @@ Happymany.prototype.callback = function(step, reply) {
          }
          else {
            if(!regAdrQuota.test(reply)) {
-             this.notLoggedin();
+             this.reportError();
              break;
            }
            else {
@@ -50,7 +50,7 @@ Happymany.prototype.callback = function(step, reply) {
         
         
          if(!regVolume.test(reply)){
-             this.unknownError(step,this.name);
+             this.reportError(step,this.name);
              break;
            }
          else {

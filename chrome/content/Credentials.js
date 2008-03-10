@@ -31,12 +31,14 @@ Credentials.prototype.store = function(username, password) {
                                                    "init");
       var myLoginManager = CC_loginManager
                             .getService(Components.interfaces.nsILoginManager);
-      var loginInfo = new nsLoginInfo(this.url, this.url, null,
-                            username, password, null, null);
+      if (password == '') // workaround for empty password limitation
+        password = ' ';
+      var loginInfo = new nsLoginInfo(this.url, this.url, null, username, password, '', '');
+//new nsLoginInfo(hostname, formSubmitURL, httprealm, username, password,usernameField, passwordField);
+//                 !=null      null?          null?    !=null    !=null
+//(hostname!=null && username!=null && password!=null) && httprealm!=null || formSubmitURL!=null 
       try {
         var logins = myLoginManager.findLogins({}, this.url, this.url, null);
-        var userName = logins[0].username;
-        var userPass = logins[0].password;
         myLoginManager.removeLogin(logins[0]);
       } catch (e) {}
       myLoginManager.addLogin(loginInfo);
@@ -47,8 +49,8 @@ Credentials.prototype.load = function() {
 
     var CC_passwordManager = Components.classes["@mozilla.org/passwordmanager;1"];
     var CC_loginManager = Components.classes["@mozilla.org/login-manager;1"];
-    var userName;
-    var userPass;
+    var userName = '';
+    var userPass = '';
     
     if (CC_passwordManager != null) { // < Firefox 3
       var passwordManager = CC_passwordManager
@@ -67,9 +69,28 @@ Credentials.prototype.load = function() {
     else if (CC_loginManager!= null) { // Firefox 3 and above
       var myLoginManager = CC_loginManager
                            .getService(Components.interfaces.nsILoginManager);
-      var logins = myLoginManager.findLogins({}, this.url, this.url, null);
-      userName = logins[0].username;
-      userPass = logins[0].password;
+      var logins = myLoginManager.findLogins({}, this.url, null, this.url);
+      if (logins.length > 0) { // upgrade from old credentials
+        userName = logins[0].username;
+        userPass = logins[0].password;
+        var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
+                                                     Components.interfaces.nsILoginInfo,
+                                                     "init");
+        var loginInfo = new nsLoginInfo(this.url, this.url, null,
+                            userName, userPass, '', '');
+        myLoginManager.removeLogin(logins[0]);
+        myLoginManager.addLogin(loginInfo);
+      }
+      else {
+        logins = myLoginManager.findLogins({}, this.url, this.url, null);
+        if (logins.length > 0) {
+          userName = logins[0].username;
+          userPass = logins[0].password;
+          if (userPass == ' ') // workaround for empty password limitation
+            userPass = '';
+        }
+      }
+      
     }
 
     return {username:userName, password:userPass};

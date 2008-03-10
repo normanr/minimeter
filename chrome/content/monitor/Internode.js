@@ -27,7 +27,7 @@ Internode.prototype.callback = function(step, reply) {
 			  var reg = /([0-9\.]+) ([0-9]+) ([0-9\/]+)/;
 
 			  if(!reg.test(reply)){
-					this.notLoggedin();
+					this.reportError();
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = (volume[1]/1000).toFixed(2);

@@ -1,6 +1,4 @@
-/**
- * Class for checking parameter bandwidth use. 
- */ 
+
 function Telenet(username, password) {
     this.username = username;
     this.password = password;
@@ -10,109 +8,67 @@ function Telenet(username, password) {
 
 Telenet.prototype = new Monitor();
 
-/**
- * Called when we want the meter value to be set or updated.
- * @force If true, we shouldn't use a stored value, but really go look for a new one.   
- */ 
-Telenet.prototype.callback = function(/* force? */) {
-
-    /* Set the view in busy state */
-  /*  this.state = this.STATE_BUSY;
-		this.notify();
-     
-    /* Prepare to make a SOAP call, prepare parameters. */
-    var name = new SOAPParameter();
-    name.name = "string";
-    name.value = this.username;
-    var password = new SOAPParameter();
-    password.name = "string0";
-    password.value = this.password;
-    /* Make an async SOAP call to Telenet. */
-    var mySOAPCall = new SOAPCall();
-    //mySOAPCall.transportURI = "https://telemeter4tools.telenet.be/TelemeterService";
-    mySOAPCall.transportURI = "https://telemeter4tools.services.telenet.be/TelemeterService";
-    mySOAPCall.encode(0, "getUsage", "partns", 0, null, 2, new Array(name, password) );
-    var returnObject = mySOAPCall.asyncInvoke (this);
-}
-
-/**
- * Handles the SOAP response from Telenet. 
- */ 
-Telenet.prototype.handleResponse = function(returnObject , call , status , last) {
-
+Telenet.prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
-     
-    if(returnObject.fault) {
-    
-      this.errorMessage = "A SOAP error occured: " + returnObject.fault.faultString;
-      this.update(false);
-      
-    } else {
-    
-      var responseXml = returnObject.getParameters(false, {})[0].value;
-      var parser = new DOMParser();
-      var doc = parser.parseFromString(responseXml, "text/xml");
-      
-      var limits = doc.getElementsByTagName("limits");
-      var totals = doc.getElementsByTagName("totalusage");
-      
-      /* Valid values. */
-      if (totals.length != 0) {  
-      
-        //var limitsUp = limits.item(0).childNodes.item(0).textContent;
-        var limitsDown = limits.item(0).childNodes.item(0).textContent;
-        
-        //var totalsUp = totals.item(0).childNodes.item(0).textContent;
-        var totalsDown = totals.item(0).childNodes.item(0).textContent;
-      
-      	  
-        this.usedVolume = ((totalsDown) / 1024).toFixed(1);
-        this.totalVolume = parseInt(limitsDown / 1024);
-        //this.percentVolume = (this.usedVolume * 100 / this.totalVolume).toFixed(1);
-        
-        var dateEnd = doc.getElementsByTagName("usage").item(0).getAttribute("day");
-        dateEnd = dateEnd.substr(6, 2);
-        this.remainingDays = getInterval("nearestOccurence", dateEnd);
 
-
-        //this.usedUpload = totalsUp / 1024;
-        //this.totalUpload = limitsUp / 1024;
-        //this.percentUpload = (this.usedUpload * 100 / this.totalUpload).toFixed(1);
+		switch(step)
+		{
+			default:
+			case 1:
+        var postdata = '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:enc="http://schemas.xmlsoap.org/soap/encoding/" env:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xs="http://www.w3.org/1999/XMLSchema" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"><env:Header/><env:Body><getUsage xmlns="partns"><string xsi:type="xs:string">'+this.username+'</string><string0 xsi:type="xs:string">'+this.password+'</string0></getUsage></env:Body></env:Envelope>';
+        http_post('https://telemeter4tools.services.telenet.be/TelemeterService', postdata,this, 2, null, "text/xml; charset=UTF-8");
+				break;
+      case 2:
+        reply = unescape(reply);
         
-        //this.status = doc.getElementsByTagName("status").item(0).textContent;
+        reply = reply.replace(/&lt;/g,"<");
+        reply = reply.replace(/&gt;/g,">");
         
-      }
-      
-      /* Service error. */
-      else { 
-      
-        var error = doc.getElementsByTagName("status").item(0).textContent.split(":");
-        error[2] = error[2].replace(/\s/g,"");
+        var regAllowed = /<ns1:limits><ns1:max-up>([0-9]*)<\/ns1:max-up>/;
+        var regUsed = /<ns1:totalusage><ns1:up>([0-9.]*)<\/ns1:up>/;
+        var regDateEnd = /<ns1:usage day="([0-9]*)">/;
+        var regError = /<ns1:status>([^µ]*)<\/ns1:status>/;
         
+        var errorMessage = regError.exec(reply);
         
-        /* Too much requests (more than 2) for the last 60 minutes */
-		    if (error[2] == "ERRTLMTLS_00003")
-          this.errorMessage = "Expiry time not reached, please check later.";
+        if (errorMessage[1] == "OK") {
+        
+          var volumeused = regUsed.exec(reply);
+          var volumetotal = regAllowed.exec(reply);
+          var dateEnd = regDateEnd.exec(reply);
           
-        /* Incorrect Login or Password */
-		    else
-		     if (error[2] == "ERRTLMTLS_00004")
-          this.badLoginOrPass();
-        
-        /* Another error. */
-        else {
-          this.errorMessage = "Webservice error : " + error[4];
-          consoleDump(error[2] + " " + error[4]);
+          this.totalVolume = Math.round(volumetotal[1]/1024*1000)/1000;
+          this.usedVolume = Math.round(volumeused[1]/1024*1000)/1000;
+          
+          dateEnd = dateEnd[1].substr(6, 2);
+          this.remainingDays = getInterval("nearestOccurence", dateEnd);
         }
-      }      
-    }
-    
-    /*if (!this.errorMessage) {
-      this.extraMessage = "Upload : "+ this.percentUpload +"% ("+ (this.totalUpload - this.usedUpload).toFixed(2) +"GB left).";
-    }*/
-    
-    this.update (!this.errorMessage);
+        
+        /* Service error. */
+        else {
+        
+          errorMessage = errorMessage[1].split(":");
+          errorMessage[2] = errorMessage[2].replace(/\s/g,"");
+          
+          
+          /* Too much requests (more than 2) for the last 60 minutes */
+          if (errorMessage[2] == "ERRTLMTLS_00003")
+            this.errorMessage = "Expiry time not reached, please check later.";
+            
+          /* Incorrect Login or Password */
+          else
+           if (errorMessage[2] == "ERRTLMTLS_00004")
+            this.badLoginOrPass();
+          
+          /* Another error. */
+          else {
+            this.errorMessage = "Webservice error : " + errorMessage[4];
+            consoleDump(errorMessage[2] + " " + errorMessage[4]);
+          }
+        }      
+      
+        this.update (!this.errorMessage);
+		}
 }
-
