@@ -90,6 +90,10 @@ Monitor.prototype.badLoginOrPass = function(provider){
     this.extraMessage = getString("error.badLoginOrPassBg");
     minimeterprefs.setCharPref("errorExtraMessage", "badLoginOrPassBg");
   }
+  else if (provider=="edpnet") {
+    this.extraMessage = getString("error.badLoginOrPassEd");
+    minimeterprefs.setCharPref("errorExtraMessage", "badLoginOrPassEd");
+  }
 	this.update(false);
 }
 
