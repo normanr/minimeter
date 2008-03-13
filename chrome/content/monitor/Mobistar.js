@@ -4,7 +4,7 @@ function Mobistar(username, password) {
     this.password = password;
     this.image = "mobistar.png";
     this.name = "Mobistar";
-    this.url = "http://www.mobistar.be/www/showPage?aWebcURL=09_ApplicationInformation/01_Descriptions/info_conso.xml";
+    this.url = "http://partners.mobistar.be/conso-adsl-logged/index.cfm?lg=FR";
 }
 
 Mobistar.prototype = new Monitor();
@@ -34,15 +34,15 @@ Mobistar.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        http_get("http://www.mobistar.be/www/showPage?aWebcURL=09_ApplicationInformation/01_Descriptions/info_conso.xml", this, 3);
+        http_get("http://partners.mobistar.be/conso-adsl-logged/index.cfm?lg=FR", this, 3);
         break;
 			case 3:
-				var regUsedMB=/Vous avez consomm[\w&;]*\s*([0-9.]*) MB/;
-				var regUsedGB=/Vous avez consomm[\w&;]*\s*([0-9.]*) GB/;
+				var regUsedMB=/Vous avez consommé <strong>\s*([0-9.]*) MB/;
+				var regUsedGB=/Vous avez consommé <strong>\s*([0-9.]*) GB/;
 				var regUsedExceeded =/<strong>([0-9.]*) GB<\/strong>/;
 				var regAmountToPay=/<strong>([0-9.]*)[\w&;]*EUR<\/strong>/;
 				var regAllowed=/([0-9]*) GB./;
-				var regDateEnd=/du[\w&;]*\s*([0-9]*)\//; // (17)/06/2007
+				var regDateEnd=/au ([0-9]*)/; // (17)/06/2007
         reply = unescape(reply);
 			
         if((!regUsedMB.test(reply) && !regUsedGB.test(reply) && !regUsedExceeded.test(reply)) || !regAllowed.test(reply)){
@@ -63,16 +63,20 @@ Mobistar.prototype.callback = function(step, reply) {
           else {
             volumeUsed = regUsedExceeded.exec(reply);
             volumeUsed = volumeUsed[1];
-            amountToPay = regAmountToPay.exec(reply);
-            amountToPay = amountToPay[1];
-            this.amountToPay = amountToPay + " EUR";
+            if(regAmountToPay.test(reply)) {
+              amountToPay = regAmountToPay.exec(reply);
+              amountToPay = amountToPay[1];
+              this.amountToPay = amountToPay + " EUR";
+            }
           }
           var volumeAllowed = regAllowed.exec(reply);
           this.usedVolume = volumeUsed*1;
           this.totalVolume = volumeAllowed[1]*1;
           
-          dateEnd = regDateEnd.exec(reply);
-          this.remainingDays = getInterval("nearestOccurence", dateEnd[1]);
+          if(regDateEnd.test(reply)) {
+            dateEnd = regDateEnd.exec(reply);
+            this.remainingDays = getInterval("nearestOccurence", dateEnd[1]);
+          }
           
           this.update(true);
         }
