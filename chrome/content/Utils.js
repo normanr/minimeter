@@ -94,6 +94,8 @@ function http_get(purl, callback, step){
                 if(req.status == 500)
                   monitor.error = "server";
               }catch(ex){monitor.error = "connection";}
+              if (req.responseText == '')
+                monitor.error = "connection";
               callback.callback(step, escape(req.responseText));
             }
   			}
@@ -117,6 +119,8 @@ function http_post(purl, postdata, callback, step, cookie, contenttype){
               if(req.status == 500)
                 monitor.error = "server";
             }catch(ex){monitor.error = "connection";}
+            if (req.responseText == '')
+              monitor.error = "connection";
             if (callback == "reportError")
               monitor.reportError(null, null, escape(req.responseText));
             else

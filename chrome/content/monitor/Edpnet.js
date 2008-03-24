@@ -1,5 +1,5 @@
 function Edpnet(username, password) {
-    this.username = username;
+    this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "edpnet.png"; // does not belong in class
     this.name = "EDPnet";
@@ -94,8 +94,8 @@ Edpnet.prototype.callback = function(step, reply) {
           volumetotal = volumetotal*1 + bonus*1;
         }
 
-        this.usedVolume = (volumeused/1024).toFixed(3);
-        this.totalVolume = (volumetotal/1024).toFixed(3);
+        this.usedVolume = (volumeused/1024).toFixed(3)*1;
+        this.totalVolume = (volumetotal/1024).toFixed(3)*1;
         
         if(this.usedVolume > this.totalVolume)
           this.amountToPay = (Math.ceil(this.usedVolume - this.totalVolume)*0.25).toFixed(2) + " EUR";
