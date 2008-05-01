@@ -90,9 +90,9 @@ function http_get(purl, callback, step){
   		if(callback != null){
   			req.onreadystatechange = function(){
   				try{
-  				if (req.readyState == 4){
-  					callback.callback(step, escape(req.responseText));
-  				}
+            if (req.readyState == 4){
+              callback.callback(step, escape(req.responseText));
+            }
   				}catch(ex){alert(ex);}
   			}
   		}
@@ -111,7 +111,10 @@ function http_post(purl, postdata, callback, step, cookie){
   		if(callback != null){
   			req.onreadystatechange = function(){
   				if (req.readyState == 4){
-  					callback.callback(step, escape(req.responseText));
+            if (callback == "notLoggedin")
+              monitor.notLoggedin("backfrompost", escape(req.responseText));
+            else
+              callback.callback(step, escape(req.responseText));
   				}
   			}
   		}

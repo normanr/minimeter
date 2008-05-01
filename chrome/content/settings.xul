@@ -50,7 +50,7 @@
         <row id="capacityrow">
           <label control="capacity" value="&label.capacity;"/>
           <hbox>
-					<textbox id="capacity" style="max-width: 40px" maxlength="2" value=""/>
+					<textbox id="capacity" style="max-width: 3em" maxlength="3" value=""/>
 					<checkbox id="flatrate" checked="false" label="&checkbox.flatrate;" oncommand="setFlatrate(this.checked)"/>
 					</hbox>
         </row>

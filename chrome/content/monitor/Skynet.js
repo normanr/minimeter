@@ -48,7 +48,7 @@ Skynet.prototype.callback = function(step, reply) {
               tryAgain(this, 2);
             }
             else
-              this.unknownError(step,this.name);
+              this.notLoggedin();
          }
          else {
            var adrQuota = regAdrQuota.exec(reply);

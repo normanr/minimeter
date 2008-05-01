@@ -34,7 +34,7 @@ Belcenter.prototype.callback = function(step, reply) {
              break;
            }
            else {
-             this.unknownError(step,this.name);
+             this.notLoggedin();
              break;
            }
          } 

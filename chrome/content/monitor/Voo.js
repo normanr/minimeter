@@ -34,7 +34,7 @@ Voo.prototype.callback = function(step, reply) {
           this.update(false);
         }
         else if (regErrorUnknown.test(reply)) {
-          this.unknownError(step,this.name);
+          this.notLoggedin();
         }
         else {
         var postdata = "hMenu=equip";

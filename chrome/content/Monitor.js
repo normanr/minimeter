@@ -17,6 +17,7 @@ Monitor.prototype.STATE_DONE = 0;
 Monitor.prototype.STATE_ABORT = 3;
 
 Monitor.prototype.check = function() { // override default action
+  this.extraMessage = "";
   this.state = this.STATE_BUSY;
   this.notify();
   this.newData = true;
@@ -33,9 +34,19 @@ Monitor.prototype.getCapacity = function(){
 	return capacity;
 }
 
-Monitor.prototype.notLoggedin = function(){
-	this.errorMessage = getString("error.login");
-	this.update(false);
+Monitor.prototype.notLoggedin = function(fromwhere, reply){
+  if (fromwhere == "backfrompost") {
+    reply = unescape(reply);
+    var regtestconnect = /script/;
+    if (regtestconnect.test(reply))
+      this.errorMessage = getString("error.unknownError");
+    else
+      this.errorMessage = getString("error.connection");
+    this.update(false);
+  }
+  else {
+    http_post("http://www.google.com", "dsfsdgsdgdsgg", "notLoggedin");
+  }
 }
 
 Monitor.prototype.badLoginOrPass = function(provider){

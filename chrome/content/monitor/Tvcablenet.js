@@ -25,7 +25,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
         reply = unescape(reply);
         var regSessionId = /sessionId" value="(.*)" type/;
         if(!regSessionId.test(reply)){
-          this.unknownError(step,this.name);
+          this.notLoggedin();
           break;
         }
         var valSessionId = regSessionId.exec(reply);

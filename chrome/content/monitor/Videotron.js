@@ -23,7 +23,7 @@ Videotron.prototype.callback = function(step, reply) {
           
        case 2:
          reply = unescape(reply);
-         var regDateAndUsed = /<tbody>\s*<tr>\s*<td nowrap="nowrap">([0-9]*)-([0-9]*)-([0-9]*) au<br \/>[0-9-]*<\/td>\s*<td width="10"><\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>/;
+         var regDateAndUsed = /<tbody>\s*<tr>\s*<td nowrap="nowrap">([0-9]*)-([0-9]*)-([0-9]*) (au|to)<br \/>[0-9-]*<\/td>\s*<td width="10"><\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>/;
         
          if(!regDateAndUsed.test(reply)){
            var regErrorLogin=/Assurez-vous d'avoir bien inscrit votre nom d'utilisateur Internet/;
@@ -32,7 +32,7 @@ Videotron.prototype.callback = function(step, reply) {
              break;
            }
            else {
-             this.unknownError(step,this.name);
+             this.notLoggedin();
              break;
            }
          } 
@@ -41,7 +41,7 @@ Videotron.prototype.callback = function(step, reply) {
             
            volumeused = regDateAndUsed.exec(reply);
 
-           this.usedVolume = Math.round((volumeused[4] /1024)*1000)/1000;
+           this.usedVolume = Math.round((volumeused[5] /1024)*1000)/1000;
            this.totalVolume = this.getCapacity();
          }
          this.remainingDays = getInterval(volumeused[3]+"/"+volumeused[2]+"/"+volumeused[1]);

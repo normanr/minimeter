@@ -32,7 +32,7 @@ Happymany.prototype.callback = function(step, reply) {
          }
          else {
            if(!regAdrQuota.test(reply)) {
-             this.unknownError(step,this.name);
+             this.notLoggedin();
              break;
            }
            else {

@@ -45,7 +45,7 @@ Dommel.prototype.callback = function(step, reply) {
       var servidValue = servid.exec(reply);
       var client_idValue = client_id.exec(reply);
       if( !servid.test(reply) || !client_id.test(reply) ){
-        this.unknownError(step,this.name);
+        this.notLoggedin();
       } else {
         var servidValue = servid.exec(reply);
         var client_idValue = client_id.exec(reply);
