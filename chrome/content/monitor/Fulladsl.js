@@ -3,7 +3,7 @@ function Fulladsl(username, password) {
     this.username = (username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username).toLowerCase();
     this.password = password;
     this.image = "fulladsl.png"; // does not belong in class
-    this.name = "FullADSL";
+    this.name = "Full ADSL";
     this.url = "http://myaccount.fulladsl.be/Beheer/Datavolume/Index.aspx"
 }
 
@@ -19,8 +19,8 @@ Fulladsl.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				var postdata = "login="+this.username+"&password="+this.password;
-				http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx?c=login', postdata,this, 2);
+				var postdata = "ctl00%24cphWhiteLabel%24whIndex%24lgBeheren%24UserName="+this.username+"&ctl00%24cphWhiteLabel%24whIndex%24lgBeheren%24Password="+this.password;
+				http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx', postdata,this, 2);
 				break;
 			case 2:
 				http_get('http://myaccount.fulladsl.be/Beheer/Datavolume/Index.aspx', this, 3);
@@ -30,7 +30,7 @@ Fulladsl.prototype.callback = function(step, reply) {
 			  var reg = /\>([0-9,]+) Gb \/ ([0-9,]+) Gb<\/span><\/td>/;
 
 			  if(!reg.test(reply)){
-					this.reportError();
+					this.notLoggedin();
 			  } else {
 			  
 			    var volume = reg.exec(reply);
