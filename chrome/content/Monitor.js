@@ -35,8 +35,9 @@ Monitor.prototype.abort = function(){
 }
 
 Monitor.prototype.getCapacity = function(){
+	var capacity;
   try {
-    var capacity = minimeterprefs.getIntPref('capacity');
+    capacity = minimeterprefs.getIntPref('capacity');
     minimeterprefs.setCharPref('capacitychar',capacity);
     minimeterprefs.clearUserPref('capacity');
   }
@@ -165,7 +166,11 @@ Monitor.prototype.notify = function(){
 
 Monitor.prototype.checkCache = function(calledByTimeout){
   updateTimeout = minimeterprefs.getIntPref('updateTimeout');
-  updateTimeout = updateTimeout * 1000 * 3600;
+  if (updateTimeout < 60) {
+		updateTimeout = updateTimeout * 3600;
+		minimeterprefs.setIntPref('updateTimeout', updateTimeout);
+  }
+  updateTimeout = updateTimeout * 1000;
   var errorpref = minimeterprefs.getCharPref('error');
   if(errorpref != "no") {
     if(calledByTimeout != "error") {

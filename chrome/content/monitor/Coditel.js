@@ -3,7 +3,7 @@ function Coditel(username, password) {
     this.password = password;
     this.image = "coditel.png"; // does not belong in class
     this.name = "Coditel";
-    this.url = "http://www.coditel.net/FRcm_counters.asp?ESN="+this.username+"&action=CheckESN&SubmitButton=Requête";
+    this.url = "http://www.coditel.be/conso.html";
 }
 
 Coditel.prototype = new Monitor();
@@ -16,28 +16,38 @@ Coditel.prototype.callback = function(step, reply) {
 
     switch(step)
     {
-       default:
-       case 1:
-          http_get("http://www.coditel.net/FRcm_counters.asp?ESN="+this.username+"&action=CheckESN&SubmitButton=Requête", this, 2);
-          break;
+      default:
+      case 1:
+        var postdata = "mac="+this.username;
+        http_post("http://www.coditel.be/conso.html", postdata, this, 2);
+        break;
           
-       case 2:
-         reply = unescape(reply);
-         var regUsed = /ce mois : ([0-9,]*) GBytes<\/b><br><hr width="80%">/;
+      case 2:
+        reply = unescape(reply);
+        var regUsedTot = /<td>([0-9.]*) \/ ([0-9]*) GBytes\s*<\/tr>/;
         
-         if(!regUsed.test(reply)){
-           this.reportError();
-           break;
-         } 
-         else {
-           var volumeused = 0;
-            
-           volumeused = regUsed.exec(reply);
+        if (!regUsedTot.test(reply)){
+          var regErrorLogin=/Not Found|Format Incorrect/;
+          if (regErrorLogin.test(reply))
+            this.badLoginOrPass();
+          else
+            this.reportError();
+          break;
+        }
+        else {
+          var volumeusedtot = regUsedTot.exec(reply);
 
-           this.usedVolume = volumeused[1].replace(",",".")*1;
-           this.remainingDays = getInterval("firstDayNextMonth");
-         }
-         this.update(true);
+          this.usedVolume = volumeusedtot[1]*1;
+          this.totalVolume = volumeusedtot[2]*1;
+          this.remainingDays = getInterval("firstDayNextMonth");
+          if (this.usedVolume > this.totalVolume) {
+            if (this.totalVolume == 3)
+              this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*2*100)/100 + " EUR";
+            else
+              this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*0.5*100)/100 + " EUR";
+          }
+          this.update(true);
+        }
     }
 }
 

@@ -75,7 +75,7 @@
 					}
 					
           minimeterprefs.setIntPref("updateTimeout", 
-              document.getElementById('updateTimeout').value);
+              Math.round(document.getElementById('updateTimeout').value.replace(",",".") *10) /10 * 3600);
           minimeterprefs.setBoolPref("showtext", 
               document.getElementById('showtext').checked);
           minimeterprefs.setBoolPref("showmeter", 
@@ -125,7 +125,7 @@
       
       capacity = minimeterprefs.getCharPref('capacitychar');
     	
-      document.getElementById('updateTimeout').value = updateTimeout;
+      document.getElementById('updateTimeout').value = Math.round(updateTimeout /3600 *10)/10;
       document.getElementById('showtext').checked = showtext;
       document.getElementById('showmeter').checked = showmeter;
       document.getElementById('useSI').checked = useSI;

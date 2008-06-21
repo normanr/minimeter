@@ -95,7 +95,14 @@
 	      	if(monitor.totalVolume <= 0){
 	      		return "";
 	      	} else {
-	        	return (Math.round(monitor.usedVolume / monitor.totalVolume * 10000)/100).toLocaleString() + "%";
+						var remaining = ""
+						if (monitor.usedVolume < monitor.totalVolume) {
+							
+							remaining = (Math.round((monitor.totalVolume - monitor.usedVolume)*1000)/1000);
+							remainingloc = remaining.toLocaleString();
+							remaining = " (" + remainingloc + monitor.measure + " " + (remaining >= 2 ? monitor.remainings : monitor.remaining) + ")";
+						}
+	        	return (Math.round(monitor.usedVolume / monitor.totalVolume * 10000)/100).toLocaleString() + "%" + remaining;
 	        }
     		]]>
       </getter>

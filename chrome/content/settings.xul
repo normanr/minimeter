@@ -80,7 +80,7 @@
       <row>
         <label control="updateTimeout" value="&label.updateTimeout;"/>
       <hbox>
-        <textbox id="updateTimeout" style="max-width: 2em" value=""/>
+        <textbox id="updateTimeout" style="max-width: 3em" maxlength="3" value=""/>
       </hbox>
       </row>
     </rows>

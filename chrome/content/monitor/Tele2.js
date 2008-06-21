@@ -42,7 +42,7 @@ Tele2.prototype.callback = function(step, reply) {
           
       case 4:
         reply = unescape(reply);
-        var regused=/<th class="totals">([0-9, ]*) MB<\/th>/;
+        var regused=/<th class="totals">&nbsp;&nbsp;([0-9, ]*) MB<\/th>/;
         var regDateEnd = /<td>([0-9]*)[0-9\/]*<\/td>/;
         if (!regDateEnd.test(reply)) {
           this.reportError();

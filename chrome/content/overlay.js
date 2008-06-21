@@ -75,6 +75,14 @@ function configureMonitors(){
       monitor.measure = " " + getString("unit.GB");
       monitor.measureMB = " " + getString("unit.MB");
     }
+    try {
+			monitor.remaining = getString("info.remaining");
+			monitor.remainings = getString("info.remainings");
+    }
+    catch(e) {
+      monitor.remaining = "remaining";
+      monitor.remainings = "remaining";
+    }
   }
 }
 
@@ -231,7 +239,7 @@ function loadPrefWindow(){
 function loadPage(){
   singleClick = false;
   if (monitor.url != null)
-    getBrowser().loadURI(monitor.url);
+    gBrowser.selectedTab = gBrowser.addTab(monitor.url);
 }
 
 function unloadObserver()
