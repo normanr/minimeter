@@ -15,7 +15,7 @@
 <!ENTITY checkbox.amountToPay "Show the extra to pay">
 <!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "Při volbě bez limitu nemá grafické počítadlo smysl">
-<!ENTITY label.updateTimeout "Aktualizovat údaje po uplynutí (hodin):">
+<!ENTITY label.updateTimeout "Aktualizovat údaje po uplynutí (minut):">
 
 <!ENTITY menu.refresh "Obnovit údaje">
 <!ENTITY menu.stats "Zobrazit statistiku">

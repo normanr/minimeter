@@ -238,8 +238,11 @@ function loadPrefWindow(){
 
 function loadPage(){
   singleClick = false;
-  if (monitor.url != null)
-    gBrowser.selectedTab = gBrowser.addTab(monitor.url);
+  if (monitor.url != null) {
+		var prefBrows = Components.classes["@mozilla.org/preferences-service;1"]
+													.getService(Components.interfaces.nsIPrefService).getBranch("browser.");
+    openUILinkIn(monitor.url, prefBrows.getIntPref("link.open_newwindow") == 3 ? "tab" : "window");
+  }
 }
 
 function unloadObserver()

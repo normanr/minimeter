@@ -56,16 +56,27 @@ Monitor.prototype.reportError = function(step, monitor, reply){
   }
   else {
     if (reply == null) {
-      this.error = "unknown";
-      minimeterprefs.setCharPref("error", "unknown");
-      this.errorPing("failed");
-      if (step != null) {
-        var dumpMessage = getString("error.unknownErrorDump").replace ("%step", step);
-        dumpMessage = dumpMessage.replace ("%monitor", monitor);
-        consoleDump(dumpMessage);
+			var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+									 .getService(Components.interfaces.nsIPrefService).getBranch("network.cookie.");
+			if (prefService.getIntPref('cookieBehavior') != 0) {
+				this.error = "cookies";
+				minimeterprefs.setCharPref("error", "cookies");
+				minimeterprefs.setCharPref("errorExtraMessage", "extraCookies");
+				this.errorMessage = getString("error.cookies");
+				this.extraMessage = getString("error.extraCookies");
+			}
+			else {
+				this.error = "unknown";
+				minimeterprefs.setCharPref("error", "unknown");
+				this.errorPing("failed");
+				if (step != null) {
+					var dumpMessage = getString("error.unknownErrorDump").replace ("%step", step);
+					dumpMessage = dumpMessage.replace ("%monitor", monitor);
+					consoleDump(dumpMessage);
+				}
+				var module = this.image.substring(0,this.image.indexOf("."));
+				http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&status=check", "reportError");
       }
-      var module = this.image.substring(0,this.image.indexOf("."));
-      http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&status=check", "reportError");
     }
     else {
       reply = unescape(reply);
@@ -237,10 +248,10 @@ Monitor.prototype.loadCache = function(isNotNewWindow){
   var cache = minimeterprefs.getCharPref('cache');
   cache = cache.split(";");
   this.state = this.STATE_DONE;
-  this.usedVolume = cache[2];
-  this.totalVolume = cache[3];
+  this.usedVolume = cache[2]*1;
+  this.totalVolume = cache[3]*1;
 //if(cache[4] != '')
-  this.remainingDays = cache[4];
+  this.remainingDays = cache[4]*1;
 //if(cache[5] != '')
   this.extraMessage = cache[5];
 //if(cache[7] != '') // 6 is newData

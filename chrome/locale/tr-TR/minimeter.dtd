@@ -15,7 +15,7 @@
 <!ENTITY checkbox.amountToPay "Show the extra to pay">
 <!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "Eğer bağlantınız limitsiz ise grafik gösterim işlevsiz olacaktır.">
-<!ENTITY label.updateTimeout "Update the informations every (hours) :">
+<!ENTITY label.updateTimeout "Update the informations every (minutes) :">
 
 <!ENTITY menu.refresh "Verileri güncelle">
 <!ENTITY menu.stats "ADSL kota sayfasını göster">

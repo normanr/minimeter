@@ -83,7 +83,7 @@ function tryAgain(callback, step){
 }
 
 function http_get(purl, callback, step){
-
+		monitor.error = "no";
 		try{
   		var req = new XMLHttpRequest();
   
@@ -109,6 +109,7 @@ function http_get(purl, callback, step){
 }
 
 function http_post(purl, postdata, callback, step, cookie, contenttype){
+		monitor.error = "no";
 		try{
   		var req = new XMLHttpRequest();
   		

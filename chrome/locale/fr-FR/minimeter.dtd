@@ -15,7 +15,7 @@
 <!ENTITY checkbox.amountToPay "Indiquer le supplément à payer">
 <!ENTITY checkbox.remainingAverage "Indiquer la moyenne par jour restant">
 <!ENTITY desc.flatrate "Si vous possédez une connection illimitée le compteur graphique est inutile">
-<!ENTITY label.updateTimeout "Mettre à jour les informations toutes les (heures) :">
+<!ENTITY label.updateTimeout "Mettre à jour les informations toutes les (minutes) :">
 
 <!ENTITY menu.refresh "Mise à jour des informations">
 <!ENTITY menu.stats "Afficher la page web du fournisseur">

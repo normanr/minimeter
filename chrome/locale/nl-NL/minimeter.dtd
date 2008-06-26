@@ -15,7 +15,7 @@
 <!ENTITY checkbox.amountToPay "Show the extra to pay">
 <!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "De grafische meter is niet nuttig als u geen limiet heeft">
-<!ENTITY label.updateTimeout "Synchroniseer elke (uren) :">
+<!ENTITY label.updateTimeout "Synchroniseer elke (minuut) :">
 
 <!ENTITY menu.refresh "Ververs gegevens">
 <!ENTITY menu.stats "Toon de provider webpagina">
