@@ -3,8 +3,8 @@
 			_ = country
 			# = custom capacity
 		*/
-		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom", "#Chellobe:Chello", "Clearwire", "Coditel", "Dommel", "Edpnet:EDPnet", "#Eleven:E-leven", "Euphony", "Fulladsl:FullADSL", "Happymany:HappyMany", "Mobistar", "Scarlet", "Tele2", "Telenet"/*, "Tvcablenet"*/, "Voo",   
-															"_France","Orange","Izi:iZi",
+		var monitors = new Array(	"_Belgium", "Belcenter", "Skynet:Belgacom", "#Chellobe:Chello", "Clearwire", "Coditel", "Dommel", "dxADSL", "EDPnet", "#Eleven:E-leven", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Scarlet", "Tele2", "Telenet"/*, "Tvcablenet"*/, "Voo",   
+															"_France","Orange","iZi",
 															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "#InternetExpres", "#Gtsnovera:GTS Novera",
 															"_New Zealand", "Xtra",
@@ -158,11 +158,11 @@
 	    		isp.setAttribute( "label" , m.substr(1));
 	    		isp.setAttribute( "disabled" , "true");
     		} else {   
-    			if(m[0] == "#"){		
+    			if(m[0] == "#"){
     				isp.setAttribute( "capacity" , true);
     				m = m.substr(1);
     			}
-	    		ml = m.split(":")[0].toLowerCase(); 		
+	    		ml = m.split(":")[0].toLowerCase();
 	    				
 	    		if(!m.split(":")[1]) m = m.split(":")[0]; else m = m.split(":")[1];
 	    		isp.setAttribute( "label" , m);

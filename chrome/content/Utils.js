@@ -208,6 +208,16 @@ function encode64(str) {
 	return res;
 }
 
+function htmlencode(str) {
+  str = escape(str);
+  str = str.replace(/&/g, "%26");
+  str = str.replace(/=/g, "%3D");
+  str = str.replace(/\//g, "%2F");
+  str = str.replace(/\+/g, "%2F");
+  //_ %24
+  return str;
+}
+
 function debug(va){
       const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
     .getService(Components.interfaces.nsIClipboardHelper);
