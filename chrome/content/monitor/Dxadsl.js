@@ -60,7 +60,7 @@ Dxadsl.prototype.callback = function(step, reply) {
           break;
         }
         var volumeusedtotal = regusedtotal.exec(reply);
-        this.usedVolume = volumeusedtotal[1].toFixed(3)*1;
+        this.usedVolume = volumeusedtotal[1];
         this.totalVolume = volumeusedtotal[2]*1;
         this.remainingDays = getInterval("firstDayNextMonth");
           

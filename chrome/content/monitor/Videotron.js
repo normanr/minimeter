@@ -41,7 +41,7 @@ Videotron.prototype.callback = function(step, reply) {
             
            volumeused = regDateAndUsed.exec(reply);
 
-           this.usedVolume = Math.round((volumeused[5] /1024)*1000)/1000;
+           this.usedVolume = volumeused[5] /1024;
            this.totalVolume = this.getCapacity();
          }
          this.remainingDays = getInterval(volumeused[3]+"/"+volumeused[2]+"/"+volumeused[1]);

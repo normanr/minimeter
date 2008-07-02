@@ -150,7 +150,7 @@ Skynet.prototype.callback = function(step, reply) {
             minimeterprefs.setCharPref('belgacomVP', belgacomVP.join(";"));
 
 
-           this.usedVolume = Math.round((volumeused*1 + currentVpUse*1 + VPSize*(belgacomVP[1] - nbofVPShowed))*1000)/1000;
+           this.usedVolume = volumeused*1 + currentVpUse*1 + VPSize*(belgacomVP[1] - nbofVPShowed);
            this.totalVolume = volumetotal*1 + VPSize*belgacomVP[1];
              
            this.remainingDays = getInterval("firstDayNextMonth");

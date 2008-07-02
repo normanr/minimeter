@@ -59,7 +59,7 @@ Scarlet.prototype.callback = function(step, reply) {
       			this.usedVolume /= 1024;
       		}
       		
-      		this.usedVolume = this.usedVolume.toFixed(3)*1;
+      		this.usedVolume = this.usedVolume;
       		
       		this.update(true);	
         }

@@ -130,6 +130,7 @@ Monitor.prototype.update = function(success) {
   }
           
   if(success){
+    this.usedVolume = Math.round(this.usedVolume * 1000)/1000;
     this.state = this.STATE_DONE;
     if(this.remainingDays != null && (this.totalVolume - this.usedVolume) > 0) {
       var remainingGB = Math.floor((monitor.totalVolume - monitor.usedVolume) / monitor.remainingDays * 1000) /1000;
@@ -178,9 +179,17 @@ Monitor.prototype.notify = function(){
 Monitor.prototype.checkCache = function(calledByTimeout){
   updateTimeout = minimeterprefs.getIntPref('updateTimeout');
   if (updateTimeout < 60) {
+    if (updateTimeout == 0)
+      updateTimeout = 1;
 		updateTimeout = updateTimeout * 3600;
 		minimeterprefs.setIntPref('updateTimeout', updateTimeout);
   }
+  else
+    if (updateTimeout < 300)
+      minimeterprefs.setIntPref('updateTimeout', 300);
+  if (this.name == "Telenet" && updateTimeout < 1800)
+    minimeterprefs.setIntPref('updateTimeout', 1800);
+    
   updateTimeout = updateTimeout * 1000;
   var errorpref = minimeterprefs.getCharPref('error');
   if(errorpref != "no") {

@@ -77,7 +77,7 @@ Voo.prototype.callback = function(step, reply) {
           var volumeused = regused.exec(reply);
           volumeused = volumeused[1].replace('.','');
           volumeused = volumeused.replace(',','.');
-          volumeused = Math.round(volumeused/1024*1000)/1000;
+          volumeused = volumeused/1024;
           this.usedVolume = volumeused;
           if(this.totalVolume == 0.5) {
             if(this.usedVolume > this.totalVolume)
