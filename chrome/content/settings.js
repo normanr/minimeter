@@ -80,6 +80,8 @@
               document.getElementById('showtext').checked);
           minimeterprefs.setBoolPref("showmeter", 
               document.getElementById('showmeter').checked);
+          minimeterprefs.setBoolPref("showicon", 
+              document.getElementById('showicon').checked);
           minimeterprefs.setBoolPref("useSI", 
               document.getElementById('useSI').checked);
           minimeterprefs.setBoolPref("showRemainingDays", 
@@ -111,6 +113,7 @@
     	updateTimeout = minimeterprefs.getIntPref('updateTimeout');
     	showtext = minimeterprefs.getBoolPref('showtext');
     	showmeter = minimeterprefs.getBoolPref('showmeter');
+    	showicon = minimeterprefs.getBoolPref('showicon');
     	useSI = minimeterprefs.getBoolPref('useSI');
     	showRemainingDays = minimeterprefs.getBoolPref('showRemainingDays');
     	showAmountToPay = minimeterprefs.getBoolPref('showAmountToPay');
@@ -128,6 +131,7 @@
       document.getElementById('updateTimeout').value = updateTimeout /60;
       document.getElementById('showtext').checked = showtext;
       document.getElementById('showmeter').checked = showmeter;
+      document.getElementById('showicon').checked = showicon;
       document.getElementById('useSI').checked = useSI;
       document.getElementById('showRemainingDays').checked = showRemainingDays;
       document.getElementById('showAmountToPay').checked = showAmountToPay;

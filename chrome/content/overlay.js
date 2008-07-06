@@ -61,11 +61,12 @@ function configureMonitors(){
   if(statusbarMeter != null){
     showtext = minimeterprefs.getBoolPref('showtext');
     showmeter = minimeterprefs.getBoolPref('showmeter');
+    showicon = minimeterprefs.getBoolPref('showicon');
     useSI = minimeterprefs.getBoolPref('useSI');
     
     statusbarMeter.showProgressmeter = showmeter;
     statusbarMeter.showText = showtext;
-    statusbarMeter.showIcon = true;
+    statusbarMeter.showIcon = showicon;
     monitor.addListener(statusbarMeter);
     if (useSI) {
       monitor.measure = " " + getString("unitSI.GiB");

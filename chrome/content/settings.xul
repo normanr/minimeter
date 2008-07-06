@@ -67,6 +67,8 @@
       <checkbox id="showtext" checked="true" label="&checkbox.numerical;"/>
 
       <checkbox id="showmeter" checked="true" label="&checkbox.graphical;"/>
+      
+      <checkbox id="showicon" checked="true" label="&checkbox.iconical;"/>
 
 			<description id="flatratedesc" hidden="true" width="200" >&desc.flatrate;</description>
 			

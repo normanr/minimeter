@@ -10,6 +10,7 @@
 <!ENTITY checkbox.flatrate "Flatrate">
 <!ENTITY checkbox.numerical "Show numerical information">
 <!ENTITY checkbox.graphical "Show graphical meter">
+<!ENTITY checkbox.iconical "Show the provider's icon">
 <!ENTITY checkbox.useSI "Use International system units">
 <!ENTITY checkbox.remainingDays "Show the remaining days before reset">
 <!ENTITY checkbox.amountToPay "Show the extra to pay">

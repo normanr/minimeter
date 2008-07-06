@@ -10,6 +10,7 @@
 <!ENTITY checkbox.flatrate "Limitsiz">
 <!ENTITY checkbox.numerical "Rakamsal veri göster">
 <!ENTITY checkbox.graphical "Grafik çubuk göster">
+<!ENTITY checkbox.iconical "Show the provider's icon">
 <!ENTITY checkbox.useSI "Use International system units">
 <!ENTITY checkbox.remainingDays "Show the remaining days before reset">
 <!ENTITY checkbox.amountToPay "Show the extra to pay">

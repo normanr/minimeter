@@ -10,6 +10,7 @@
 <!ENTITY checkbox.flatrate "Bez limitu">
 <!ENTITY checkbox.numerical "Zobrazovat číselné hodnoty">
 <!ENTITY checkbox.graphical "Zobrazovat grafické počítadlo">
+<!ENTITY checkbox.iconical "Show the provider's icon">
 <!ENTITY checkbox.useSI "Použít soustavu jednotek SI">
 <!ENTITY checkbox.remainingDays "Show the remaining days before reset">
 <!ENTITY checkbox.amountToPay "Show the extra to pay">

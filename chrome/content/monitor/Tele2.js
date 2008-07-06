@@ -44,7 +44,10 @@ Tele2.prototype.callback = function(step, reply) {
         reply = unescape(reply);
         var regused=/<th class="totals">([0-9, ]*) MB<\/th>/;
         var regDateEnd = /<td>([0-9]*)[0-9\/]*<\/td>/;
+        var regServerError = /actuellement indisponible|tijdelijk onbeschikbaar/;
         if (!regDateEnd.test(reply)) {
+					if (regServerError.test(reply))
+						this.error = "server";
           this.reportError();
           break;
         } else {
