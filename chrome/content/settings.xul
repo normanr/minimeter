@@ -68,11 +68,9 @@
 
       <checkbox id="showmeter" checked="true" label="&checkbox.graphical;"/>
       
-      <checkbox id="showicon" checked="true" label="&checkbox.iconical;"/>
-
 			<description id="flatratedesc" hidden="true" width="200" >&desc.flatrate;</description>
-			
-      <checkbox id="useSI" checked="true" label="&checkbox.useSI;"/>
+
+      <checkbox id="showicon" checked="true" label="&checkbox.iconical;"/>
 
 	</tabpanel>
 	
@@ -92,6 +90,8 @@
     <checkbox id="showAmountToPay" checked="true" label="&checkbox.amountToPay;"/>
     
     <checkbox id="showRemainingAverage" checked="false" label="&checkbox.remainingAverage;"/>
+    
+    <checkbox id="useSI" checked="true" label="&checkbox.useSI;"/>
     
 	</tabpanel>
 	

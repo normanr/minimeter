@@ -60,7 +60,7 @@
     </tooltip> 
     
     <statusbarpanel context="minimeter-context-menu" id="minimeter-statusbar"  
-         insertafter="statusbar-progresspanel"
+         insertafter="page-report-button"
          tooltip="minimeter-tooltip">
       	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);" ondblclick="loadPage();"/>
     </statusbarpanel>

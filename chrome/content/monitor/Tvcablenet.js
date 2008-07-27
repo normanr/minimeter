@@ -1,80 +1,109 @@
+
 function Tvcablenet(username, password) {
-    this.username = username.toLowerCase;
-    this.password = password.toLowerCase;
-    this.image = "tvcablenet.png"; // does not belong in class
+    this.username = username;
+    this.password = password;
+    this.image = "tvcablenet.png";
     this.name = "Tvcablenet";
-    this.url = "https://www.tvcablenet.be:3000/conexon/en/SubscriberTabsPage.jsp?currTab=bandwidth";
+    this.url = "http://mytvcablenet.tvcablenet.be/acces/acces-start.asp";
 }
 
 Tvcablenet.prototype = new Monitor();
 
 Tvcablenet.prototype.callback = function(step, reply) {
+    if(this.aborted()){
+      return;
+    }
 
-  if(this.aborted()){
-    return;
-  }
-
-    switch(step)
-    {
-      default:
-      case 1:
-        http_get("https://www.tvcablenet.be:3000/conexon/jspservlets/StartServlet.jsp?pageDirectory=/conexon/en/&servlet=&displayPage=UserLoginPage", this, 2);
-        break;
-       
-      case 2:
+		switch(step)
+		{
+			default:
+			case 1:
+        var postdata = "login="+this.username+"&PASSE="+this.password+"&Remplacer=Valider";
+        http_post('http://mytvcablenet.tvcablenet.be/acces/Acces-Actuel.asp', postdata,this, 2);
+				break;
+			case 2:
         reply = unescape(reply);
-        var regSessionId = /sessionId" value="(.*)" type/;
-        if(!regSessionId.test(reply)){
+        var regErrorLogin=/Mauvaise combinaison de nom d/;
+        var regErrorUnauthorized=/s refus/;
+        var regErrorUnknown=/TABLE CLASS=ACCESERROR/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
+        }
+        else if (regErrorUnauthorized.test(reply)) {
+          this.errorMessage = "Accès refusé";
+          this.update(false);
+        }
+        else if (regErrorUnknown.test(reply)) {
           this.reportError();
-          break;
         }
-        var valSessionId = regSessionId.exec(reply);
-       
-        var postdata = "pageDirectory=%2Fconexon%2Fen%2F&pageUrl=%2Fconexon%2Fen%2FUserLoginPage.jsp&endPage=null&servlet=UserLoginServlet&displayPage=next_page_determined_later&helpId=&msg=&href=&focusField=&sessionId="+valSessionId+"&previousAlert=0&selfRegistered=N&userUsername="+this.username+"&userPassword="+this.password;
-        http_post('https://www.tvcablenet.be:3000/conexon/jspservlets/StartServlet.jsp', postdata,this, 3);
-        break;
-          
-      case 3:
-        http_get("https://www.tvcablenet.be:3000/conexon/en/SubscriberTabsPage.jsp", this, 4);
-        break;
-          
-      case 4:
-        reply = unescape(reply);
-        var regSubscriberId = /subscriberId" value="(.*)" type/;
-        var regServiceProviderId = /serviceProviderId" value="(.*)" type/;
-        var regAccountNumber = /accountNumber" value="(.*)" type/;
-        if(!regSubscriberId.test(reply) || !regServiceProviderId.test(reply) || !regAccountNumber.test(reply)){
-          this.reportError(step,this.name);
-          break;
-        }
-        var valSubscriberId = regSubscriberId.exec(reply);
-        var valServiceProviderId = regServiceProviderId.exec(reply);
-        var valAccountNumber = regAccountNumber.exec(reply);
-        
-        var postdata = "pageDirectory=%2Fconexon%2Fen%2F&pageUrl=%2Fconexon%2Fen%2FSubscriberTabsPage.jsp&servlet=SubscriberBandwidthDetailsGetServlet&displayPage=SubscriberBandwidthListPage&helpId=&msg=&href=&subscriberId="+valSubscriberId+"&serviceProviderId="+valServiceProviderId+"&accountNumber="+valAccountNumber+"&currTab=bandwidth&searchStartFrom=0&searchPagesStartFrom=0";
-        http_post('https://www.tvcablenet.be:3000/conexon/jspservlets/StartServlet.jsp', postdata,this, 5);
-        break;
-          
-      case 5:
-        reply = unescape(reply);
-        var regQuota = /Forfait<\/span><\/a><\/td>\s*<td class="label" valign="top">&nbsp;&nbsp;&nbsp;:&nbsp;<\/td>\s*<td class="sectionTitleValue">([0-9,]*) Gb<\/td>/;
-        var regUsed = /mois en cours:<\/span><\/a>[A-Za-z]*<\/td>\s*<td class="label" valign="top">&nbsp;&nbsp;&nbsp;:&nbsp;<\/td>\s*<td class="sectionTitleValue">([0-9,]*) Gb<\/td>/;
-        
-        if(!regQuota.test(reply) || !regUsed.test(reply)){
-          this.reportError(step,this.name);
-          break;
-        } 
         else {
-          var volumeQuota = 0;
-          var volumeUsed = 0;
-            
-          volumeQuota = regQuota.exec(reply);
-          volumeUsed = regUsed.exec(reply);
-           
-          this.usedVolume = volumeUsed[1].replace(",",".")*1;
-          this.totalVolume = volumeQuota[1].replace(",",".")*1;
+        var postdata = "hMenu=equip";
+        http_post('http://mytvcablenet.tvcablenet.be/acces/Acces-Menu.asp', postdata,this, 3);
+        }
+				break;
+			case 3:
+				var regMAC=/CLIENT_MAC=([0-9a-f]*)'/;
+        reply = unescape(reply);
+				if (!regMAC.test(reply)) {
+          this.reportError();
+				}
+				else {
+          var MACadress = regMAC.exec(reply);
+          
+          var regConnTypeLight = /Light/;
+          var regConnTypeBase = /Base/;
+          var regConnTypeSpeed = /Speed/;
+          var regConnTypeCampus = /Campus/;
+          var regConnTypeProPlus = /Pro\+/;
+          var regConnTypePro = /Pro/; // tester d'abord Pro+
+          var regConnTypeGold = /Gold/;
+          
+          if(regConnTypeLight.test(reply))
+            this.totalVolume = 0.390;
+          else
+            if(regConnTypeBase.test(reply))
+              this.totalVolume = 15;
+            else
+              if(regConnTypeSpeed.test(reply))
+                this.totalVolume = 20;
+              else
+                if(regConnTypeCampus.test(reply))
+                  this.totalVolume = 15;
+                else
+                  if(regConnTypeProPlus.test(reply))
+                    this.totalVolume = 0;
+                  else
+                    if(regConnTypePro.test(reply))
+                      this.totalVolume = 50;
+                    else
+                      if(regConnTypeGold.test(reply))
+                        this.totalVolume = 0;
+          
+          http_get("http://mytvcablenet.tvcablenet.be/Giga/Index.asp?action=show_statistics_month&CLIENT_MAC="+MACadress[1], this, 4);
+				}
+				break;
+      case 4:
+        var regused=/<td align="right" width="20%">([0-9.,]*)<\/td>\s*<td align="left" width="10%">&nbsp;&nbsp;M/;
+        reply = unescape(reply);
+				if (!regused.test(reply)) {
+          this.reportError();
+				} else {
+          var volumeused = regused.exec(reply);
+          volumeused = volumeused[1].replace('.','');
+          volumeused = volumeused.replace(',','.');
+          volumeused = volumeused/1024;
+          this.usedVolume = volumeused;
+          
+          if(this.totalVolume != 0 && this.usedVolume > this.totalVolume) {
+            if(this.totalVolume == 0.390) {
+                this.amountToPay = Math.round(Math.floor((this.usedVolume - this.totalVolume)*10)/10*50*100)/100 + " EUR";
+            }
+            else
+              this.amountToPay = Math.round(Math.floor((this.usedVolume - this.totalVolume)*2)/2*100)/100 + " EUR";
+              
+            }
           this.remainingDays = getInterval("firstDayNextMonth");
           this.update(true);
-        }
-    }
+				}
+		}	
 }
