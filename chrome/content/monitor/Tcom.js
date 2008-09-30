@@ -34,7 +34,7 @@ Tcom.prototype.callback = function(step, reply) {
 			  var type = /Soort verbinding&nbsp;:&nbsp;<span class="topInfoLine2">(.*)<\/span>/;
 			  
 			  if(!reg.test(reply)){
-					this.reportError();
+					this.notLoggedin();
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = volume[1];

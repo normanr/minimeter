@@ -1,7 +1,7 @@
 <!ENTITY settings.title "Minimeter instellingen">
 <!ENTITY tab.provider "Provider">
 <!ENTITY tab.statusbar "Statusbalk">
-<!ENTITY tab.checking "Miscellaneous">
+<!ENTITY tab.checking "Synchronisatie">
 <!ENTITY label.provider "Provider">
 <!ENTITY label.username "Gebruiker">
 <!ENTITY label.password "Paswoord">
@@ -10,13 +10,10 @@
 <!ENTITY checkbox.flatrate "Geen limiet">
 <!ENTITY checkbox.numerical "Toon numerische informatie">
 <!ENTITY checkbox.graphical "Toon grafische meter">
-<!ENTITY checkbox.iconical "Show the provider's icon">
-<!ENTITY checkbox.useSI "De eenheden van het Internationale systeem gebruiken">
-<!ENTITY checkbox.remainingDays "Show the remaining days before reset">
-<!ENTITY checkbox.amountToPay "Show the extra to pay">
-<!ENTITY checkbox.remainingAverage "Show the remaining average per day">
-<!ENTITY desc.flatrate "De grafische meter is niet nuttig als u geen limiet heeft">
-<!ENTITY label.updateTimeout "Synchroniseer elke (minuut) :">
+<!ENTITY checkbox.useSI "Use International system units">
+<!ENTITY desc.flatrate "De grafische meter is niet nuttig als u geen limiet heeft ">
+<!ENTITY checkbox.onload "Synchroniseer niet elke keer Firefox start">
+<!ENTITY desc.checking "Als de synchronisatie van minimeter bij het opstarten binnen geen uur verschilt met de vorige, dan haalt hij de gegevens uit de cache (geen verkeer)">
 
 <!ENTITY menu.refresh "Ververs gegevens">
 <!ENTITY menu.stats "Toon de provider webpagina">

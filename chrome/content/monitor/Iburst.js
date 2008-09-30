@@ -31,12 +31,11 @@ Iburst.prototype.callback = function(step, reply) {
 			  var reg = /Gebruikt volume voor deze maand <strong>   ([0-9\.]+) GB<\/strong> van de beschikbare <strong>(.*) GB<\/strong>/;
 			  
 			  if(!reg.test(reply)){
-					this.reportError();
+					this.notLoggedin();
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = volume[1];
       		this.totalVolume = volume[2];
-      		this.remainingDays = getInterval("firstDayNextMonth");
       		
       		this.update(true);	
         }

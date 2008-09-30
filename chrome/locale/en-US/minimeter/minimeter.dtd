@@ -1,22 +1,19 @@
 <!ENTITY settings.title "Minimeter settings">
 <!ENTITY tab.provider "Provider">
 <!ENTITY tab.statusbar "Statusbar">
-<!ENTITY tab.checking "Miscellaneous">
+<!ENTITY tab.checking "Checking">
 <!ENTITY label.provider "Provider">
 <!ENTITY label.username "Username">
 <!ENTITY label.password "Password">
 
-<!ENTITY label.capacity "Capacity (GiB)">
+<!ENTITY label.capacity "Capacity (GB)">
 <!ENTITY checkbox.flatrate "Flatrate">
 <!ENTITY checkbox.numerical "Show numerical information">
 <!ENTITY checkbox.graphical "Show graphical meter">
-<!ENTITY checkbox.iconical "Show the provider's icon">
 <!ENTITY checkbox.useSI "Use International system units">
-<!ENTITY checkbox.remainingDays "Show the remaining days before reset">
-<!ENTITY checkbox.amountToPay "Show the extra to pay">
-<!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "If you have a flatrate account the graphical meter is not usefull">
-<!ENTITY label.updateTimeout "Update the informations every (minutes) :">
+<!ENTITY checkbox.onload "Do not check everytime the browser loads">
+<!ENTITY desc.checking "If 'the check on load' is within an hour of the previous check it will get the data from cache.">
 
 <!ENTITY menu.refresh "Refresh data">
 <!ENTITY menu.stats "Show stats webpage">

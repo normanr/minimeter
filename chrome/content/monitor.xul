@@ -5,7 +5,7 @@
 <window
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"
-    title="Minimeter" 
+    title="MiniMeter" 
     style="padding: 0px 0px 10px 0px; " 
     onload="initialize();"
     >

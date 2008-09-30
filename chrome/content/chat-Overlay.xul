@@ -15,27 +15,19 @@
 
 
 	
-	<toolbarpalette id="BrowserToolbarPalette">                                            
-		<toolbaritem tooltip="minimeter-tooltip" id="minimeter-container" class="chromeclass-toolbar-additional" title="MiniMeter"  align="center">
-    	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="clickIcon(event);"/>
-    	
-		</toolbaritem>
-	</toolbarpalette>
+<window id="roster-window" >
 	
  
-  <statusbar id="status-bar">
+  <statusbar id="roster-status">
     <popup id="minimeter-context-menu">
       <menuitem label="&menu.refresh;" oncommand="checkNow();" />
-      <menuitem id="showPage" label="&menu.stats;" oncommand="loadPage();" />
+      <menuitem id="showPage" label="&menu.stats;" oncommand="loadPage();" hidden="true" />
       <menuseparator/>
       <menuitem label="&menu.preferences;" oncommand="loadPrefWindow();"/>
     </popup>
     <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="fillTooltip(this)">
         <hbox>  
-          <description style="padding-left: 22px; padding-top: 2px" id="message"/>
-        </hbox>
-        <hbox id="remainingBox" collapsed="true">  
-          <description style="padding-left: 22px; padding-top: 2px" id="remaining"/>
+          <description style="height: 16px;padding-left: 22px; padding-top: 2px" id="message"/>
         </hbox>
         <hbox id="rateBox">  
           <description style="padding-left: 22px;" id="rate"/>
@@ -52,11 +44,11 @@
     <statusbarpanel context="minimeter-context-menu" id="minimeter-statusbar"  
          insertafter="statusbar-progresspanel"
          tooltip="minimeter-tooltip">
-      	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);"/>
+      	<minimeter id="statusbarMeter" size="50" style=" padding-top: 1px;" onclick="clickIcon(event);"/>
     </statusbarpanel>
   </statusbar>
 
 
-
+</window>
 
 </overlay>

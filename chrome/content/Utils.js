@@ -37,7 +37,7 @@ JArray.prototype.clear = function() {
 };
 
 
-function getInterval(endDateText, dayNum){
+function getInterval(endDateText){
   var nowDate = new Date();
   var interval = 0;
   if (endDateText == "firstDayNextMonth"){
@@ -45,59 +45,33 @@ function getInterval(endDateText, dayNum){
     var mm = nowDate.getMonth() + 1;
     var yyyy = nowDate.getFullYear();
   }
-  else
-    if (endDateText == "nearestOccurence"){
-      var dd = nowDate.getDate();
-      var mm = nowDate.getMonth();
-      var yyyy = nowDate.getFullYear();
-      if(dd >= dayNum) // date dépassée, donc reset le mois suivant
-        mm++;
-      dd = dayNum;
-  }
   else{
     var dd = endDateText.substring(0,2);
     var mm = endDateText.substring(3,5);
     var yyyy = endDateText.substring(6,10);
   }
-  if(mm == 12){
-    mm = 0;
-    yyyy++;
-  }
-  var endDate = new Date(yyyy,mm,dd);
+    if(mm == 12){
+      mm = 0;
+      yyyy++;
+    }
+    var endDate = new Date(yyyy,mm,dd);
   interval = Math.floor((endDate.getTime() - nowDate.getTime()) / (86400000)); // 86400000 = 24*60*60*1000
-  return interval +1;
+  return interval;
 }
 
-function isUseSI(){
-  var prefs = null;
-  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-               .getService(Components.interfaces.nsIPrefService);
-  prefs = prefService.getBranch("extensions.minimeter.");
-
-  useSI = prefs.getBoolPref('useSI');
-  return (useSI);
-}
-
-function tryAgain(callback, step){
-  callback.callback(step);
-}
 
 function http_get(purl, callback, step){
-		monitor.error = "no";
+
 		try{
   		var req = new XMLHttpRequest();
   
   		if(callback != null){
   			req.onreadystatechange = function(){
-            if (req.readyState == 4){
-              try{
-                if(req.status == 500)
-                  monitor.error = "server";
-              }catch(ex){monitor.error = "connection";}
-              if (req.responseText == '')
-                monitor.error = "connection";
-              callback.callback(step, escape(req.responseText));
-            }
+  				try{
+  				if (req.readyState == 4){
+  					callback.callback(step, escape(req.responseText));
+  				}
+  				}catch(ex){alert(ex);}
   			}
   		}
   		
@@ -105,43 +79,27 @@ function http_get(purl, callback, step){
 		req.setRequestHeader('Cookie', 'usageConfirm=true');
 		  req.send('');	
 			
-		}catch(ex){consoleDump(ex);}			
+		}catch(ex){alert(ex);}			
 }
 
-function http_post(purl, postdata, callback, step, cookie, contenttype){
-		monitor.error = "no";
+function http_post(purl, postdata, callback, step){
 		try{
   		var req = new XMLHttpRequest();
   		
   		if(callback != null){
   			req.onreadystatechange = function(){
   				if (req.readyState == 4){
-            try{
-              if(req.status == 500)
-                monitor.error = "server";
-            }catch(ex){monitor.error = "connection";}
-            if (req.responseText == '')
-              monitor.error = "connection";
-            if (callback == "reportError")
-              monitor.reportError(null, null, escape(req.responseText));
-            else
-              if(callback != "errorPing")
-                callback.callback(step, escape(req.responseText));
+  					callback.callback(step, escape(req.responseText));
   				}
   			}
   		}
 		
 		
 			req.open("POST", purl, true, null, null);
-			if(contenttype != null)
-        req.setRequestHeader('Content-Type', contenttype);
-      else
-        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			if(cookie!=null)
-        req.setRequestHeader('Cookie', cookie);
+			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			req.send(postdata);		
 			
-		}catch(ex){consoleDump("Error posting: " + ex);}			
+		}catch(ex){alert("Error posting: " + ex);}			
 		
 }	
 
@@ -161,10 +119,10 @@ function http_auth(purl, username, password, callback, step){
 		  path = httphost.substr(end);
 			httphost = httphost.substr(0, end  );
 			var auth = "\nAuthorization: Basic " + encode64(username+':'+password);
-		  readAllFromSocket(httphost,80,"GET "+ path +" HTTP/1.0\nHost: " + httphost + auth + "\n\n",listener);
+		  readAllFromSocket(httphost,80,"GET "+ path +" HTTP/1.1\nHost: " + httphost + auth + "\n\n",listener);
 			
 			
-		}catch(ex){consoleDump(ex);}			
+		}catch(ex){alert(ex);}			
 }
 
 function encode64(str) {
@@ -208,16 +166,6 @@ function encode64(str) {
 	return res;
 }
 
-function htmlencode(str) {
-  str = escape(str);
-  str = str.replace(/&/g, "%26");
-  str = str.replace(/=/g, "%3D");
-  str = str.replace(/\//g, "%2F");
-  str = str.replace(/\+/g, "%2F");
-  //_ %24
-  return str;
-}
-
 function debug(va){
       const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
     .getService(Components.interfaces.nsIClipboardHelper);
@@ -231,13 +179,13 @@ function debug(va){
     			res += list + ", ";
 	    }
 
-        consoleDump(res);
+        alert(res);
 }
 
 function consoleDump(aMessage) {
   var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                        .getService(Components.interfaces.nsIConsoleService);
-  consoleService.logStringMessage("Minimeter : " + aMessage);
+  consoleService.logStringMessage("MiniMeter: " + aMessage);
 }
 
 
@@ -262,13 +210,17 @@ function readAllFromSocket(host,port,outputData,listener)
       data : "",
       onStartRequest: function(request, context){},
       onStopRequest: function(request, context, status){
-        instream.close();
-        outstream.close();
-        listener.finished(this.data);
+				this.done();
       },
       onDataAvailable: function(request, context, inputStream, offset, count){
         this.data += instream.read(count);
+        this.done();
       },
+      done : function(){
+      	instream.close();
+        outstream.close();
+        listener.finished(this.data);
+      }
     };
 
     var pump = Components.
