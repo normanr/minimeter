@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://minimeter/content/settings.css" type="text/css"?>
+<?xml-stylesheet href="chrome://minimeter/skin/settings.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://minimeter/locale/minimeter.dtd">
 
 <dialog
+    id="minimeter-pref-dialog"
     title="&settings.title;" 
      
     onload="initialize_settings();"
 
+    persist="screenX,screenY"
     ondialogaccept="return setOptions();"
     buttons="accept,cancel"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -32,7 +34,7 @@
       <rows>
         <row>
             <label control="provider" value="&label.provider;" />
-            <menulist id="provider" width="200" oncommand="updateForm()">
+            <menulist id="provider" width="203" sizetopopup="true" oncommand="updateForm()">
               <menupopup > 
               </menupopup>
             </menulist>
@@ -48,7 +50,7 @@
         <row id="capacityrow">
           <label control="capacity" value="&label.capacity;"/>
           <hbox>
-					<textbox id="capacity" style="max-width: 40px" value=""/>
+					<textbox id="capacity" style="max-width: 3em" maxlength="3" value=""/>
 					<checkbox id="flatrate" checked="false" label="&checkbox.flatrate;" oncommand="setFlatrate(this.checked)"/>
 					</hbox>
         </row>
@@ -64,20 +66,33 @@
 
       <checkbox id="showtext" checked="true" label="&checkbox.numerical;"/>
 
-      <checkbox id="showmeter" checked="false" label="&checkbox.graphical;"/>
-
+      <checkbox id="showmeter" checked="true" label="&checkbox.graphical;"/>
+      
 			<description id="flatratedesc" hidden="true" width="200" >&desc.flatrate;</description>
-			
-      <checkbox id="useSI" checked="true" label="&checkbox.useSI;"/>
+
+      <checkbox id="showicon" checked="true" label="&checkbox.iconical;"/>
 
 	</tabpanel>
 	
 	<tabpanel id="checking" orient="vertical">
-		
-	    <checkbox id="click_check" checked="false" label="&checkbox.onload;"/>
-	    <description width="200" >&desc.checking;</description>
-
-
+    <grid>
+    <rows>
+      <row>
+        <label control="updateTimeout" value="&label.updateTimeout;"/>
+      <hbox>
+        <textbox id="updateTimeout" style="max-width: 3em" maxlength="3" value=""/>
+      </hbox>
+      </row>
+    </rows>
+    </grid>
+    <checkbox id="showRemainingDays" checked="true" label="&checkbox.remainingDays;"/>
+    
+    <checkbox id="showAmountToPay" checked="true" label="&checkbox.amountToPay;"/>
+    
+    <checkbox id="showRemainingAverage" checked="false" label="&checkbox.remainingAverage;"/>
+    
+    <checkbox id="useSI" checked="true" label="&checkbox.useSI;"/>
+    
 	</tabpanel>
 	
 	</tabpanels>

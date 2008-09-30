@@ -1,7 +1,7 @@
 <!ENTITY settings.title "Předvolby rozšíření Minimeter">
 <!ENTITY tab.provider "Poskytovatel">
 <!ENTITY tab.statusbar "Stavový řádek">
-<!ENTITY tab.checking "Kontrola">
+<!ENTITY tab.checking "Miscellaneous">
 <!ENTITY label.provider "Poskytovatel">
 <!ENTITY label.username "Uživatelské jméno">
 <!ENTITY label.password "Heslo">
@@ -10,10 +10,13 @@
 <!ENTITY checkbox.flatrate "Bez limitu">
 <!ENTITY checkbox.numerical "Zobrazovat číselné hodnoty">
 <!ENTITY checkbox.graphical "Zobrazovat grafické počítadlo">
-<!ENTITY checkbox.useSI "Use International system units">
+<!ENTITY checkbox.iconical "Show the provider's icon">
+<!ENTITY checkbox.useSI "Použít soustavu jednotek SI">
+<!ENTITY checkbox.remainingDays "Show the remaining days before reset">
+<!ENTITY checkbox.amountToPay "Show the extra to pay">
+<!ENTITY checkbox.remainingAverage "Show the remaining average per day">
 <!ENTITY desc.flatrate "Při volbě bez limitu nemá grafické počítadlo smysl">
-<!ENTITY checkbox.onload "Nekontrolovat při každém spuštění prohlížeče">
-<!ENTITY desc.checking "Nastane-li spuštění prohlížeče během hodiny od předchozí kontroly, budou data načtena z vyrovnávací paměti.">
+<!ENTITY label.updateTimeout "Aktualizovat údaje po uplynutí (minut):">
 
 <!ENTITY menu.refresh "Obnovit údaje">
 <!ENTITY menu.stats "Zobrazit statistiku">

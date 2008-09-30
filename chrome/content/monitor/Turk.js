@@ -29,7 +29,7 @@ Turk.prototype.callback = function(step, reply) {
 			   // up / dwn
 			  var reg = /<td width="100">([0-9.]*)<br>&nbsp;\(.* ?B\)<\/td>\s*<td width="100">([0-9.]*)<br>&nbsp;\(.* ?B\)<\/td><\/tr><\/tbody>/;
 			  if(!reg.test(reply)){
-					this.notLoggedin();
+					this.reportError();
 			  } else {
 			    var volume = reg.exec(reply);
 

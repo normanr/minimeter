@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://minimeter/content/style.css" type="text/css"?>
+<?xml-stylesheet href="chrome://minimeter/skin/style.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://minimeter/locale/minimeter.dtd">
 
 
@@ -12,12 +12,16 @@
 
   <script src="chrome://minimeter/content/settings.js"/>
   <script src="chrome://minimeter/content/overlay.js"/>
+  <script type="application/x-javascript">
+    window.addEventListener("load", initialize, false);
+    window.addEventListener("unload", unloadObserver, false);
+  </script>
 
 
 	
 	<toolbarpalette id="BrowserToolbarPalette">                                            
-		<toolbaritem tooltip="minimeter-tooltip" id="minimeter-container" class="chromeclass-toolbar-additional" title="MiniMeter"  align="center">
-    	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="clickIcon(event);"/>
+		<toolbaritem tooltip="minimeter-tooltip" id="minimeter-container" class="chromeclass-toolbar-additional" title="Minimeter"  align="center">
+    	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="clickIcon(event);" ondblclick="loadPage();"/>
     	
 		</toolbaritem>
 	</toolbarpalette>
@@ -30,29 +34,35 @@
       <menuseparator/>
       <menuitem label="&menu.preferences;" oncommand="loadPrefWindow();"/>
     </popup>
-    <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="fillTooltip(this)">
-        <hbox>  
-          <description style="padding-left: 22px; padding-top: 2px" id="message"/>
+    <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="fillTooltip(this)" noautohide="true">
+        <hbox style="padding-left: 4px; padding-top: 2px">  
+          <image id="mtIcon" style="max-width: 16px; max-height: 16px;"/>
+          <description style="padding-left: 2px;" id="message"/>
         </hbox>
-        <hbox id="remainingBox" collapsed="true">  
-          <description style="padding-left: 22px; padding-top: 2px" id="remaining"/>
+        <hbox id="remainingDaysBox" collapsed="true">  
+          <description style="padding-left: 22px; padding-top: 2px" id="remainingDays"/>
+        </hbox>
+        <hbox id="amountToPayBox" collapsed="true">  
+          <description style="padding-left: 22px; padding-top: 2px" id="amountToPay"/>
+        </hbox>
+        <hbox id="remainingAverageBox" collapsed="true">  
+          <description style="padding-left: 22px; padding-top: 2px" id="remainingAverage"/>
         </hbox>
         <hbox id="rateBox">  
           <description style="padding-left: 22px;" id="rate"/>
         </hbox>
-        <hbox id="extraBox">  
-          <vbox style="padding-top: 2px; " id="extra"/>
-
-        </hbox>
         <hbox id="errorBox">
           <description style="color: red" id="errorMessage"/>
+        </hbox>
+        <hbox id="extraBox">  
+          <vbox style="padding-top: 2px; " id="extra"/>
         </hbox>
     </tooltip> 
     
     <statusbarpanel context="minimeter-context-menu" id="minimeter-statusbar"  
-         insertafter="statusbar-progresspanel"
+         insertafter="page-report-button"
          tooltip="minimeter-tooltip">
-      	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);"/>
+      	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);" ondblclick="loadPage();"/>
     </statusbarpanel>
   </statusbar>
 

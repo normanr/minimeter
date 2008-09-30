@@ -30,7 +30,7 @@ Internetexpres.prototype.callback = function(step, reply) {
 				reply = unescape(reply);
 				var reg = /<span class="tableTerraCurrent">[0-9,]*/;
 				if(!reg.test(reply)){
-					this.notLoggedin();
+					this.reportError();
 				} else {
 					var volume = reg.exec(reply);
 					var s = new String(volume[0]);				

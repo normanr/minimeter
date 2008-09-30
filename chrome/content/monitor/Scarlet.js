@@ -1,11 +1,15 @@
 
 function Scarlet(username, password) {
-		this.version = "1.1";
-    this.username = username;
+    this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "scarlet.png"; // does not belong in class
     this.name = "Scarlet ADSL";
     this.url = "http://customercare.scarlet.be/usage/dispatch.do";
+    this.nextCase = 2;
+    if(username.indexOf(",") > 0)
+      this.contrat = username.substr(username.indexOf(",")+1);
+    else 
+      this.nextCase = 3;
 }
 
 Scarlet.prototype = new Monitor();
@@ -28,34 +32,35 @@ Scarlet.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, 2);
+				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, this.nextCase);
 				break;
-			case 2:
-			  http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
-			  //http_get('http://www.epigoon.com/mozilla/minimeter/testing/scarlet.htm', this, 3);
+      case 2:
+        http_get('http://customercare.scarlet.be/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, 3);
+        break;
+   		case 3:
+			  http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 4);
 			  break;
-			case 3:
+			case 4:
 			  reply = unescape(reply);
-			  var total = /verbruik staat momenteel ingesteld op <b>(.*)  GB<\/b>/;
-			  var used = /<th class="digit">(.*)  ([MG])B<\/th>\s*<\/tr>\s*<\/table>/;
+			  var total = /(est actuellement fixée à|verbruik staat momenteel ingesteld op) <b>(.*)\s*GB<\/b>/;
+			  var used = /<th class="digit">(.*)\s*([MG])B<\/th>\s*<\/tr>(\s*<\/tbody>|)\s*<\/table>/;
 			  
 			  if( !total.test(reply) || !used.test(reply) ){
-					this.notLoggedin();
+					this.reportError();
 			  } else {
           
 			    var totalValue = total.exec(reply);
-      		this.totalVolume = totalValue[1].replace(',','.');
+      		this.totalVolume = totalValue[2].replace(',','.');
 
       		var usedValue = used.exec(reply);
       		this.usedVolume = (usedValue[1].replace(',','.') * 1);
       		
       		if(usedValue[2] == 'M'){
-      			this.usedVolume /= 1000;
+      			this.usedVolume /= 1024;
       		}
       		
-      		this.usedVolume = this.usedVolume.toFixed(2);
+      		this.usedVolume = this.usedVolume;
       		
-      		this.percentVolume = this.usedVolume * 100 / this.totalVolume;
       		this.update(true);	
         }
 					

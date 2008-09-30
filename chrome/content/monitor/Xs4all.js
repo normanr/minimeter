@@ -36,7 +36,7 @@ Xs4all.prototype.callback = function(step, reply) {
 
 
 			  if( !used.test(reply)){ //!total.test(reply) ||
-			     this.notLoggedin();
+			     this.reportError();
 			  } else {
 
 					this.totalVolume = this.getCapacity();

@@ -39,7 +39,7 @@ Xtra.prototype.callback = function(step, reply) {
 			  var total = /color=\"#003366\"><b>([0-9.]*) MB<\/b>/;
 			  
 			  if(!total.test(reply) || !used.test(reply)){
-					this.notLoggedin();
+					this.reportError();
 			  } else {
 			  
 			    var totalValue = total.exec(reply);

@@ -9,13 +9,13 @@
   <content>
 
  
-		<xul:label id="1" style="height: 15px; width: 16px; margin-left: 0; margin-right: 0" />
+		<xul:label id="icon" style="height: 16px; width: 16px; margin-left: 0; margin-right: 0"/>
     
-    <xul:label id="2" xbl:inherits="value=label" style="margin: 0 2px 0 0; padding-top: 2px"></xul:label>
+    <xul:label id="text" xbl:inherits="value=label" style="margin: 1px 2px 4px 0; padding-top: 2px"></xul:label>
 
-    <xul:vbox id="3" style="height: 16px;padding-top: 1px; " collapsed="false">        
+    <xul:vbox id="bar" style="height: 16px;padding-top: 1px; " collapsed="false">        
 	    <xul:hbox width="50" xbl:inherits="width=size"
-	            style="margin: 4px 4px 0 7px; height: 8px; overflow: hidden;
+	            style="margin: 5px 4px 6px 7px; height: 8px; overflow: hidden;
 	            border: 1px solid #aaa; background: white; -moz-border-radius: 2.2px">
 	      <xul:hbox 
 	            xbl:inherits="width=bar"
@@ -35,7 +35,7 @@
       <![CDATA[
       	if(this.getAttribute("toolbar")){
       		this.removeAttribute("style"); // clear the static icon
-      		document.getAnonymousNodes(this)[2].removeAttribute('collapsed'); // always meter visible
+      		document.getElementById("bar").removeAttribute('collapsed'); // always meter visible
       	}
         this.value = this.getAttribute('value');
         this.label = "";
@@ -59,7 +59,7 @@
     
 
 
-    <property name="icon" onset="document.getAnonymousNodes(this)[0].style.background = 'url(chrome://minimeter/content/res/'+ val + ') no-repeat'; " />
+    <property name="icon" onset="document.getElementById('icon').style.background = 'url(chrome://minimeter/content/res/'+ val + ') no-repeat'; " />
     <property name="label">  
     	<getter>
     		return this.getAttribute('label');
@@ -71,9 +71,9 @@
     	</setter>
     </property>
     
-		<property name="showProgressmeter" onset="document.getAnonymousNodes(this)[2].setAttribute('hidden', !val);"/>  
-		<property name="showText" onset="document.getAnonymousNodes(this)[1].setAttribute('hidden', !val);"/>  							
-		<property name="showIcon" onset="document.getAnonymousNodes(this)[0].setAttribute('hidden', !val);"/>  
+		<property name="showProgressmeter" onset="document.getElementById('bar').setAttribute('hidden', !val);"/>  
+		<property name="showText" onset="document.getElementById('text').setAttribute('hidden', !val);"/>  							
+		<property name="showIcon" onset="document.getElementById('icon').setAttribute('hidden', !val);"/>  
 
     <property name="value"> 
       <getter>
@@ -89,13 +89,20 @@
     </property>
 
 		
-    <property name="procentLabel"> 
+    <property name="percentageLabel"> 
       <getter>
       <![CDATA[
 	      	if(monitor.totalVolume <= 0){
 	      		return "";
 	      	} else {
-	        	return  ( monitor.usedVolume / monitor.totalVolume * 100 ).toFixed(2) + "%";
+						var remaining = ""
+						if (monitor.usedVolume < monitor.totalVolume) {
+							
+							remaining = (Math.round((monitor.totalVolume - monitor.usedVolume)*1000)/1000);
+							remainingloc = remaining.toLocaleString();
+							remaining = " (" + remainingloc + monitor.measure + " " + (remaining >= 2 ? monitor.remainings : monitor.remaining) + ")";
+						}
+	        	return (Math.round(monitor.usedVolume / monitor.totalVolume * 10000)/100).toLocaleString() + "%" + remaining;
 	        }
     		]]>
       </getter>
@@ -106,9 +113,9 @@
       <getter>
       <![CDATA[
 	      	if(monitor.totalVolume <= 0){
-	      		return " " + monitor.usedVolume + monitor.measure;
+	      		return " " + parseFloat(monitor.usedVolume).toLocaleString() + monitor.measure;
 	      	} else {
-	        	return " " + monitor.usedVolume + " / " + monitor.totalVolume + monitor.measure ;
+	        	return " " + parseFloat(monitor.usedVolume).toLocaleString() + " / " + parseFloat(monitor.totalVolume).toLocaleString() + monitor.measure ;
 	        }
     		]]>
       </getter>
@@ -136,7 +143,7 @@
 					if(monitor.state ==  monitor.STATE_DONE){
 						this.label =  this.textLabel ;
 						this.setBusy(false);
-						this.animate(monitor.usedVolume / monitor.totalVolume * 100);
+						this.animate(monitor.usedVolume / monitor.totalVolume * 100, monitor.newData);
 					}
         ]]>
       </body>
@@ -145,14 +152,21 @@
   
     <method name="animate">
       <parameter name="newValue"/>
+      <parameter name="newData"/>
       <body>
         <![CDATA[
         	if( monitor.totalVolume <= 0) newValue = 0;
         	
-        	document.getAnonymousNodes(this)[2].removeAttribute('collapsed');
-          this.value = 0;
-          this.finish = newValue ;
-          this.animCallback();
+        	document.getElementById("bar").removeAttribute('collapsed');
+        	
+        	if(!newData)
+            this.value = newValue;
+          else
+          {
+            this.value = 0;
+            this.finish = newValue ;
+            this.animCallback();
+          }
         ]]>
       </body>
     </method>
@@ -179,7 +193,7 @@
     	<parameter name="value"/>
       <body>
         <![CDATA[
-        	var pStyle = document.getAnonymousNodes(this)[2].childNodes[0].style;
+        	var pStyle = document.getElementById("bar").childNodes[0].style;
         	if(value){
         			pStyle.border = "1px dashed #aaa";
 
@@ -195,7 +209,7 @@
     <method name="animCallback">
       <body>
         <![CDATA[
-          if(this.value++ < this.finish){
+          if((++this.value + 2) < this.finish){
             window.setTimeout(
               function(x){x.animCallback();}, 20, this
             );   

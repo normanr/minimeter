@@ -38,7 +38,7 @@ Omsk.prototype.callback = function(step, reply) {
 				var doc = objDOMParser.parseFromString(reply, "text/xml");
 
 			  if(!doc instanceof XMLDocument){
-					this.notLoggedin();
+					this.reportError();
 			  } else {
 			  	var bofmonth = doc.getElementsByTagName("bofmonth")[0];
 					this.totalVolume = bofmonth.getAttribute("bal")*1 + bofmonth.getAttribute("free_bal")*1 ;
