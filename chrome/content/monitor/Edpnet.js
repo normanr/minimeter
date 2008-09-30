@@ -55,12 +55,12 @@ Edpnet.prototype.callback = function(step, reply) {
          
        case 3:
          reply = unescape(reply);
-         //var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/;
-         var regDateEnd = /Upload<\/b><\/td><\/tr><tr><td>([0-9/]*)&nbsp;/;
+         //var regDateEnd = /<td>([0-9/]*)<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><td>&nbsp;<\/td><td align=right>([0-9,]*) MB<\/td><\/tr><\/table>/; // for details since reset
+         var regDateEnd = /Upload<\/b><\/td><\/tr><tr><td>([0-9/]*)&nbsp;-&nbsp;([0-9/]*)<\/td>/;
       
          if( regDateEnd.test(reply) ){
            regDateEnd = regDateEnd.exec(reply);
-           this.remaining = getInterval(regDateEnd[1]);
+           this.remaining = getInterval(regDateEnd[2]);
          }
          this.update(true);
     }
