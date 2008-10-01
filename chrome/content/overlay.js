@@ -148,6 +148,7 @@ function fillTooltip(tooltip){
     if (minimeterprefs.getBoolPref('showAmountToPay') && monitor.amountToPay != '') {
       amountToPay.value = monitor.amountToPay.replace(".",",");
       amountToPay.value = amountToPay.value.replace ("EUR", "€");
+      amountToPay.value = amountToPay.value.replace ("CAD", "$");
       amountToPay.value = amountToPay.value + " " + getString("info.amountToPay");
       amountToPayBox.collapsed = false;
     }

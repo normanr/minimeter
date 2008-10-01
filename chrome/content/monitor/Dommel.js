@@ -73,6 +73,13 @@ Dommel.prototype.callback = function(step, reply) {
       } else {
         // Grab connection type (broadband|mediumband)
         var connection_typeValue = reg_connection_type.exec(reply);
+        
+        var gb; // Unit as selected in options and locale
+        if (isUseSI())
+            gb = getString("unitSI.GiB");
+        else
+            gb = getString("unit.GB");
+        gb = " " + gb;
     
         // Grab remaining days before reset
         if( !reg_remainingDays.test(reply) ) {
@@ -112,9 +119,9 @@ Dommel.prototype.callback = function(step, reply) {
           this.usedVolume = broad_TOTALValue[1]*1;
           this.totalVolume = this.usedVolume + remainingVolume;
           //this.extraMessage = "Download: " + down.toFixed(2) +" GB, Upload: " + up.toFixed(2) +" GB";
-          this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) +" GB\nTotal Traffic: " + real_traffic.toFixed(2) + " GB (Upload: " + real_upload.toFixed(2) + " GB)\nConnection type : " + connection_typeValue[1];
+          this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb + "\nTotal Traffic: " + real_traffic.toFixed(2) + gb + " (Upload: " + real_upload.toFixed(2) + gb + ")\nConnection type : " + connection_typeValue[1];
           http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
-        } 
+        }
         // Grab info in mediumband
         else if( connection_typeValue[1] == "mediumband") {
           //var medium_DLValue = reg_medium_DL.exec(reply);
@@ -133,7 +140,7 @@ Dommel.prototype.callback = function(step, reply) {
     
           this.usedVolume = broad_TOTALValue[1]*1;
           this.totalVolume = this.usedVolume;
-          this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) +" GB (Real: " + real_traffic.toFixed(2) + " GB)\nConnection type : " + connection_typeValue[1];
+          this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb + " (Real: " + real_traffic.toFixed(2) + gb + ")\nConnection type : " + connection_typeValue[1];
           http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
         } else {
           this.reportError(step,this.name);
