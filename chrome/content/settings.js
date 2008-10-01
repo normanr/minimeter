@@ -10,7 +10,7 @@
 															"_New Zealand", "Xtra",
 															//"_Netherlands", "#Xs4all",
 															"_Russia", "Omsk:Omsk TeleCommunications", //"#Stream",
-															"_Turkey", "#Turk:Turk Telekom", 
+															"_Turkey", "#Turk:Türk Telekom", 
 															//"_England", "Bt",
 															"_Australia", "Internode",
 															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions"//, "Iburst"

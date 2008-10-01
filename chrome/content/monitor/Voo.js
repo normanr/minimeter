@@ -5,6 +5,7 @@ function Voo(username, password) {
     this.image = "voo.png";
     this.name = "Voo";
     this.url = "http://www.voo.be/index.php?action=gen_page&idx=43&check=2";
+    this.urlstart = "http://myvoo.voo.be";
 }
 
 Voo.prototype = new Monitor();
@@ -19,7 +20,7 @@ Voo.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "login="+this.username+"&PASSE="+this.password+"&Remplacer=Valider";
-        http_post('http://myvoo.voo.be/acces/Acces-Actuel.asp', postdata,this, 2);
+        http_post(this.urlstart+ '/acces/Acces-Actuel.asp', postdata,this, 2);
 				break;
 			case 2:
         reply = unescape(reply);
@@ -34,62 +35,44 @@ Voo.prototype.callback = function(step, reply) {
           this.update(false);
         }
         else if (regErrorUnknown.test(reply)) {
-          this.reportError();
+          this.reportError(step, this.name);
         }
         else {
-        var postdata = "hMenu=equip";
-        http_post('http://myvoo.voo.be/acces/Acces-Menu.asp', postdata,this, 3);
+        http_get(this.urlstart+ '/acces/Acces-ConsoMenu.asp',this, 3);
         }
 				break;
 			case 3:
-				var regMAC=/CLIENT_MAC=([0-9A-E]*)'/;
+				var regNum=/Affiche_page_conso_giga\('([0-9]*)'\)/;
         reply = unescape(reply);
-				if (!regMAC.test(reply)) {
-          this.reportError();
+				if (!regNum.test(reply)) {
+          this.reportError(step, this.name);
 				}
 				else {
-          var MACadress = regMAC.exec(reply);
+          var NumEquip = regNum.exec(reply);
           
-          var regConnTypeUnPeu = /Internet Un Peu/;
-          var regConnTypeBcp = /Internet Beaucoup/;
-          var regConnTypePassio = /Internet Passionn/;
-          
-          if(regConnTypeUnPeu.test(reply)) {
-            this.totalVolume = 0.5;
-          }
-          else
-            if(regConnTypeBcp.test(reply))
-              this.totalVolume = 0;
-            else
-              if(regConnTypePassio.test(reply)) {
-                this.totalVolume = 10;
-              }
-          
-          http_get("http://myvoo.voo.be/Giga/Index.asp?action=show_statistics_month&CLIENT_MAC="+MACadress[1], this, 4);
+          http_get("http://myvoo.voo.be/acces/Acces-ConsoGiga.asp?eq_no="+NumEquip[1], this, 4);
 				}
 				break;
       case 4:
-        var regused=/<td align="right" width="20%">([0-9.,]*)<\/td>\s*<td align="left" width="10%">&nbsp;&nbsp;M/;
+        var regUsedTot=/<td align="" >.*<\/td>\s*<td class="TEXT" align="right" >([0-9.]*)<\/td>\s*<td class="TEXT" align="right" >([0-9.]*)<\/td>\s*<td class="TEXT" align="right" >([0-9.]*)<\/td>\s*<td  class="TEXT" align="right"  style="font-size:10pt"><b>([0-9,]*)/;
+
         reply = unescape(reply);
-				if (!regused.test(reply)) {
-          this.reportError();
-				} else {
-          var volumeused = regused.exec(reply);
-          volumeused = volumeused[1].replace('.','');
-          volumeused = volumeused.replace(',','.');
-          volumeused = volumeused/1024;
-          this.usedVolume = volumeused;
-          if(this.totalVolume == 0.5) {
-            if(this.usedVolume > this.totalVolume)
-              this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*2*100)/100 + " EUR";
-          }
-          else
-            if(this.totalVolume == 10) {
-              if(this.usedVolume > this.totalVolume)
-                this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*100)/100 + " EUR";
-            }
-          this.remainingDays = getInterval("firstDayNextMonth");
-          this.update(true);
+				if (!regUsedTot.test(reply)) {
+          this.reportError(step, this.name);
+				}
+				else {
+			
+					var volumeUsedTot = regUsedTot.exec(reply);
+					
+					this.usedVolume = Math.round(volumeUsedTot[1]*1000)/1000;
+					this.totalVolume = Math.round(volumeUsedTot[2]*1000)/1000;
+
+					if(this.totalVolume != 0 && this.usedVolume > this.totalVolume)
+						if(volumeUsedTot[4] != 0)
+							this.amountToPay = volumeUsedTot[4] + " EUR";
+								
+					this.remainingDays = getInterval("firstDayNextMonth");
+					this.update(true);
 				}
 		}	
 }

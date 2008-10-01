@@ -5,7 +5,7 @@
 
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}</em:id>
-		<em:version>1.0.9.13</em:version>
+		<em:version>1.0.9.14</em:version>
 		<em:name>Minimeter</em:name>
 		
 		<em:description>Monitor your provider upload/download meter</em:description>
