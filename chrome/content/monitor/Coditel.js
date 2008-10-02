@@ -26,8 +26,8 @@ Coditel.prototype.callback = function(step, reply) {
         reply = unescape(reply);
         var regUsedTot = /<td>([0-9.]*) \/ ([0-9]*) GBytes\s*<\/tr>/;
         var regTotal = /<b class="forfait">([0-9]*) GBytes<\/b>/;
-        var regUpload = /<b class="down">[0-9.,]* GBytes<\/b> <span>\(([0-9]*) MBytes\)/;
-        var regDownload = /<b class="up">[0-9.,]* GBytes<\/b> <span>\(([0-9]*) MBytes\)/;
+        var regUpload = /<b class="down">[0-9.]* GBytes<\/b> <span>\(([0-9.]*) MBytes\)/;
+        var regDownload = /<b class="up">[0-9.]* GBytes<\/b> <span>\(([0-9.]*) MBytes\)/;
         
         var regErrorLogin=/Not Found|Format Incorrect/;
         if (regErrorLogin.test(reply)) {
@@ -41,7 +41,7 @@ Coditel.prototype.callback = function(step, reply) {
             this.totalVolume = volumeusedtot[2]*1;
           }
           else
-            if (regTotal.test(reply)) {
+            if (regTotal.test(reply) && regUpload.test(reply) && regDownload.test(reply)) {
               var volumeTotal = regTotal.exec(reply);
               var volumeUpload = regUpload.exec(reply);
               var volumeDownload = regDownload.exec(reply);
