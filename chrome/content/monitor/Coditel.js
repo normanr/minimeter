@@ -25,29 +25,45 @@ Coditel.prototype.callback = function(step, reply) {
       case 2:
         reply = unescape(reply);
         var regUsedTot = /<td>([0-9.]*) \/ ([0-9]*) GBytes\s*<\/tr>/;
+        var regTotal = /<b class="forfait">([0-9]*) GBytes<\/b>/;
+        var regUpload = /<b class="down">[0-9.,]* GBytes<\/b> <span>\(([0-9]*) MBytes\)/;
+        var regDownload = /<b class="up">[0-9.,]* GBytes<\/b> <span>\(([0-9]*) MBytes\)/;
         
-        if (!regUsedTot.test(reply)){
-          var regErrorLogin=/Not Found|Format Incorrect/;
-          if (regErrorLogin.test(reply))
-            this.badLoginOrPass();
-          else
-            this.reportError();
+        var regErrorLogin=/Not Found|Format Incorrect/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
           break;
         }
-        else {
-          var volumeusedtot = regUsedTot.exec(reply);
-
-          this.usedVolume = volumeusedtot[1]*1;
-          this.totalVolume = volumeusedtot[2]*1;
-          this.remainingDays = getInterval("firstDayNextMonth");
-          if (this.usedVolume > this.totalVolume) {
-            if (this.totalVolume == 3)
-              this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*2*100)/100 + " EUR";
-            else
-              this.amountToPay = Math.round((this.usedVolume - this.totalVolume)*0.5*100)/100 + " EUR";
+        else
+          if (regUsedTot.test(reply)) {
+            var volumeusedtot = regUsedTot.exec(reply);
+            this.usedVolume = volumeusedtot[1]*1;
+            this.totalVolume = volumeusedtot[2]*1;
           }
-          this.update(true);
-        }
+          else
+            if (regTotal.test(reply)) {
+              var volumeTotal = regTotal.exec(reply);
+              var volumeUpload = regUpload.exec(reply);
+              var volumeDownload = regDownload.exec(reply);
+              this.totalVolume = volumeTotal[1]*1;
+              this.usedVolume = Math.round((volumeUpload[1]*1 + volumeDownload[1]*1)/1024*1000)/1000;
+            }
+            else {
+              this.reportError();
+              break;
+            }
+  
+            this.remainingDays = getInterval("firstDayNextMonth");
+            if (this.usedVolume > this.totalVolume) {
+              if (this.totalVolume == 3) // 2€ / Gio
+                this.amountToPay = Math.floor(this.usedVolume - this.totalVolume)*2 + " EUR";
+              else
+                if (this.totalVolume == 30 || this.totalVolume == 60) // 5€ / 10 Gio
+                  this.amountToPay = Math.floor((this.usedVolume - this.totalVolume)/10)*10*5 + " EUR";
+                else // 0.5€ / 250 Mio
+                  this.amountToPay = Math.floor((this.usedVolume - this.totalVolume)*4)*0.5 + " EUR";
+            }
+            this.update(true);
     }
 }
 
