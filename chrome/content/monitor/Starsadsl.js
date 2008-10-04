@@ -24,7 +24,7 @@ Starsadsl.prototype.callback = function(step, reply) {
       case 2:
         reply = unescape(reply);
         //var regEventtarget=/PostBackOptions(" value="([0-9a-zA-Z\/=+]*)"/;
-        var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=]*)"/;
+        var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=+]*)"/;
         var regEventvalidation=/EVENTVALIDATION" value="([0-9a-zA-Z\/=+]*)"/;
         if (!regViewstate.test(reply)) {
           this.reportError(step, this.name);
@@ -54,7 +54,7 @@ Starsadsl.prototype.callback = function(step, reply) {
       case 4:
         reply = unescape(reply);
         
-        var regusedtotal=/VolumeMaand_0">([0-9,]*) GB \/ ([0-9,]*) GB<\/span>/;
+        var regusedtotal=/([0-9,]*) GB \/ ([0-9,]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name);
           break;
