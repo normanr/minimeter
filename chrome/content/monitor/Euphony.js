@@ -22,7 +22,7 @@ Euphony.prototype.callback = function(step, reply) {
         http_post('http://my.euphonynet.be/index.php', postdata,this, 2);
 				break;
 			case 2:
-				var regUsedAllowed=/<b>([0-9.]*) GB<\/b> [a-z]* <b>([0-9]*) GB<\/b>/;
+				var regUsedAllowed=/<b>([0-9.]*) GB<\/b> [a-z]* <b>([0-9.]*) GB<\/b>/;
         reply = unescape(reply);
 				if (!regUsedAllowed.test(reply)) {
            this.reportError();
