@@ -19,7 +19,7 @@ Belcenter.prototype.callback = function(step, reply) {
        default:
        case 1:
           var postdata = "login="+this.username+"&password="+this.password+"&B1=Envoyer&server=smtp.belcenter.com&port=143&maildomain=belcenter.com&protocol=imap&mailbox=INBOX&redirect_url=&actionID=105&realm=belcenter.com&new_lang=fr_FR&imapuser=USERNAME&pass=PASSWORD";
-          http_post('https://secure.belcenter.com/Adsl.FrontEnd.FR/My.Adsl/', postdata,this, 2);
+          http_post(this.url, postdata,this, 2);
           break;
           
        case 2:
