@@ -6,6 +6,8 @@ function Belcenter(username, password) {
     this.url = "https://secure.belcenter.com/Adsl.FrontEnd.FR/My.Adsl/";
 }
 
+// corriger aussi Eleven
+
 Belcenter.prototype = new Monitor();
 
 Belcenter.prototype.callback = function(step, reply) {

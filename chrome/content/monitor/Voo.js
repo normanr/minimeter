@@ -8,6 +8,8 @@ function Voo(username, password) {
     this.urlstart = "http://myvoo.voo.be";
 }
 
+// corriger aussi Tvcablenet
+
 Voo.prototype = new Monitor();
 
 Voo.prototype.callback = function(step, reply) {
@@ -50,7 +52,7 @@ Voo.prototype.callback = function(step, reply) {
 				else {
           var NumEquip = regNum.exec(reply);
           
-          http_get("http://myvoo.voo.be/acces/Acces-ConsoGiga.asp?eq_no="+NumEquip[1], this, 4);
+          http_get(this.urlstart+ "/acces/Acces-ConsoGiga.asp?eq_no="+NumEquip[1], this, 4);
 				}
 				break;
       case 4:
