@@ -37,7 +37,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
           this.update(false);
         }
         else if (regErrorUnknown.test(reply)) {
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
         }
         else {
         http_get(this.urlstart+ '/acces/Acces-ConsoMenu.asp',this, 3);
@@ -47,7 +47,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
 				var regNum=/Affiche_page_conso_giga\('([0-9]*)'\)/;
         reply = unescape(reply);
 				if (!regNum.test(reply)) {
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
 				}
 				else {
           var NumEquip = regNum.exec(reply);
@@ -60,7 +60,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
 
         reply = unescape(reply);
 				if (!regUsedTot.test(reply)) {
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
 				}
 				else {
 			

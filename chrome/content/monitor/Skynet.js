@@ -25,7 +25,7 @@ Skynet.prototype.callback = function(step, reply) {
          break;
        case 2:
          reply = unescape(reply);
-         var regErrorLogin = /Login failed/;
+         var regErrorLogin = /HPDIA0200W   Authen/;
          if (regErrorLogin.test(reply))
            tryAgain(this, "oldMethod");
          else {
@@ -48,7 +48,7 @@ Skynet.prototype.callback = function(step, reply) {
               tryAgain(this, 2);
             }
             else
-              this.reportError();
+              this.reportError(step, this.name, escape(reply));
          }
          else {
            var adrQuota = regAdrQuota.exec(reply);

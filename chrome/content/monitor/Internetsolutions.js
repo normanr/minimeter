@@ -24,7 +24,12 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			  break;
 
 			case 2:
-
+        reply = unescape(reply);
+        var regErrorLogin=/User Name or Password/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
+          break;
+        }
 			  http_get(this.url + 'loginhistoryuid.php', this, 3);
 			  break;
 
@@ -33,7 +38,7 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			  var reg = /ACCOUNT HISTORY.*<td>([0-9]+):.*<td>([0-9\.]+) MB.*<td>([0-9\.]+) MB.*<td>([0-9\.]+) MB/;
 
 			  if(!reg.test(reply)){
-			    this.reportError();
+			    this.reportError(step, this.name, escape(reply));
 			  } else {
 			    var volume = reg.exec(reply);
 			    var hours = volume[1];

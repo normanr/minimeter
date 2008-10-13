@@ -123,7 +123,7 @@ function http_post(purl, postdata, callback, step, cookie, contenttype){
             if (req.responseText == '')
               monitor.error = "connection";
             if (callback == "reportError")
-              monitor.reportError(null, null, escape(req.responseText));
+              monitor.reportError(null, null, null, escape(req.responseText));
             else
               if(callback != "errorPing")
                 callback.callback(step, escape(req.responseText));

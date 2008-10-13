@@ -46,7 +46,7 @@ Mobistar.prototype.callback = function(step, reply) {
         reply = unescape(reply);
 			
         if((!regUsedMB.test(reply) && !regUsedGB.test(reply) && !regUsedExceeded.test(reply)) || !regAllowed.test(reply)){
-          this.reportError();
+          this.reportError(step, this.name, escape(reply));
           break;
         }
         else {

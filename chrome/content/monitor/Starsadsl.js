@@ -27,7 +27,7 @@ Starsadsl.prototype.callback = function(step, reply) {
         var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=+]*)"/;
         var regEventvalidation=/EVENTVALIDATION" value="([0-9a-zA-Z\/=+]*)"/;
         if (!regViewstate.test(reply)) {
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
           break;
         }
         viewstate = (regViewstate.exec(reply));
@@ -56,7 +56,7 @@ Starsadsl.prototype.callback = function(step, reply) {
         
         var regusedtotal=/([0-9,]*) GB \/ ([0-9,]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
           break;
         }
         var volumeusedtotal = regusedtotal.exec(reply);

@@ -49,7 +49,7 @@ Coditel.prototype.callback = function(step, reply) {
               this.usedVolume = Math.round((volumeUpload[1]*1 + volumeDownload[1]*1)/1024*1000)/1000;
             }
             else {
-              this.reportError();
+              this.reportError(step, this.name, escape(reply));
               break;
             }
   

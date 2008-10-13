@@ -23,6 +23,12 @@ Internetexpres.prototype.callback = function(step, reply) {
 				//http_get('http://localhost/o2/index.htm', this, 2);
 				break;
 			case 2:
+        reply = unescape(reply);
+        var regErrorLogin=/no nebo heslo/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
+          break;
+        }
 				http_get('https://konto.o2shop.cz/index.aspx', this, 3);
 				//http_get('http://localhost/o2/index.htm', this, 3);				
 				break;
@@ -30,7 +36,7 @@ Internetexpres.prototype.callback = function(step, reply) {
 				reply = unescape(reply);
 				var reg = /<span class="tableTerraCurrent">[0-9,]*/;
 				if(!reg.test(reply)){
-					this.reportError();
+					this.reportError(step, this.name, escape(reply));
 				} else {
 					var volume = reg.exec(reply);
 					var s = new String(volume[0]);				

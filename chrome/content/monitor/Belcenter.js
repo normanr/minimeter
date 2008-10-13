@@ -36,7 +36,7 @@ Belcenter.prototype.callback = function(step, reply) {
              break;
            }
            else {
-             this.reportError();
+             this.reportError(step, this.name, escape(reply));
              break;
            }
          } 

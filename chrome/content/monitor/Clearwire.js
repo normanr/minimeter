@@ -33,7 +33,7 @@ Clearwire.prototype.callback = function(step, reply) {
             this.badLoginOrPass();
           }
           else
-            this.reportError();
+            this.reportError(step, this.name, escape(reply));
 				} else {
             var volumeused = regused.exec(reply);
             var volumetotal = regtotal.exec(reply);
@@ -43,7 +43,5 @@ Clearwire.prototype.callback = function(step, reply) {
             this.remainingDays = getInterval("nearestOccurence", dateend[1]);
             this.update(true);
 				}
-					
 		}	
-				
 }

@@ -9,6 +9,7 @@ function Monitor(){
 	this.remainingAverage = '';
 	this.newData = false; // is the new data different from the old one ? (for the animation)
 	this.error = "no";
+	this.pageContent = null;
 
 }
 
@@ -48,7 +49,12 @@ Monitor.prototype.getCapacity = function(){
 	return capacity;
 }
 
-Monitor.prototype.reportError = function(step, monitor, reply){
+Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
+  if (pageContent != null) {
+    this.cleanPage (pageContent);
+    this.pageContent = this.pageContent + "&step="+ step;
+  }
+
   if (this.error == "connection" || this.error == "server") {
     this.errorMessage = getString("error."+this.error);
 	  minimeterprefs.setCharPref("error", this.error);
@@ -74,8 +80,9 @@ Monitor.prototype.reportError = function(step, monitor, reply){
 					dumpMessage = dumpMessage.replace ("%monitor", monitor);
 					consoleDump(dumpMessage);
 				}
+				var extVersion = this.getExtVersion();
 				var module = this.image.substring(0,this.image.indexOf("."));
-				http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&status=check", "reportError");
+				http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&extversion="+ extVersion +"&status=check", "reportError");
       }
     }
     else {
@@ -87,7 +94,35 @@ Monitor.prototype.reportError = function(step, monitor, reply){
         minimeterprefs.setCharPref("errorExtraMessage", "extraReported");
       }
       else {
+        var sendDebug = minimeterprefs.getBoolPref('sendDebug');
         this.errorMessage = getString("error.unknown");
+        if (!sendDebug) {
+          this.extraMessage = getString("error.extraDebug");
+          minimeterprefs.setCharPref("errorExtraMessage", "extraDebug");
+        }
+        
+        var regTestDebug = /debug/;
+        
+        if (regTestDebug.test(reply) && this.pageContent != null) {
+          if (sendDebug) {
+            this.pageContent = "&pageContent=" + this.pageContent;
+            
+            var extVersion = this.getExtVersion();
+            var module = this.image.substring(0,this.image.indexOf("."));
+            var regLastExtVersion = new RegExp("<lastExtVersion(-"+module+"|)>([0-9.]*)<\/lastExtVersion(-"+module+"|)>", "");
+            var lastExtVersion;
+            if (regLastExtVersion.test(reply)) {
+              lastExtVersion = regLastExtVersion.exec(reply);
+              lastExtVersion = lastExtVersion[2];
+            }
+            if (extVersion == lastExtVersion) {
+            
+              http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&status=debug", "errorPing");
+            }
+
+          }
+        }
+        this.pageContent = null;
       }
     }
   }
@@ -109,13 +144,53 @@ Monitor.prototype.badLoginOrPass = function(provider){
 	this.update(false);
 }
 
+Monitor.prototype.getExtVersion = function(){
+  var nsIUpdateItem = Components.interfaces.nsIUpdateItem;
+  var itemType = nsIUpdateItem.TYPE_EXTENSION;
+  var liExtensionManager = Components.classes["@mozilla.org/extensions/manager;1"]
+                .getService(Components.interfaces.nsIExtensionManager);
+            
+  items = liExtensionManager.getItemList(itemType, { });
+  var extVersion;
+  for (var i in items) {
+    if (items[i].id == "{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}" ) {
+      extVersion = items[i].version;
+    }
+  }
+  
+  return extVersion;
+}
+
+Monitor.prototype.cleanPage = function(pageContent){
+  pageContent = unescape(pageContent);
+  var regUsername = new RegExp("" + this.username + "", "gi");
+  var regPassword = new RegExp("" + this.password + "", "gi");
+  var textToReplace = minimeterprefs.getCharPref('textToReplace');
+
+  pageContent = pageContent.replace (regUsername,"monlogin");
+  pageContent = pageContent.replace (regPassword,"monpassword");
+  
+  if (textToReplace != "") {
+    textToReplace = textToReplace.split (",");
+    var toreplace;
+    var regToreplace;
+    
+    for each (toreplace in textToReplace) {
+      regToreplace = new RegExp("" + toreplace + "", "gi");
+      pageContent = pageContent.replace (regToreplace,"replaced");
+    }
+  }
+  this.pageContent = encode64(pageContent);
+}
+
 Monitor.prototype.errorPing = function(status){
   var date = new Date().getDate();
   var lastPing = minimeterprefs.getIntPref('lastPing');
+
   if (date != lastPing) {
     minimeterprefs.setIntPref('lastPing', date);
     var module = this.image.substring(0,this.image.indexOf("."));
-    consoleDump("Sending error ping to developer for module "+ this.name);
+    
     http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&status="+status, "errorPing");
   }
 }

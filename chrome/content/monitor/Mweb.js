@@ -29,7 +29,7 @@ Mweb.prototype.callback = function(step, reply) {
 			  var reg = /<th>Combined \(Bytes\).*?<tr><td>([0-9\.]*)<\/td><td>([0-9]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td>/;
 
 			  if(!reg.test(reply)){
-					this.reportError();
+					this.reportError(step, this.name, escape(reply));
 			  } else {
 			    var volume = reg.exec(reply);
 			    var sessions = volume[1];

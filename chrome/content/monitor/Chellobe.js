@@ -34,7 +34,7 @@ Chellobe.prototype.callback = function(step, reply) {
             this.badLoginOrPass();
           }
           else
-            this.reportError();
+            this.reportError(step, this.name, escape(reply));
 				} else {
             var volumeused = regused.exec(reply);
             this.usedVolume = Math.round(volumeused[1]*1000/1024)/1000;

@@ -25,7 +25,7 @@ Euphony.prototype.callback = function(step, reply) {
 				var regUsedAllowed=/<b>([0-9.]*) GB<\/b> [a-z]* <b>([0-9.]*) GB<\/b>/;
         reply = unescape(reply);
 				if (!regUsedAllowed.test(reply)) {
-           this.reportError();
+           this.reportError(step, this.name, escape(reply));
            break;
 				}
         else {

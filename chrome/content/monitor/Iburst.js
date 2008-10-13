@@ -31,7 +31,7 @@ Iburst.prototype.callback = function(step, reply) {
 			  var reg = /Gebruikt volume voor deze maand <strong>   ([0-9\.]+) GB<\/strong> van de beschikbare <strong>(.*) GB<\/strong>/;
 			  
 			  if(!reg.test(reply)){
-					this.reportError();
+					this.reportError(step, this.name, escape(reply));
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = volume[1];

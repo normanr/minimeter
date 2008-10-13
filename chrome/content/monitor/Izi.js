@@ -36,7 +36,7 @@ Izi.prototype.callback = function(step, reply) {
 				var regAllowed = /97.647058823529px;">([0-9]*) Go<\/div>/;
 				var regDateEnd = /du ([0-9]*)[0-9\/]* au [0-9\/]*/;
 				if (!regused.test(reply) || !regAllowed.test(reply))
-          this.reportError();
+          this.reportError(step, this.name, escape(reply));
 			  else {
           var volumeused = regused.exec(reply);
           var volumetotal = regAllowed.exec(reply);

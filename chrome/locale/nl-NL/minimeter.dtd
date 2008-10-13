@@ -2,9 +2,10 @@
 <!ENTITY tab.provider "Provider">
 <!ENTITY tab.statusbar "Statusbalk">
 <!ENTITY tab.checking "Miscellaneous">
-<!ENTITY label.provider "Provider">
-<!ENTITY label.username "Gebruiker">
-<!ENTITY label.password "Paswoord">
+<!ENTITY tab.advanced "Advanced">
+<!ENTITY label.provider "Provider:">
+<!ENTITY label.username "Gebruiker:">
+<!ENTITY label.password "Paswoord:">
 
 <!ENTITY label.capacity "Capaciteit (GB)">
 <!ENTITY checkbox.flatrate "Geen limiet">
@@ -21,3 +22,7 @@
 <!ENTITY menu.refresh "Ververs gegevens">
 <!ENTITY menu.stats "Toon de provider webpagina">
 <!ENTITY menu.preferences "Instellingen">
+
+<!ENTITY checkbox.sendDebug "Help correcting my provider's module">
+<!ENTITY label.textToReplace "Additional text to remove:">
+<!ENTITY label.moreInfo "More information">

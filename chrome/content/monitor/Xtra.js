@@ -8,14 +8,6 @@ function Xtra(username, password) {
 
 Xtra.prototype = new Monitor();
 
-Xtra.prototype.check = function() {
-		this.state = this.STATE_BUSY;
-		this.notify();
-		this.callback(1);
-}
-
-
-
 Xtra.prototype.callback = function(step, reply) {
 
     if(this.aborted()){
@@ -39,7 +31,7 @@ Xtra.prototype.callback = function(step, reply) {
 			  var total = /color=\"#003366\"><b>([0-9.]*) MB<\/b>/;
 			  
 			  if(!total.test(reply) || !used.test(reply)){
-					this.reportError();
+					this.reportError(step, this.name, escape(reply));
 			  } else {
 			  
 			    var totalValue = total.exec(reply);

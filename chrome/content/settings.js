@@ -91,7 +91,10 @@
           minimeterprefs.setBoolPref("showRemainingAverage", 
               document.getElementById('showRemainingAverage').checked);
           minimeterprefs.setCharPref("provider", provider.value);
-          minimeterprefs.setCharPref("capacitychar", capacity);      
+          minimeterprefs.setCharPref("capacitychar", capacity);
+          minimeterprefs.setBoolPref("sendDebug", 
+              document.getElementById('sendDebug').checked);
+          minimeterprefs.setCharPref("textToReplace", textToReplace);
           credentials.store(
               username ,
               document.getElementById("password").value);  
@@ -110,6 +113,8 @@
     
     function initOptions()
     {
+      sendDebug = minimeterprefs.getBoolPref('sendDebug');
+      textToReplace = minimeterprefs.getCharPref('textToReplace');
     	updateTimeout = minimeterprefs.getIntPref('updateTimeout');
     	showtext = minimeterprefs.getBoolPref('showtext');
     	showmeter = minimeterprefs.getBoolPref('showmeter');
@@ -128,6 +133,8 @@
       
       capacity = minimeterprefs.getCharPref('capacitychar');
     	
+      document.getElementById('sendDebug').checked = sendDebug;
+      document.getElementById('textToReplace').value = textToReplace;
       document.getElementById('updateTimeout').value = updateTimeout /60;
       document.getElementById('showtext').checked = showtext;
       document.getElementById('showmeter').checked = showmeter;
@@ -216,3 +223,29 @@
 	
 		document.getElementById('flatratedesc').hidden = !val;
 	}
+	
+function moreInfo() {
+  const Cc = Components.classes;
+  const Ci = Components.interfaces;
+  var nsIWM = Cc["@mozilla.org/appshell/window-mediator;1"]
+              .getService(Ci.nsIWindowMediator);
+  var myWindow = nsIWM.getMostRecentWindow("navigator:browser");
+  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+                        .getService(Components.interfaces.nsIPrefService);
+  var browserprefs = prefService.getBranch("general.useragent.");
+  var locale = browserprefs.getCharPref('locale');
+  var url;
+  if (locale == "fr")
+    url = "http://extensions.geckozone.org/Minimeter#correction";
+  else
+    url = "http://extensions.geckozone.org/Minimeter-en#correction";
+  
+  if (myWindow) {
+    var newTab = myWindow.getBrowser().addTab(url);
+    myWindow.getBrowser().selectedTab = newTab;
+    //myWindow.content.focus();
+  } else {
+    window.opener.open(url);
+  }
+  window.self.focus();
+}

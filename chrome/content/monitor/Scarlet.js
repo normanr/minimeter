@@ -1,4 +1,3 @@
-
 function Scarlet(username, password) {
     this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
@@ -14,20 +13,12 @@ function Scarlet(username, password) {
 
 Scarlet.prototype = new Monitor();
 
-Scarlet.prototype.check = function() {
-		this.state = this.STATE_BUSY;
-		this.notify();
-		this.callback(1);
-}
-
-
 Scarlet.prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
     }
 
- 
 		switch(step)
 		{
 			default:
@@ -35,6 +26,12 @@ Scarlet.prototype.callback = function(step, reply) {
 				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, this.nextCase);
 				break;
       case 2:
+        reply = unescape(reply);
+        var regErrorLogin=/(utilisateur ou mot de passe incorrect|gebruikersnaam of wachtwoord is fout)/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
+          break;
+        }
         http_get('http://customercare.scarlet.be/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, 3);
         break;
    		case 3:
@@ -46,7 +43,7 @@ Scarlet.prototype.callback = function(step, reply) {
 			  var used = /<th class="digit">(.*)\s*([MG])B<\/th>\s*<\/tr>(\s*<\/tbody>|)\s*<\/table>/;
 			  
 			  if( !total.test(reply) || !used.test(reply) ){
-					this.reportError();
+					this.reportError(step, this.name, escape(reply));
 			  } else {
           
 			    var totalValue = total.exec(reply);

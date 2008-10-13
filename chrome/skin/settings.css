@@ -6,9 +6,15 @@ border-color:  Menu !important;
 
 #provider menuitem[value], #provider menuitem[value]:hover {
   background-repeat: no-repeat !important;
-  background-position: 4px 5px !important;
+  background-position: 4px 3px !important;
   padding-left: 25px !important;
-  padding-top: 5px !important; padding-bottom: 5px !important;
+  padding-top: 4px !important; padding-bottom: 4px !important;
+  padding-right: 28px;
+
+}
+
+.menulist-label {
+  margin-bottom: 1px !important;
 }
 
 row > label  { /* exclude checkbox'*/
@@ -20,4 +26,12 @@ padding-top: 3px;
 
 description {
 	margin-left: 10px; margin-top: 15px;
+}
+.url {
+  color: blue;
+  text-decoration: underline;
+}
+.url:hover {
+  color: red;
+  cursor: pointer;
 }

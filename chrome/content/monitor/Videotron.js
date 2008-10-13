@@ -35,7 +35,7 @@ Videotron.prototype.callback = function(step, reply) {
           else {
             if (regErrorServer.test(reply))
               this.error = "server";
-            this.reportError();
+            this.reportError(step, this.name, escape(reply));
             break;
           }
         }

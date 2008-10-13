@@ -48,7 +48,7 @@ Tele2.prototype.callback = function(step, reply) {
         if (!regDateEnd.test(reply)) {
 					if (regServerError.test(reply))
 						this.error = "server";
-          this.reportError();
+          this.reportError(step, this.name, escape(reply));
           break;
         } else {
             var dateEnd = regDateEnd.exec(reply);

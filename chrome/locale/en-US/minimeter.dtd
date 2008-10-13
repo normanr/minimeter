@@ -2,9 +2,10 @@
 <!ENTITY tab.provider "Provider">
 <!ENTITY tab.statusbar "Statusbar">
 <!ENTITY tab.checking "Miscellaneous">
-<!ENTITY label.provider "Provider">
-<!ENTITY label.username "Username">
-<!ENTITY label.password "Password">
+<!ENTITY tab.advanced "Advanced">
+<!ENTITY label.provider "Provider:">
+<!ENTITY label.username "Username:">
+<!ENTITY label.password "Password:">
 
 <!ENTITY label.capacity "Capacity (GiB)">
 <!ENTITY checkbox.flatrate "Flatrate">
@@ -21,3 +22,7 @@
 <!ENTITY menu.refresh "Refresh data">
 <!ENTITY menu.stats "Show stats webpage">
 <!ENTITY menu.preferences "Preferences">
+
+<!ENTITY checkbox.sendDebug "Help correcting my provider's module">
+<!ENTITY label.textToReplace "Additional text to remove:">
+<!ENTITY label.moreInfo "More information">

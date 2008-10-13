@@ -23,6 +23,13 @@ Fulladsl.prototype.callback = function(step, reply) {
 				http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx', postdata,this, 2);
 				break;
 			case 2:
+        reply = unescape(reply);
+        var regErrorLogin=/(pas pu retrouver la combinaison de votre nom|konden de combinatie van je gebruikersnaam en wachtwoord niet)/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
+          break;
+        }
+			
 				http_get('http://myaccount.fulladsl.be/Beheer/Datavolume/Index.aspx', this, 3);
 				break;
 			case 3:
@@ -30,10 +37,10 @@ Fulladsl.prototype.callback = function(step, reply) {
 			  var reg = /\>([0-9,]+) Gb \/ ([0-9,]+) Gb<\/span><\/td>/;
 
 			  if(!reg.test(reply)){
-					this.notLoggedin();
+            this.reportError(step, this.name, escape(reply));
 			  } else {
 			  
-			    var volume = reg.exec(reply);
+            var volume = reg.exec(reply);
 	
       			this.usedVolume = ( volume[1].replace(",",".")*1 );
       			this.totalVolume =  ( volume[2].replace(",",".")*1) ;

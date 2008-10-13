@@ -2,9 +2,10 @@
 <!ENTITY tab.provider "Poskytovatel">
 <!ENTITY tab.statusbar "Stavový řádek">
 <!ENTITY tab.checking "Miscellaneous">
-<!ENTITY label.provider "Poskytovatel">
-<!ENTITY label.username "Uživatelské jméno">
-<!ENTITY label.password "Heslo">
+<!ENTITY tab.advanced "Advanced">
+<!ENTITY label.provider "Poskytovatel:">
+<!ENTITY label.username "Uživatelské jméno:">
+<!ENTITY label.password "Heslo:">
 
 <!ENTITY label.capacity "Max. objem v GB">
 <!ENTITY checkbox.flatrate "Bez limitu">
@@ -21,3 +22,7 @@
 <!ENTITY menu.refresh "Obnovit údaje">
 <!ENTITY menu.stats "Zobrazit statistiku">
 <!ENTITY menu.preferences "Předvolby">
+
+<!ENTITY checkbox.sendDebug "Help correcting my provider's module">
+<!ENTITY label.textToReplace "Additional text to remove:">
+<!ENTITY label.moreInfo "More information">

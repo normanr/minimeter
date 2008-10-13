@@ -27,7 +27,7 @@ Orange.prototype.callback = function(step, reply) {
          var regSupp = /dit :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
         
          if(!regRemaining.test(reply) || !regTotal.test(reply)){
-             this.reportError();
+             this.reportError(step, this.name, escape(reply));
              break;
          } else {
              var volume = null;

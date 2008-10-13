@@ -26,6 +26,7 @@
 		<tab label="&tab.provider;" selected="true"/>
 		<tab label="&tab.statusbar;"/>
 		<tab label="&tab.checking;"/>
+		<tab label="&tab.advanced;"/>
 	</tabs>
 	<tabpanels>
 	<tabpanel id="credentials" orient="vertical" height="110">
@@ -93,6 +94,16 @@
     
     <checkbox id="useSI" checked="true" label="&checkbox.useSI;"/>
     
+	</tabpanel>
+	
+	<tabpanel id="advanced" orient="vertical">
+    <checkbox id="sendDebug" checked="false" label="&checkbox.sendDebug;"/>
+    <separator orient="vertical" class="thin"/>
+    <label control="textToReplace" value="&label.textToReplace;"/>
+    <textbox id="textToReplace" maxlength="255" value=""/>
+    <separator orient="vertical" class="thin"/>
+    <label id="moreInfo" value="&label.moreInfo;" class="url" onclick="moreInfo()"/>
+
 	</tabpanel>
 	
 	</tabpanels>

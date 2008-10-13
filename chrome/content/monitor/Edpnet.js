@@ -30,7 +30,7 @@ Edpnet.prototype.callback = function(step, reply) {
         reply = unescape(reply);
         var regViewstateID=/VIEWSTATE_ID" value="([0-9a-z-]*)"/;
         if (!regViewstateID.test(reply)) {
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
           break;
         }
         viewstateID = regViewstateID.exec(reply);
@@ -55,7 +55,7 @@ Edpnet.prototype.callback = function(step, reply) {
         reply = unescape(reply);
         var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         if(!regNumConn.test(reply)) {
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
         }
         else {
           numConnection = regNumConn.exec(reply);
@@ -74,7 +74,7 @@ Edpnet.prototype.callback = function(step, reply) {
         var regDateEnd = /([0-9]*)-[0-9]*-[0-9]*<\/b><\/span><\/td>/;
         
         if(!regUsed.test(reply) || (!regIncluded.test(reply) && !regAllowed.test(reply))){
-          this.reportError(step, this.name);
+          this.reportError(step, this.name, escape(reply));
           break;
         }
         

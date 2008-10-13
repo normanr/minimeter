@@ -28,7 +28,7 @@ Karneval.prototype.callback = function(step, reply) {
 				//var reg = /traffic.php' class='list2'>([0-9.]*) (G|M)B \/ ([0-9.]*) (G|M)B <\/a>/;
 				var reg = /<td>([0-9,]*)(G|M)B<\/td>\s*<td>([0-9,]*)(G|M)B/;
 				if(!reg.test(reply)){
-					this.reportError();
+					this.reportError(step, this.name, escape(reply));
 				} else {
 					var volume = reg.exec(reply);
 					s1 = new String (volume[1]);

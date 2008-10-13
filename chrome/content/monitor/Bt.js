@@ -29,8 +29,7 @@ Bt.prototype.callback = function(step, reply) {
 			  var reg = /([0-9\.]+) ([0-9]+) ([0-9\/]+)/;
 
 			  if(!reg.test(reply)){
-			     this.errorMessage = "Probably not logged in correctly";
-			     this.update(false);
+			     this.reportError(step, this.name, escape(reply));
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = volume[1];

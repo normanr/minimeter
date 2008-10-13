@@ -25,9 +25,11 @@
     	
 		</toolbaritem>
 	</toolbarpalette>
-	
- 
-  <statusbar id="status-bar">
+
+	<window id="main-window">
+
+
+	<popupset id="minimeter-popupset">
     <popup id="minimeter-context-menu">
       <menuitem label="&menu.refresh;" oncommand="checkNow();" />
       <menuitem id="showPage" label="&menu.stats;" oncommand="loadPage();" />
@@ -58,7 +60,13 @@
           <vbox style="padding-top: 2px; " id="extra"/>
         </hbox>
     </tooltip> 
-    
+	</popupset>
+	
+		</window>
+
+	
+ 
+  <statusbar id="status-bar">
     <statusbarpanel context="minimeter-context-menu" id="minimeter-statusbar"  
          insertafter="page-report-button"
          tooltip="minimeter-tooltip">

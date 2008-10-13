@@ -45,7 +45,7 @@ Dommel.prototype.callback = function(step, reply) {
       var servidValue = servid.exec(reply);
       var client_idValue = client_id.exec(reply);
       if( !servid.test(reply) || !client_id.test(reply) ){
-        this.reportError();
+        this.reportError(step, this.name, escape(reply));
       } else {
         var servidValue = servid.exec(reply);
         var client_idValue = client_id.exec(reply);
@@ -69,7 +69,7 @@ Dommel.prototype.callback = function(step, reply) {
       var reg_remainingDays = /days remaining: ([0-9]+)/;
     
       if( !reg_connection_type.test(reply)) {
-        this.reportError(step,this.name);
+        this.reportError(step, this.name, escape(reply));
       } else {
         // Grab connection type (broadband|mediumband)
         var connection_typeValue = reg_connection_type.exec(reply);
@@ -143,7 +143,7 @@ Dommel.prototype.callback = function(step, reply) {
           this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb + " (Real: " + real_traffic.toFixed(2) + gb + ")\nConnection type : " + connection_typeValue[1];
           http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
         } else {
-          this.reportError(step,this.name);
+          this.reportError(step, this.name, escape(reply));
         }
       }
       break;                    

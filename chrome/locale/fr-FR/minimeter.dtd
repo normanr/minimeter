@@ -2,9 +2,10 @@
 <!ENTITY tab.provider "Fournisseur d'accès">
 <!ENTITY tab.statusbar "Barre d'état">
 <!ENTITY tab.checking "Divers">
-<!ENTITY label.provider "Fournisseur d'accès">
-<!ENTITY label.username "Nom d'utilisateur">
-<!ENTITY label.password "Mot de passe">
+<!ENTITY tab.advanced "Avancé">
+<!ENTITY label.provider "Fournisseur d'accès :">
+<!ENTITY label.username "Nom d'utilisateur :">
+<!ENTITY label.password "Mot de passe :">
 
 <!ENTITY label.capacity "Capacité (Gio)">
 <!ENTITY checkbox.flatrate "Illimité">
@@ -21,3 +22,7 @@
 <!ENTITY menu.refresh "Mise à jour des informations">
 <!ENTITY menu.stats "Afficher la page web du fournisseur">
 <!ENTITY menu.preferences "Paramètres">
+
+<!ENTITY checkbox.sendDebug "Aider à la correction du module de mon fournisseur">
+<!ENTITY label.textToReplace "Texte supplémentaire à supprimer :">
+<!ENTITY label.moreInfo "Plus d'informations">

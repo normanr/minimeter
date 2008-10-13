@@ -2,9 +2,10 @@
 <!ENTITY tab.provider "İSS">
 <!ENTITY tab.statusbar "Durum Çubuğu">
 <!ENTITY tab.checking "Miscellaneous">
-<!ENTITY label.provider "İSS">
-<!ENTITY label.username "Kullanıcı Adı">
-<!ENTITY label.password "Şifre">
+<!ENTITY tab.advanced "Advanced">
+<!ENTITY label.provider "İSS:">
+<!ENTITY label.username "Kullanıcı Adı:">
+<!ENTITY label.password "Şifre:">
 
 <!ENTITY label.capacity "Kota (GB)">
 <!ENTITY checkbox.flatrate "Limitsiz">
@@ -21,3 +22,7 @@
 <!ENTITY menu.refresh "Verileri güncelle">
 <!ENTITY menu.stats "ADSL kota sayfasını göster">
 <!ENTITY menu.preferences "Seçenekler">
+
+<!ENTITY checkbox.sendDebug "Help correcting my provider's module">
+<!ENTITY label.textToReplace "Additional text to remove:">
+<!ENTITY label.moreInfo "More information">

@@ -66,6 +66,7 @@ Telenet.prototype.callback = function(step, reply) {
           else {
             this.errorMessage = "Webservice error : " + errorMessage[4];
             consoleDump(errorMessage[2] + " " + errorMessage[4]);
+            this.reportError(step, this.name, escape(reply));
           }
         }      
       
