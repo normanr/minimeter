@@ -7,6 +7,8 @@ function Starsadsl(username, password) {
     this.url = "http://myaccount.3starsadsl.be/Beheer/Datavolume/Index.aspx";
 }
 
+// similaire à Dxadsl
+
 Starsadsl.prototype = new Monitor();
 
 Starsadsl.prototype.callback = function(step, reply) {

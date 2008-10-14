@@ -7,6 +7,8 @@ function Dxadsl(username, password) {
     this.url = "http://myaccount.dxadsl.be/Beheer/Datavolume/Index.aspx";
 }
 
+// similaire à Starsadsl
+
 Dxadsl.prototype = new Monitor();
 
 Dxadsl.prototype.callback = function(step, reply) {
@@ -24,7 +26,7 @@ Dxadsl.prototype.callback = function(step, reply) {
       case 2:
         reply = unescape(reply);
         //var regEventtarget=/PostBackOptions(" value="([0-9a-zA-Z\/=+]*)"/;
-        var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=]*)"/;
+        var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=+]*)"/;
         var regEventvalidation=/EVENTVALIDATION" value="([0-9a-zA-Z\/=+]*)"/;
         if (!regViewstate.test(reply)) {
           this.reportError(step, this.name, escape(reply));
@@ -35,7 +37,7 @@ Dxadsl.prototype.callback = function(step, reply) {
         eventvalidation = (regEventvalidation.exec(reply));
         eventvalidation = eventvalidation[1].replace(/\//g,"%2F").replace(/\+/g,"%2B");
     
-        var postdata = "ctl00_ToolkitScriptManager1_HiddenField=&__EVENTTARGET=ctl00%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&ctl00%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&ctl00%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
+        var postdata = "ctl02_ToolkitScriptManager1_HiddenField=&__EVENTTARGET=ctl02%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&ctl02%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&ctl02%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
         //postdata = htmlencode(postdata);
         
         http_post('http://myaccount.dxadsl.be/Beheer/index.aspx', postdata,this, 3);
@@ -54,7 +56,7 @@ Dxadsl.prototype.callback = function(step, reply) {
       case 4:
         reply = unescape(reply);
         
-        var regusedtotal=/VolumeMaand_0">([0-9.]*) Gb \/ ([0-9.]*) Gb<\/span>/;
+        var regusedtotal=/VolumeMaand_0">([0-9.]*) GB \/ ([0-9.]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name, escape(reply));
           break;

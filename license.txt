@@ -32,5 +32,6 @@ Contributor(s):
   Jindřich Pozlovský <jindrich@pozlovsky.net>
   byblo <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=749>
   myster_e <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=3897>
+  Didier Cardoso <admin@ptitgnu.be>
 
 ***** END LICENSE BLOCK *****
