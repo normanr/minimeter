@@ -4,7 +4,7 @@ function Chello(username, password) {
     this.password = password;
     this.image = "chello.png";
     this.name = "Chello";
-    this.url = "https://registrace.upc.cz/"
+    this.url = "https://www.upc.cz"
 }
 
 Chello.prototype = new Monitor();
@@ -18,36 +18,20 @@ Chello.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				var postdata = "login="+this.username+"&pass="+this.password;
-				http_post('https://registrace.upc.cz/', postdata,this, 2);
-				break;
-			case 2:
-				reply = unescape(reply);
-				var regeng=/(.*)Active user/;
-				var regcze=/u(.)ivatel/;
-				if(regeng.test(reply)){
-					var reg = /(.)Uploaded data:<\/td><td width="50%"><b>([0-9.]*) GB(.*\n.*)<b>([0-9.]*) GB/;
-					var prihlasen=true;
-					var zpr1="Uploaded";
-					var zpr2="Downloaded";
-				}
-				if(regcze.test(reply)){
-					var reg = /Odeslan(.) data:<\/td><td width="50%"><b>([0-9.]*) GB(.*\n.*)<b>([0-9.]*) GB/;
-					var prihlasen=true;
-					var zpr1="Odeslan\u00E1";
-					var zpr2="P\u0159ijat\u00E1";
-				}
-				if(!prihlasen){
-					this.reportError(step, this.name, escape(reply));
-				} else {
-					var volume = reg.exec(reply);
-					this.extraMessage = zpr1+ " data: " + volume[2] + " GB\n" + zpr2 + " data: " + volume[4] +" GB";
-					this.usedVolume=(volume[2]*1 > volume[4]*1) ? volume[2] : volume[4];
-					this.totalVolume = this.getCapacity();
-      		
-					this.update(true);
-				}
+      var postdata = "username="+this.username+"&password="+this.password+"&submit.x=0&submit.y=0&login-form-type=pwd&hid_username=unauthenticated&hid_tamop=login&hid_errorcode=0x00000000&hid_referer=null";
+      http_post('https://www.upc.cz/pkmslogin.form?REDIRURL=https%3A%2F%2Fwww.upc.cz%2F%3Faction%3Dlogin%26loc%3D1', postdata,this, 2);
+      break;
+    case 2:
+      reply = unescape(reply);
+      var regErrorLogin=/Chybn/;
+      if (regErrorLogin.test(reply)) {
+        this.badLoginOrPass();
+        break;
+      }
+      this.reportError(step, this.name, escape(reply));
+      //http_get('https://muj.karneval.cz/internet/traffic.php', this, 3);
+      break;
 					
-		}	
+		}
 				
 }
