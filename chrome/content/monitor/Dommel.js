@@ -31,7 +31,7 @@ Dommel.prototype.callback = function(step, reply) {
       break;
     case 2:
       reply = unescape(reply);
-      var regErrorLogin=/your login is incorrect/;
+      var regErrorLogin=/your login is incorrect|uw paswoord werd niet aanvaard/;
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
         break;

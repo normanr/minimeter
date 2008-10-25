@@ -117,7 +117,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
             }
             if (extVersion == lastExtVersion) {
             
-              http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&status=debug", "errorPing");
+              http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
             }
 
           }
@@ -188,10 +188,11 @@ Monitor.prototype.errorPing = function(status){
   var lastPing = minimeterprefs.getIntPref('lastPing');
 
   if (date != lastPing) {
+		var extVersion = this.getExtVersion();
     minimeterprefs.setIntPref('lastPing', date);
     var module = this.image.substring(0,this.image.indexOf("."));
     
-    http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&status="+status, "errorPing");
+    http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&version="+extVersion+"&status="+status, "errorPing");
   }
 }
 

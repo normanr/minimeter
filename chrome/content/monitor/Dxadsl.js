@@ -56,7 +56,7 @@ Dxadsl.prototype.callback = function(step, reply) {
       case 4:
         reply = unescape(reply);
         
-        var regusedtotal=/VolumeMaand_0">([0-9.]*) GB \/ ([0-9.]*) GB<\/span>/;
+        var regusedtotal=/VolumeMaand_0">([0-9,]*) GB \/ ([0-9,]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name, escape(reply));
           break;

@@ -43,7 +43,7 @@ Skynet.prototype.callback = function(step, reply) {
          reply = unescape(reply);
          var regAdrQuota = /function%3Dconnection.getVolume!26farg.login%3D([0-9a-z]*)!26farg.login_type%3Dconnection!26farg.sso_date%3D([0-9]*)!26farg.type%3D([0-9])!26farg.key%3D([0-9A-Z#_]*)">(Consulter le volume mensuel|Het maandelijkse volume raadplegen|Consult monthly volume)<\/a><\/div>/;
          if(!regAdrQuota.test(reply)) {
-            if(this.trialNumber < 3){ // à changer ?
+            if(this.trialNumber < 1){ // à changer ?
               this.trialNumber++;
               tryAgain(this, 2);
             }
