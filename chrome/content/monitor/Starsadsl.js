@@ -56,13 +56,13 @@ Starsadsl.prototype.callback = function(step, reply) {
       case 4:
         reply = unescape(reply);
         
-        var regusedtotal=/([0-9,]*) GB \/ ([0-9,]*) GB<\/span>/;
+        var regusedtotal=/([0-9,.]*) GB \/ ([0-9,.]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name, escape(reply));
           break;
         }
         var volumeusedtotal = regusedtotal.exec(reply);
-        this.usedVolume = volumeusedtotal[1].replace(',','.');
+        this.usedVolume = volumeusedtotal[1].replace(',','.')*1;
         this.totalVolume = volumeusedtotal[2].replace(',','.')*1;
         this.remainingDays = getInterval("firstDayNextMonth");
           
