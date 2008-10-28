@@ -19,10 +19,27 @@ Fulladsl.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
+        http_get("http://myaccount.fulladsl.be/Beheer/Index.aspx", this, 2);
+        break;
+			
+			case 2:
+        reply = unescape(reply);
+        var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=+]*)"/;
+        var regEventvalidation=/EVENTVALIDATION" value="([0-9a-zA-Z\/=+]*)"/;
+        if (!regViewstate.test(reply)) {
+          this.reportError(step, this.name, escape(reply));
+          break;
+        }
+        viewstate = (regViewstate.exec(reply));
+        viewstate = viewstate[1].replace(/\//g,"%2F").replace(/\+/g,"%2B");
+        eventvalidation = (regEventvalidation.exec(reply));
+        eventvalidation = eventvalidation[1].replace(/\//g,"%2F").replace(/\+/g,"%2B");
+			
+			
 				var postdata = "ctl00%24cphWhiteLabel%24whIndex%24lgBeheren%24UserName="+this.username+"&ctl00%24cphWhiteLabel%24whIndex%24lgBeheren%24Password="+this.password;
 				http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx', postdata,this, 2);
 				break;
-			case 2:
+			case 3:
         reply = unescape(reply);
         var regErrorLogin=/(pas pu retrouver la combinaison de votre nom|konden de combinatie van je gebruikersnaam en wachtwoord niet)/;
         if (regErrorLogin.test(reply)) {
@@ -32,7 +49,7 @@ Fulladsl.prototype.callback = function(step, reply) {
 			
 				http_get('http://myaccount.fulladsl.be/Beheer/Datavolume/Index.aspx', this, 3);
 				break;
-			case 3:
+			case 4:
 			  reply = unescape(reply);
 			  var reg = /\>([0-9,]+) Gb \/ ([0-9,]+) Gb<\/span><\/td>/;
 

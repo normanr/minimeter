@@ -40,21 +40,27 @@ Scarlet.prototype.callback = function(step, reply) {
 			case 4:
 			  reply = unescape(reply);
 			  var total = /(est actuellement fixée à|verbruik staat momenteel ingesteld op) <b>(.*)\s*GB<\/b>/;
-			  var used = /<th class="digit">(.*)\s*([MG])B<\/th>\s*<\/tr>(\s*<\/tbody>|)\s*<\/table>/;
+			  var used = /<th class="digit">(.*)\s*([kMG])B<\/th>\s*<\/tr>(\s*<\/tbody>|)\s*<\/table>/;
 			  
-			  if( !total.test(reply) || !used.test(reply) ){
+			  if(!used.test(reply) ){
 					this.reportError(step, this.name, escape(reply));
 			  } else {
           
-			    var totalValue = total.exec(reply);
-      		this.totalVolume = totalValue[2].replace(',','.');
+          if (!total.test(reply))
+            this.totalVolume = 0;
+          else {
+            var totalValue = total.exec(reply);
+            this.totalVolume = totalValue[2].replace(',','.');
+      		}
 
       		var usedValue = used.exec(reply);
       		this.usedVolume = (usedValue[1].replace(',','.') * 1);
       		
-      		if(usedValue[2] == 'M'){
+      		if(usedValue[2] == 'M')
       			this.usedVolume /= 1024;
-      		}
+      		else
+            if(usedValue[2] == 'k')
+              this.usedVolume /= (1024*1024);
       		
       		this.usedVolume = this.usedVolume;
       		
