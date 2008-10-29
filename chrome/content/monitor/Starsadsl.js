@@ -7,7 +7,7 @@ function Starsadsl(username, password) {
     this.url = "http://myaccount.3starsadsl.be/Beheer/Datavolume/Index.aspx";
 }
 
-// similaire à Dxadsl
+// similaire à Fulladsl et dérivés
 
 Starsadsl.prototype = new Monitor();
 
@@ -25,7 +25,6 @@ Starsadsl.prototype.callback = function(step, reply) {
           
       case 2:
         reply = unescape(reply);
-        //var regEventtarget=/PostBackOptions(" value="([0-9a-zA-Z\/=+]*)"/;
         var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=+]*)"/;
         var regEventvalidation=/EVENTVALIDATION" value="([0-9a-zA-Z\/=+]*)"/;
         if (!regViewstate.test(reply)) {

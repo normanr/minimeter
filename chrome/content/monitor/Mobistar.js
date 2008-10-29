@@ -43,9 +43,12 @@ Mobistar.prototype.callback = function(step, reply) {
 				var regAmountToPay=/<strong>([0-9.]*)[\w&;]*EUR<\/strong>/;
 				var regAllowed=/([0-9]*) GB./;
 				var regDateEnd=/au ([0-9]*)/; // (17)/06/2007
+				var regServerError=/en cours de maintenance/;
         reply = unescape(reply);
 			
         if((!regUsedMB.test(reply) && !regUsedGB.test(reply) && !regUsedExceeded.test(reply)) || !regAllowed.test(reply)){
+					if (regServerError.test(reply))
+						this.error = "server";
           this.reportError(step, this.name, escape(reply));
           break;
         }

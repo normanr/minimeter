@@ -1,17 +1,17 @@
 
-function Dxadsl(username, password) {
+function Adsl20(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
-    this.image = "dxadsl.png";
-    this.name = "dxADSL";
-    this.url = "http://myaccount.dxadsl.be/Beheer/Datavolume/Index.aspx";
+    this.image = "adsl20.png";
+    this.name = "ADSL20";
+    this.url = "http://myaccount.adsl20.be/Beheer/Datavolume/Index.aspx";
 }
 
 // similaire à Fulladsl et dérivés
 
-Dxadsl.prototype = new Monitor();
+Adsl20.prototype = new Monitor();
 
-Dxadsl.prototype.callback = function(step, reply) {
+Adsl20.prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -20,7 +20,7 @@ Dxadsl.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("http://myaccount.dxadsl.be/Beheer/index.aspx", this, 2);
+        http_get("http://myaccount.adsl20.be/Beheer/index.aspx", this, 2);
         break;
           
       case 2:
@@ -37,9 +37,7 @@ Dxadsl.prototype.callback = function(step, reply) {
         eventvalidation = eventvalidation[1].replace(/\//g,"%2F").replace(/\+/g,"%2B");
     
         var postdata = "ctl02_ToolkitScriptManager1_HiddenField=&__EVENTTARGET=ctl02%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&ctl02%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&ctl02%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
-        //postdata = htmlencode(postdata);
-        
-        http_post('http://myaccount.dxadsl.be/Beheer/index.aspx', postdata,this, 3);
+        http_post('http://myaccount.adsl20.be/Beheer/index.aspx', postdata,this, 3);
         break;
         
       case 3:
@@ -49,7 +47,7 @@ Dxadsl.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        http_get("http://myaccount.dxadsl.be/Beheer/Datavolume/Index.aspx", this, 4);
+        http_get("http://myaccount.adsl20.be/Beheer/Datavolume/Index.aspx", this, 4);
         break;
         
       case 4:

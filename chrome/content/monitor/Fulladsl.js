@@ -6,6 +6,7 @@ function Fulladsl(username, password) {
     this.name = "Full ADSL";
     this.url = "http://myaccount.fulladsl.be/Beheer/Datavolume/Index.aspx"
 }
+// similaire à Adsl20, Starsadsl et Dxadsl
 
 Fulladsl.prototype = new Monitor();
 
@@ -35,39 +36,33 @@ Fulladsl.prototype.callback = function(step, reply) {
         eventvalidation = (regEventvalidation.exec(reply));
         eventvalidation = eventvalidation[1].replace(/\//g,"%2F").replace(/\+/g,"%2B");
 			
-			
-				var postdata = "ctl00%24cphWhiteLabel%24whIndex%24lgBeheren%24UserName="+this.username+"&ctl00%24cphWhiteLabel%24whIndex%24lgBeheren%24Password="+this.password;
-				http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx', postdata,this, 2);
+        var postdata = "ctl02_ToolkitScriptManager1_HiddenField=&__EVENTTARGET=ctl02%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&ctl02%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&ctl02%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
+				http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx', postdata,this, 3);
 				break;
+				
 			case 3:
         reply = unescape(reply);
-        var regErrorLogin=/(pas pu retrouver la combinaison de votre nom|konden de combinatie van je gebruikersnaam en wachtwoord niet)/;
+        var regErrorLogin=/pas pu retrouver la combinaison de votre nom|We konden de combinatie van je gebruikersnaam en wachtwoord/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
           break;
         }
-			
-				http_get('http://myaccount.fulladsl.be/Beheer/Datavolume/Index.aspx', this, 3);
+				http_get('http://myaccount.fulladsl.be/Beheer/Datavolume/Index.aspx', this, 4);
 				break;
+				
 			case 4:
 			  reply = unescape(reply);
-			  var reg = /\>([0-9,]+) Gb \/ ([0-9,]+) Gb<\/span><\/td>/;
 
-			  if(!reg.test(reply)){
-            this.reportError(step, this.name, escape(reply));
-			  } else {
-			  
-            var volume = reg.exec(reply);
-	
-      			this.usedVolume = ( volume[1].replace(",",".")*1 );
-      			this.totalVolume =  ( volume[2].replace(",",".")*1) ;
-      		
-            this.remainingDays = getInterval("firstDayNextMonth");
-      			this.update(true);	
-       		 }
-					
-		}	
-				
+        var regusedtotal=/([0-9,.]*) GB \/ ([0-9,.]*) GB<\/span>/;
+        if (!regusedtotal.test(reply)) {
+          this.reportError(step, this.name, escape(reply));
+          break;
+        }
+        var volumeusedtotal = regusedtotal.exec(reply);
+        this.usedVolume = volumeusedtotal[1].replace(',','.')*1;
+        this.totalVolume = volumeusedtotal[2].replace(',','.')*1;
+        this.remainingDays = getInterval("firstDayNextMonth");
+          
+        this.update(true);
+    }
 }
-
-
