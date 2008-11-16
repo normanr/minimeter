@@ -70,13 +70,10 @@ Edpnet.prototype.callback = function(step, reply) {
         var regIncluded = /(Trafic compris \(gratuit\) |Inbegrepen \(gratis\) trafiek|Included \(Free\) Traffic):<\/td><td align="right">([0-9.]*)<\/td>/;
         var regAllowed = /(Trafic maximum autorisé en Mo|Maximum toegestane trafiek in MB|Maximum Allowed Traffic in MB):<\/td><td align="right">([0-9.]*)<\/td>/;
         var regBonus = /(Bonus d'ancienneté en Mo:|Getrouwheidsbonus in MB|Loyalty bonus in MB)<\/td><td align="right">([0-9.]*)<\/td>/;
-        var regServerError = /temporary not avail[ai]ble/;
 
         var regDateEnd = /([0-9]*)-[0-9]*-[0-9]*<\/b><\/span><\/td>/;
         
         if(!regUsed.test(reply) || (!regIncluded.test(reply) && !regAllowed.test(reply))){
-					if (regServerError.test(reply))
-						this.error = "server";
           this.reportError(step, this.name, escape(reply));
           break;
         }

@@ -78,10 +78,6 @@ function isUseSI(){
   return (useSI);
 }
 
-function tryAgain(callback, step){
-  callback.callback(step);
-}
-
 function http_get(purl, callback, step){
 		monitor.error = "no";
 		try{
@@ -91,7 +87,7 @@ function http_get(purl, callback, step){
   			req.onreadystatechange = function(){
             if (req.readyState == 4){
               try{
-                if(req.status == 500)
+                if(req.status == 500 || req.status == 503)
                   monitor.error = "server";
               }catch(ex){monitor.error = "connection";}
               if (req.responseText == '')
@@ -117,7 +113,7 @@ function http_post(purl, postdata, callback, step, cookie, contenttype){
   			req.onreadystatechange = function(){
   				if (req.readyState == 4){
             try{
-              if(req.status == 500)
+              if(req.status == 500 || req.status == 503)
                 monitor.error = "server";
             }catch(ex){monitor.error = "connection";}
             if (req.responseText == '')

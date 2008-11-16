@@ -10,6 +10,7 @@ function Monitor(){
 	this.newData = false; // is the new data different from the old one ? (for the animation)
 	this.error = "no";
 	this.pageContent = null;
+  this.trialNumber = 1; // nombre de tentatives (2 tentatives avant prise en compte erreur)
 
 }
 
@@ -27,6 +28,7 @@ Monitor.prototype.check = function(silent) { // override default action
   minimeterprefs.setCharPref("error", "checking");
   this.notify();
   this.newData = true;
+  this.trialNumber = 1;
   this.callback(1);
 }
 
@@ -50,9 +52,15 @@ Monitor.prototype.getCapacity = function(){
 }
 
 Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
+  if (this.trialNumber < 2)
+    this.tryAgain();
   if (pageContent != null) {
     this.cleanPage (pageContent);
     this.pageContent = this.pageContent + "&step="+ step;
+    
+    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble/;
+    if (regServerError.test(pageContent))
+      this.error = "server";
   }
 
   if (this.error == "connection" || this.error == "server") {
@@ -61,7 +69,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
     setTimeout("monitor.check('silent');", 60000);
   }
   else {
-    if (reply == null) {
+    if (reply == null) { // 1st call of reportError
 			var prefService = Components.classes["@mozilla.org/preferences-service;1"]
 									 .getService(Components.interfaces.nsIPrefService).getBranch("network.cookie.");
 			if (prefService.getIntPref('cookieBehavior') != 0) {
@@ -85,7 +93,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
 				http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&extversion="+ extVersion +"&status=check", "reportError");
       }
     }
-    else {
+    else { // called from http_post
       reply = unescape(reply);
       var regteststatus = /moduleisfailing/;
       if (regteststatus.test(reply)) {
@@ -194,6 +202,11 @@ Monitor.prototype.errorPing = function(status){
     
     http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&version="+extVersion+"&status="+status, "errorPing");
   }
+}
+
+Monitor.prototype.tryAgain = function(){
+  this.trialNumber++;
+  this.callback(1);
 }
 
 /*

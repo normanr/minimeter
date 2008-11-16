@@ -26,7 +26,7 @@ Videotron.prototype.callback = function(step, reply) {
         var regDateAndUsed = /<tbody>\s*<tr>\s*<td nowrap="nowrap">([0-9]*)-([0-9]*)-([0-9]*) (au|to)<br \/>[0-9-]*<\/td>\s*<td width="10"><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>/;
         
         if(!regDateAndUsed.test(reply)){
-          var regErrorLogin = /Assurez-vous d'avoir bien inscrit votre nom d'utilisateur Internet/;
+          var regErrorLogin = /Assurez-vous d'avoir bien inscrit votre nom d'utilisateur Internet|Beware to enter your Internet username correctly/;
           var regErrorServer = /ne sont pas disponibles|is not available/;
           if (regErrorLogin.test(reply)) {
             this.badLoginOrPass();
