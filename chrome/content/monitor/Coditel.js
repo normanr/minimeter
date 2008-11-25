@@ -35,17 +35,22 @@ Coditel.prototype.callback = function(step, reply) {
           break;
         }
         else
-          if (regUsedTot.test(reply)) {
+          if (regUsedTot.test(reply)) { // old page
             var volumeusedtot = regUsedTot.exec(reply);
             this.usedVolume = volumeusedtot[1]*1;
             this.totalVolume = volumeusedtot[2]*1;
           }
           else
-            if (regTotal.test(reply) && regUpload.test(reply) && regDownload.test(reply)) {
+            if (regUpload.test(reply) && regDownload.test(reply)) {
+              if(regTotal.test(reply)) {
+                var volumeTotal = regTotal.exec(reply);
+                this.totalVolume = volumeTotal[1]*1;
+              }
+              else // flat rate
+                this.totalVolume = 0;
               var volumeTotal = regTotal.exec(reply);
               var volumeUpload = regUpload.exec(reply);
               var volumeDownload = regDownload.exec(reply);
-              this.totalVolume = volumeTotal[1]*1;
               this.usedVolume = Math.round((volumeUpload[1]*1 + volumeDownload[1]*1)/1024*1000)/1000;
             }
             else {
@@ -54,7 +59,7 @@ Coditel.prototype.callback = function(step, reply) {
             }
   
             this.remainingDays = getInterval("firstDayNextMonth");
-            if (this.usedVolume > this.totalVolume) {
+            if (this.usedVolume > this.totalVolume && this.totalVolume != 0) {
               if (this.totalVolume == 3) // 2€ / Gio
                 this.amountToPay = Math.floor(this.usedVolume - this.totalVolume)*2 + " EUR";
               else

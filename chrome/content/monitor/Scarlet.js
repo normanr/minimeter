@@ -62,7 +62,8 @@ Scarlet.prototype.callback = function(step, reply) {
             if(usedValue[2] == 'k')
               this.usedVolume /= (1024*1024);
       		
-      		this.usedVolume = this.usedVolume;
+      		this.usedVolume = this.usedVolume *1;
+      		this.totalVolume = this.totalVolume *1;
       		
       		this.update(true);	
         }
