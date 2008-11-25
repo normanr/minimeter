@@ -3,11 +3,11 @@ function Edpnet(username, password) {
     this.password = password;
     this.image = "edpnet.png"; // does not belong in class
     this.name = "EDPnet";
-    this.url = "http://www.edpnet.be/login.aspx";
+    this.url = "http://extra.edpnet.net/login.aspx";
     this.ligne = '';
     if(username.indexOf(",") > 0) {
       this.ligne = username.substr(username.indexOf(",")+1);
-      this.url = "http://www.edpnet.be/maint_dslconnection.aspx?ID="+this.ligne;
+      this.url = "http://extra.edpnet.net/maint_dslconnection.aspx?ID="+this.ligne;
     }
 }
 
@@ -23,7 +23,7 @@ Edpnet.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("http://www.edpnet.be/login.aspx", this, 2);
+        http_get("http://extra.edpnet.net/login.aspx", this, 2);
         break;
           
       case 2:
@@ -35,7 +35,7 @@ Edpnet.prototype.callback = function(step, reply) {
         }
         viewstateID = regViewstateID.exec(reply);
         var postdata = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE_ID="+viewstateID[1]+"&__VIEWSTATE=&tbUserID="+this.username+"&tbPassword="+this.password+"&btnLogin=Login";
-        http_post('http://www.edpnet.be/login.aspx', postdata,this, 3);
+        http_post('http://extra.edpnet.net/login.aspx', postdata,this, 3);
         break;
           
       case 3:
@@ -46,7 +46,7 @@ Edpnet.prototype.callback = function(step, reply) {
           break;
         }
         if (this.ligne == '')
-          http_get("http://www.edpnet.be/list_dslconnections.aspx", this, 4);
+          http_get("http://extra.edpnet.net/list_dslconnections.aspx", this, 4);
         else
           http_get(this.url, this, 5);
         break;
@@ -59,7 +59,7 @@ Edpnet.prototype.callback = function(step, reply) {
         }
         else {
           numConnection = regNumConn.exec(reply);
-          this.url = "http://www.edpnet.be/maint_dslconnection.aspx?ID="+numConnection[1];
+          this.url = "http://extra.edpnet.net/maint_dslconnection.aspx?ID="+numConnection[1];
           http_get(this.url, this, 5);
         }
         break;
@@ -70,10 +70,13 @@ Edpnet.prototype.callback = function(step, reply) {
         var regIncluded = /(Trafic compris \(gratuit\) |Inbegrepen \(gratis\) trafiek|Included \(Free\) Traffic):<\/td><td align="right">([0-9.]*)<\/td>/;
         var regAllowed = /(Trafic maximum autorisé en Mo|Maximum toegestane trafiek in MB|Maximum Allowed Traffic in MB):<\/td><td align="right">([0-9.]*)<\/td>/;
         var regBonus = /(Bonus d'ancienneté en Mo:|Getrouwheidsbonus in MB|Loyalty bonus in MB)<\/td><td align="right">([0-9.]*)<\/td>/;
+        var regServerError = /temporary not avail[ai]ble/;
 
         var regDateEnd = /([0-9]*)-[0-9]*-[0-9]*<\/b><\/span><\/td>/;
         
         if(!regUsed.test(reply) || (!regIncluded.test(reply) && !regAllowed.test(reply))){
+					if (regServerError.test(reply))
+						this.error = "server";
           this.reportError(step, this.name, escape(reply));
           break;
         }
