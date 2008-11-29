@@ -4,11 +4,9 @@ function Scarlet(username, password) {
     this.image = "scarlet.png"; // does not belong in class
     this.name = "Scarlet ADSL";
     this.url = "http://customercare.scarlet.be/usage/dispatch.do";
-    this.nextCase = 2;
+    this.contrat = null;
     if(username.indexOf(",") > 0)
       this.contrat = username.substr(username.indexOf(",")+1);
-    else 
-      this.nextCase = 3;
 }
 
 Scarlet.prototype = new Monitor();
@@ -23,7 +21,7 @@ Scarlet.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, this.nextCase);
+				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, 2);
 				break;
       case 2:
         reply = unescape(reply);
@@ -32,18 +30,29 @@ Scarlet.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        http_get('http://customercare.scarlet.be/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, 3);
+        if(this.contrat != null)
+          http_get('http://customercare.scarlet.be/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, "2b");
+        else 
+          http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
+        break;
+      case "2b":
+        http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
+        break;
+      case "error":
+        reply = unescape(reply);
+        this.reportError(step, this.name, escape(reply));
         break;
    		case 3:
-			  http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 4);
-			  break;
-			case 4:
 			  reply = unescape(reply);
 			  var total = /(est actuellement fixée à|verbruik staat momenteel ingesteld op) <b>(.*)\s*GB<\/b>/;
 			  var used = /<th class="digit">(.*)\s*([kMG])B<\/th>\s*<\/tr>(\s*<\/tbody>|)\s*<\/table>/;
+			  var badpage = /GESELECTEERD/;
 			  
 			  if(!used.test(reply) ){
-					this.reportError(step, this.name, escape(reply));
+          if(!badpage.test(reply))
+            this.reportError(step, this.name, escape(reply));
+          else
+            http_get('http://extensions.geckozone.org/customercare/selectbillcontract.do', this, "error");
 			  } else {
           
           if (!total.test(reply))

@@ -52,8 +52,10 @@ Monitor.prototype.getCapacity = function(){
 }
 
 Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
-  if (this.trialNumber < 2)
+  if (this.trialNumber < 2) {
     this.tryAgain();
+    return;
+  }
   if (pageContent != null) {
     this.cleanPage (pageContent);
     this.pageContent = this.pageContent + "&step="+ step;
@@ -176,7 +178,8 @@ Monitor.prototype.cleanPage = function(pageContent){
   var textToReplace = minimeterprefs.getCharPref('textToReplace');
 
   pageContent = pageContent.replace (regUsername,"monlogin");
-  pageContent = pageContent.replace (regPassword,"monpassword");
+  if(this.password != '' && this.password != ' ')
+    pageContent = pageContent.replace (regPassword,"monpassword");
   
   if (textToReplace != "") {
     textToReplace = textToReplace.split (",");

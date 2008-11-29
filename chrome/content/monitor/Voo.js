@@ -45,8 +45,11 @@ Voo.prototype.callback = function(step, reply) {
 				break;
 			case 3:
 				var regNum=/Affiche_page_conso_giga\('([0-9]*)'\)/;
+				var regServerError=/en cours de maintenance/;
         reply = unescape(reply);
 				if (!regNum.test(reply)) {
+					if (regServerError.test(reply))
+						this.error = "server";
           this.reportError(step, this.name, escape(reply));
 				}
 				else {
