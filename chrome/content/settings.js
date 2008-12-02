@@ -48,10 +48,11 @@
             return false;
           }
           
-          
-          
 	    		var capacity = document.getElementById('capacity').value;
-
+          
+          if (!document.getElementById('provider').selectedItem.hasAttribute('capacity'))
+            capacity = "10";
+            
 	    		if(document.getElementById('flatrate').checked && capacity == "") {
             if(capacity == "")
               capacity = 0;

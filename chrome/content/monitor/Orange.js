@@ -18,7 +18,7 @@ Orange.prototype.callback = function(step, reply) {
     {
        default:
        case 1:
-		 http_get('http://compte.orange.fr/moninternet/compte/bin/compte.cgi', this, 2);
+		 http_get('http://id.orange.fr/auth_user/bin/auth_user.cgi?origin=rs&service=moncompte&url=http://compte.orange.fr/moninternet/compte/bin/compte.cgi', this, 2);
 		 break;
        case 2:
          reply = unescape(reply);

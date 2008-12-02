@@ -51,23 +51,23 @@ Monitor.prototype.getCapacity = function(){
 	return capacity;
 }
 
-Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
+Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   if (this.trialNumber < 2) {
-    this.tryAgain();
+    this.tryAgain(1);
     return;
   }
   if (pageContent != null) {
-    this.cleanPage (pageContent);
-    this.pageContent = this.pageContent + "&step="+ step;
-    
-    var regServerError = /internal error|Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble/;
+    pageContent = unescape(pageContent);
+    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble/;
     if (regServerError.test(pageContent))
       this.error = "server";
+      
+    this.cleanPage (escape(pageContent));
+    this.pageContent = this.pageContent + "&step="+ step;
   }
 
   if (this.error == "connection" || this.error == "server") {
-    this.errorMessage = getString("error."+this.error);
-	  minimeterprefs.setCharPref("error", this.error);
+    this.setErrorMessageAndPref(this.error, null, true);
     setTimeout("monitor.check('silent');", 60000);
   }
   else {
@@ -75,15 +75,10 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
 			var prefService = Components.classes["@mozilla.org/preferences-service;1"]
 									 .getService(Components.interfaces.nsIPrefService).getBranch("network.cookie.");
 			if (prefService.getIntPref('cookieBehavior') != 0) {
-				this.error = "cookies";
-				minimeterprefs.setCharPref("error", "cookies");
-				minimeterprefs.setCharPref("errorExtraMessage", "extraCookies");
-				this.errorMessage = getString("error.cookies");
-				this.extraMessage = getString("error.extraCookies");
+				this.setErrorMessageAndPref("cookies", "extraCookies", true);
 			}
 			else {
-				this.error = "unknown";
-				minimeterprefs.setCharPref("error", "unknown");
+        this.setErrorMessageAndPref("unknown", null, false);
 				this.errorPing("failed");
 				if (step != null) {
 					var dumpMessage = getString("error.unknownErrorDump").replace ("%step", step);
@@ -97,8 +92,8 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
     }
     else { // called from http_post
       reply = unescape(reply);
-      var regteststatus = /moduleisfailing/;
-      if (regteststatus.test(reply)) {
+      var regmoduleisfailing = /moduleisfailing/;
+      if (regmoduleisfailing.test(reply)) {
         this.errorMessage = getString("error.reported");
         this.extraMessage = getString("error.extraReported");
         minimeterprefs.setCharPref("errorExtraMessage", "extraReported");
@@ -125,7 +120,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
               lastExtVersion = regLastExtVersion.exec(reply);
               lastExtVersion = lastExtVersion[2];
             }
-            if (extVersion == lastExtVersion) {
+            if (!this.isVersionLowerThan (extVersion, lastExtVersion)) {
             
               http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
             }
@@ -139,7 +134,30 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply){
   this.update(false);
 }
 
-Monitor.prototype.badLoginOrPass = function(provider){
+Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
+  var vc =
+     Components.classes["@mozilla.org/xpcom/version-comparator;1"].
+     getService(Components.interfaces.nsIVersionComparator);
+  return (vc.compare(versionToCheck, versionRef) < 0);
+}
+
+
+
+Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
+  this.error = error;
+  minimeterprefs.setCharPref("error", error);
+  if (setMessage == true)
+    this.errorMessage = getString("error."+error);
+  
+  if (extraError != null) {
+    minimeterprefs.setCharPref("errorExtraMessage", extraError);
+    this.extraMessage = getString("error."+extraError);
+  }
+}
+
+
+
+Monitor.prototype.badLoginOrPass = function(provider) {
   this.errorMessage = getString("error.badLoginOrPass");
   this.error = "badLoginOrPass";
   minimeterprefs.setCharPref("error", "badLoginOrPass");
@@ -154,7 +172,7 @@ Monitor.prototype.badLoginOrPass = function(provider){
 	this.update(false);
 }
 
-Monitor.prototype.getExtVersion = function(){
+Monitor.prototype.getExtVersion = function() {
   var nsIUpdateItem = Components.interfaces.nsIUpdateItem;
   var itemType = nsIUpdateItem.TYPE_EXTENSION;
   var liExtensionManager = Components.classes["@mozilla.org/extensions/manager;1"]
@@ -171,7 +189,7 @@ Monitor.prototype.getExtVersion = function(){
   return extVersion;
 }
 
-Monitor.prototype.cleanPage = function(pageContent){
+Monitor.prototype.cleanPage = function(pageContent) {
   pageContent = unescape(pageContent);
   var regUsername = new RegExp("" + this.username + "", "gi");
   var regPassword = new RegExp("" + this.password + "", "gi");
@@ -194,11 +212,12 @@ Monitor.prototype.cleanPage = function(pageContent){
   this.pageContent = encode64(pageContent);
 }
 
-Monitor.prototype.errorPing = function(status){
+Monitor.prototype.errorPing = function(status) {
   var date = new Date().getDate();
+  var allowPing = minimeterprefs.getBoolPref('allowPing');
   var lastPing = minimeterprefs.getIntPref('lastPing');
 
-  if (date != lastPing) {
+  if (allowPing && date != lastPing) {
 		var extVersion = this.getExtVersion();
     minimeterprefs.setIntPref('lastPing', date);
     var module = this.image.substring(0,this.image.indexOf("."));
@@ -207,9 +226,9 @@ Monitor.prototype.errorPing = function(status){
   }
 }
 
-Monitor.prototype.tryAgain = function(){
+Monitor.prototype.tryAgain = function(step) {
   this.trialNumber++;
-  this.callback(1);
+  this.callback(step);
 }
 
 /*

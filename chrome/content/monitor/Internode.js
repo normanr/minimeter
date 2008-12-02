@@ -4,7 +4,7 @@ function Internode(username, password) {
     this.password = password;
     this.image = "internode.png";
     this.name = "Internode";
-    this.url = "https://accounts.internode.on.net/cgi-bin/padsl-usage"
+    this.url = "https://customer-webtools-api.internode.on.net/cgi-bin/padsl-usage"
 }
 
 Internode.prototype = new Monitor();
@@ -20,7 +20,7 @@ Internode.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "username="+this.username+"&password="+this.password;
-				http_post('https://accounts.internode.on.net/cgi-bin/padsl-usage', postdata,this, 2);
+				http_post('https://customer-webtools-api.internode.on.net/cgi-bin/padsl-usage', postdata,this, 2);
 				break;
 			case 2:
 			  reply = unescape(reply);

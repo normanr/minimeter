@@ -26,7 +26,7 @@ Skynet.prototype.callback = function(step, reply) {
          reply = unescape(reply);
          var regErrorLogin = /HPDIA0200W   Authen/;
          if (regErrorLogin.test(reply))
-           tryAgain(this, "oldMethod");
+           this.tryAgain("oldMethod");
          else {
           http_get("https://admit.belgacom.be/eservices/wps/myportal/my_internet?pageChanged=true", this, 3);
          }
