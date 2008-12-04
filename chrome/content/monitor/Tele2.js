@@ -45,12 +45,17 @@ Tele2.prototype.callback = function(step, reply) {
         var regused=/<th class="totals">([0-9, ]*) MB<\/th>/;
         var regDateEnd = /<td>([0-9]*)[0-9\/]*<\/td>/;
         var regServerError = /actuellement indisponible|Nous mettons tout en oeuvre|tijdelijk onbeschikbaar|We stellen alles in het werk/;
-        if (!regDateEnd.test(reply)) {
-					if (regServerError.test(reply))
-						this.error = "server";
-          this.reportError(step, this.name, escape(reply));
-          break;
-        } else {
+        var regUnlimited = /De gebruiksmeter is niet van toepassing voor u/;
+        if (regUnlimited.test(reply))
+          this.setFlatRateWithoutInfos();
+        else {
+          if (!regDateEnd.test(reply)) {
+            if (regServerError.test(reply))
+              this.error = "server";
+            this.reportError(step, this.name, escape(reply));
+            break;
+          }
+          else {
             var dateEnd = regDateEnd.exec(reply);
             if (regused.test(reply)) {
               var volumeused = regused.exec(reply);
@@ -68,13 +73,10 @@ Tele2.prototype.callback = function(step, reply) {
                 if (this.amountToPay > 10)
                   this.amountToPay = 10;
               }
-                
               this.amountToPay = Math.round(this.amountToPay*100)/100 + " EUR";
             }
-              
-            this.update(true);
+          }
         }
-          
+        this.update(true);
     }   
-        
 }

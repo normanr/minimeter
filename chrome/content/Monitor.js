@@ -22,6 +22,7 @@ Monitor.prototype.STATE_ABORT = 3;
 Monitor.prototype.check = function(silent) { // override default action
   this.extraMessage = '';
   minimeterprefs.setCharPref("errorExtraMessage", '');
+  minimeterprefs.setCharPref("url", '');
   if(silent != "silent")
     this.state = this.STATE_BUSY;
 	this.error = "checking";
@@ -92,11 +93,19 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
     }
     else { // called from http_post
       reply = unescape(reply);
-      var regmoduleisfailing = /moduleisfailing/;
-      if (regmoduleisfailing.test(reply)) {
-        this.errorMessage = getString("error.reported");
-        this.extraMessage = getString("error.extraReported");
-        minimeterprefs.setCharPref("errorExtraMessage", "extraReported");
+      var regoldversion = /oldversion/;
+      if (regoldversion.test(reply)) {
+        this.setErrorMessageAndPref("reported", "extraReported", true);
+        
+        var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+                              .getService(Components.interfaces.nsIPrefService);
+        var browserprefs = prefService.getBranch("general.useragent.");
+        var locale = browserprefs.getCharPref('locale');
+        if (locale == "fr")
+          this.url = "http://extensions.geckozone.org/Minimeter";
+        else
+          this.url = "http://extensions.geckozone.org/Minimeter-en";
+        minimeterprefs.setCharPref("url", this.url);
       }
       else {
         var sendDebug = minimeterprefs.getBoolPref('sendDebug');
@@ -132,6 +141,13 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
     }
   }
   this.update(false);
+}
+
+Monitor.prototype.setFlatRateWithoutInfos = function() {
+  this.totalVolume = 0;
+  this.usedVolume = 0;
+  this.extraMessage = getString("error.extraFlatRate");
+  minimeterprefs.setCharPref("errorExtraMessage", "extraFlatRate");
 }
 
 Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {

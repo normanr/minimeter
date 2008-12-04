@@ -40,6 +40,11 @@ function loadMonitors(){
 
   var provider = minimeterprefs.getCharPref('provider');
   provider = provider.toLowerCase();
+  if (provider == "chellobe") {
+    provider = "telenet";
+    minimeterprefs.setCharPref('provider', provider);
+  }
+
   prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
 "http://extensions.geckozone.org/updates/Minimeter-"+provider+".rdf");
   provider = provider[0].toUpperCase() + provider.substr(1);
@@ -305,6 +310,9 @@ var myPrefObserver =
           var errorExtraMessage = minimeterprefs.getCharPref('errorExtraMessage');
           if (errorExtraMessage != '')
             monitor.extraMessage = getString("error."+errorExtraMessage);
+          break;
+        case "url":
+          monitor.url = minimeterprefs.getCharPref('url');
           break;
       }
     }catch(ex){consoleDump(ex);}

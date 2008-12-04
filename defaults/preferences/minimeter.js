@@ -18,5 +18,6 @@ pref("extensions.minimeter.showRemainingDays", true);
 pref("extensions.minimeter.showAmountToPay", true);
 pref("extensions.minimeter.showRemainingAverage", false);
 pref("extensions.minimeter.textToReplace", "");
+pref("extensions.minimeter.url", "");
 pref("extensions.minimeter.useSI", true);
 pref("extensions.minimeter.updateTimeout", 3600);

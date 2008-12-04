@@ -20,7 +20,7 @@ Turk.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "dispatch=login&userName="+this.username+"&password="+this.password;
-				http_post('http://adslkota.ttnet.net.tr/adslkota/loginSelf.do', postdata,this, 2);
+				http_post('http://adslkota.ttnet.net.tr/adslkota/login_tr.jsp', postdata,this, 2);
 				break;
 			case 2:
 				http_get('http://adslkota.ttnet.net.tr/adslkota/viewTransfer.do?dispatch=entry', this, 3);
@@ -29,7 +29,14 @@ Turk.prototype.callback = function(step, reply) {
 			   // up / dwn
 			  var reg = /<td width="100">([0-9.]*)<br>&nbsp;\(.* ?B\)<\/td>\s*<td width="100">([0-9.]*)<br>&nbsp;\(.* ?B\)<\/td><\/tr><\/tbody>/;
 			  if(!reg.test(reply)){
-					this.reportError(step, this.name, escape(reply));
+          this.errorMessage = getString("error.reported");
+          minimeterprefs.setCharPref("error", "reported");
+          this.extraMessage = "Minimeter can't login because there's a captcha.";
+          this.storeCache();
+          this.errorPing("failed");
+          this.state = this.STATE_ERROR;
+			  
+					//this.reportError(step, this.name, escape(reply));
 			  } else {
 			    var volume = reg.exec(reply);
 
