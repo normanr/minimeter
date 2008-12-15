@@ -171,20 +171,18 @@ Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessag
   }
 }
 
+Monitor.prototype.noConnectionLinked = function() {
+  this.setErrorMessageAndPref("noConnectionLinked", "noConnectionLinkedExtra", true);
 
+	this.update(false);
+}
 
 Monitor.prototype.badLoginOrPass = function(provider) {
-  this.errorMessage = getString("error.badLoginOrPass");
-  this.error = "badLoginOrPass";
-  minimeterprefs.setCharPref("error", "badLoginOrPass");
-  if(provider=="belgacom") {
-    this.extraMessage = getString("error.badLoginOrPassBg");
-    minimeterprefs.setCharPref("errorExtraMessage", "badLoginOrPassBg");
-  }
-  else if (provider=="edpnet") {
-    this.extraMessage = getString("error.badLoginOrPassEd");
-    minimeterprefs.setCharPref("errorExtraMessage", "badLoginOrPassEd");
-  }
+  if(provider=="belgacom")
+    this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassBg", true);
+  else if (provider=="edpnet")
+    this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassEd", true);
+    
 	this.update(false);
 }
 

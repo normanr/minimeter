@@ -4,7 +4,7 @@ function Clearwire(username, password) {
     this.password = password;
     this.image = "clearwire.png";
     this.name = "Clearwire";
-    this.url = "http://www.clearwire.be/index.php?section=433";
+    this.url = "https://myaccount-be.clearwire.eu/";
 }
 
 Clearwire.prototype = new Monitor();
@@ -18,8 +18,8 @@ Clearwire.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-        var postdata = "login="+this.username+"&password="+this.password;
-        http_post('http://www.clearwire.be/index.php?section=433&action=login_action', postdata,this, 2);
+        var postdata = "sLog="+this.username+"&sPass="+this.password+"&iAction=4100";
+        http_post('https://myaccount-be.clearwire.eu/', postdata,this, 2);
 				break;
 			case 2:
 				var regused=/([0-9]*) MB<br><br>/;
@@ -28,7 +28,7 @@ Clearwire.prototype.callback = function(step, reply) {
 				
         reply = unescape(reply);
 				if (!regused.test(reply)) {
-          var regErrorLogin=/user\/pass incorrect/;
+          var regErrorLogin=/password incorrect|mot de passe incorrect|wachtwoord/;
           if (regErrorLogin.test(reply)) {
             this.badLoginOrPass();
           }

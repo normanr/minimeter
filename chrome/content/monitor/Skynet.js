@@ -40,9 +40,13 @@ Skynet.prototype.callback = function(step, reply) {
          
        case 3:
          reply = unescape(reply);
-         var regAdrQuota = /function%3Dconnection.getVolume!26farg.login%3D([0-9a-z]*)!26farg.login_type%3Dconnection!26farg.sso_date%3D([0-9]*)!26farg.type%3D([0-9])!26farg.key%3D([0-9A-Z#_]*)">(Consulter le volume mensuel|Het maandelijkse volume raadplegen|Consult monthly volume)<\/a><\/div>/;
+         var regAdrQuota = /function%3[dD]connection.getVolume!26farg.login%3[dD]([0-9a-z]*)!26farg.login_type%3[dD]connection!26farg.sso_date%3[dD]([0-9]*)!26farg.type%3[dD]([0-9])!26farg.key%3[dD]([0-9A-Z#_]*)">(Consulter le volume mensuel|Het maandelijkse volume raadplegen|Consult monthly volume)<\/a><\/div>/;
+         var regNoConnectionLinked = /no Internet connection account linked/;
          if(!regAdrQuota.test(reply)) {
-           this.reportError(step, this.name, escape(reply));
+           if(regNoConnectionLinked.test(reply))
+             this.noConnectionLinked();
+           else
+             this.reportError(step, this.name, escape(reply));
          }
          else {
            var adrQuota = regAdrQuota.exec(reply);
