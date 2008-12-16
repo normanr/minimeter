@@ -19,7 +19,7 @@ Clearwire.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "sLog="+this.username+"&sPass="+this.password+"&iAction=4100";
-        http_post('https://myaccount-be.clearwire.eu/', postdata,this, 2);
+        http_post('https://myaccount-be.clearwire.eu/lib/sSetProcess.php', postdata,this, 2);
 				break;
 			case 2:
 				var regused=/([0-9]*) MB<br><br>/;

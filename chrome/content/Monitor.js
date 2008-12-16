@@ -182,6 +182,8 @@ Monitor.prototype.badLoginOrPass = function(provider) {
     this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassBg", true);
   else if (provider=="edpnet")
     this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassEd", true);
+  else
+    this.setErrorMessageAndPref("badLoginOrPass", null, true);
     
 	this.update(false);
 }
