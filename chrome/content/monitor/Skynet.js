@@ -45,8 +45,16 @@ Skynet.prototype.callback = function(step, reply) {
          if(!regAdrQuota.test(reply)) {
            if(regNoConnectionLinked.test(reply))
              this.noConnectionLinked();
-           else
+           else {
+						 var backToTheHomepageFromAdvantage = /<a href="(\/eservices\/wps\/myportal\/!ut\/p\/kcxml\/[0-9a-zA-Z_\-!]*\/delta\/base64xml\/[0-9a-zA-Z!]*\?PC_7_0_1EU_spf_strutsAction=!2fmyadvantages!2fgoBackToHomepage.do)/;
+					 
+						if (backToTheHomepageFromAdvantage.test(reply)) { // is the advantages page shown ?
+							var adrBackLink = backToTheHomepageFromAdvantage.exec(reply);
+							http_get("https://admit.belgacom.be/" + adrBackLink[1], this, 3);
+						}
+						else
              this.reportError(step, this.name, escape(reply));
+           }
          }
          else {
            var adrQuota = regAdrQuota.exec(reply);

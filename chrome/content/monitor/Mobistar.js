@@ -42,7 +42,7 @@ Mobistar.prototype.callback = function(step, reply) {
 				var regUsedExceeded =/<strong>([0-9.]*) GB<\/strong>/;
 				var regAmountToPay=/<strong>([0-9.]*)[\w&;]*EUR<\/strong>/;
 				var regAllowed=/([0-9]*) GB./;
-				var regDateEnd=/au ([0-9]*)/; // (17)/06/2007
+				var regDateEnd=/avant le ([0-9]*) /; // avant le (15) Janvier 2009
 				var regServerError=/en cours de maintenance/;
         reply = unescape(reply);
 			

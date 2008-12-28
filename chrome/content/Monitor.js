@@ -59,7 +59,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   }
   if (pageContent != null) {
     pageContent = unescape(pageContent);
-    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble/;
+    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|en cours de maintenance/;
     if (regServerError.test(pageContent))
       this.error = "server";
       
