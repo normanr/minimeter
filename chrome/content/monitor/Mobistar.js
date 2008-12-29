@@ -78,7 +78,7 @@ Mobistar.prototype.callback = function(step, reply) {
           
           if(regDateEnd.test(reply)) {
             dateEnd = regDateEnd.exec(reply);
-            this.remainingDays = getInterval("nearestOccurence", dateEnd[1]);
+            this.remainingDays = getInterval("nearestOccurence", dateEnd[2]);
           }
           
           this.update(true);
