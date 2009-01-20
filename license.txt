@@ -33,5 +33,6 @@ Contributor(s):
   byblo <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=749>
   myster_e <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=3897>
   Didier Cardoso <admin@ptitgnu.be>
+  ced1202 <ced1202@servperso.com>
 
 ***** END LICENSE BLOCK *****
