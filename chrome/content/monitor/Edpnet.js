@@ -67,10 +67,12 @@ Edpnet.prototype.callback = function(step, reply) {
       case 5:
         reply = unescape(reply);
         var regUsed = /(Consommation en total \(Net\)|Totaal verbruik \(Netto\)|Total Consumption \(Net\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
+        var regUsedBrut = /(Consommation en total \(Brut\)|Totaal verbruik \(Bruto\)|Total Consumption \(Gross\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
         var regIncluded = /(Trafic compris \(gratuit\) |Inbegrepen \(gratis\) trafiek|Included \(Free\) Traffic):<\/td><td align="right">([0-9.]*)<\/td>/;
         var regAllowed = /(Trafic maximum autorisé en Mo|Maximum toegestane trafiek in MB|Maximum Allowed Traffic in MB):<\/td><td align="right">([0-9.]*)<\/td>/;
         var regBonus = /(Bonus d'ancienneté en Mo:|Getrouwheidsbonus in MB|Loyalty bonus in MB)<\/td><td align="right">([0-9.]*)<\/td>/;
         var regServerError = /temporary not avail[ai]ble/;
+        var regNoLimit = /No Limit/;
 
         var regDateEnd = /([0-9]*)-[0-9]*-[0-9]*<\/b><\/span><\/td>/;
         
@@ -82,6 +84,11 @@ Edpnet.prototype.callback = function(step, reply) {
         }
         
         var volumeused = regUsed.exec(reply);
+        
+        if (regNoLimit.test(reply)) {
+          volumeused = regUsedBrut.exec(reply);
+        }
+        
         if (regIncluded.test(reply))
           var volumetotal = regIncluded.exec(reply);
         else

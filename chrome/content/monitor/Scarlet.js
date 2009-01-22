@@ -52,7 +52,7 @@ Scarlet.prototype.callback = function(step, reply) {
           if(!badpage.test(reply))
             this.reportError(step, this.name, escape(reply));
           else
-            http_get('http://extensions.geckozone.org/customercare/selectbillcontract.do', this, "error");
+            http_get('http://customercare.scarlet.be//customercare/selectbillcontract.do', this, "error");
 			  } else {
           
           if (!total.test(reply))
