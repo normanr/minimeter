@@ -24,7 +24,8 @@ Saix.prototype.callback = function(step, reply) {
 
 			case 2:
 			  reply = unescape(reply);
-        if (reply == null) {
+			  regErrorLogin = /Authorization Required/;
+        if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
           break;
         }
