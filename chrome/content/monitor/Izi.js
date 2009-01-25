@@ -23,7 +23,7 @@ Izi.prototype.callback = function(step, reply) {
 				break;
       case 2:
          reply = unescape(reply);
-         var regErrorLogin=/Le login et\/ou le mot de passe que vous avez saisis sont incorrects/;
+         var regErrorLogin=/Le Login et\/ou le Mot de passe que vous avez saisis sont incorrects/;
          if (regErrorLogin.test(reply)) {
            this.badLoginOrPass();
            break;

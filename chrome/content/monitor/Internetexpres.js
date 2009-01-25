@@ -19,8 +19,8 @@ Internetexpres.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				http_get('https://konto.o2shop.cz/public/login.aspx?uid='+this.username+'&pwd='+this.password, this, 2);
-				//http_get('http://localhost/o2/index.htm', this, 2);
+			  var postdata = "ctl00%24BodyContentHolder%24TextBoxUid="+this.username+"&ctl00%24BodyContentHolder%24TextBoxPwd="+this.password;
+			  http_post('https://konto.o2shop.cz/Pages/login.aspx?ReturnUrl=%2findex.aspx', postdata,this, 2);
 				break;
 			case 2:
         reply = unescape(reply);
@@ -29,8 +29,8 @@ Internetexpres.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
+				this.reportError(step, this.name, escape(reply)); //debug
 				http_get('https://konto.o2shop.cz/index.aspx', this, 3);
-				//http_get('http://localhost/o2/index.htm', this, 3);				
 				break;
 			case 3:
 				reply = unescape(reply);

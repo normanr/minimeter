@@ -19,8 +19,8 @@ Internetsolutions.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-			  var postdata = "UserName="+this.username+"&Password="+this.password;
-			  http_post(this.url + 'index.php?action=logon', postdata,this, 2);
+			  var postdata = "username="+this.username+"&password="+this.password;
+			  http_post(this.url + '?action=login', postdata,this, 2);
 			  break;
 
 			case 2:
@@ -30,7 +30,8 @@ Internetsolutions.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-			  http_get(this.url + 'loginhistoryuid.php', this, 3);
+        this.reportError(step, this.name, escape(reply)); //debug
+			  //http_get(this.url + 'loginhistoryuid.php', this, 3);
 			  break;
 
 			case 3:
