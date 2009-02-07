@@ -39,7 +39,8 @@ Credentials.prototype.store = function(username, password) {
 //(hostname!=null && username!=null && password!=null) && httprealm!=null || formSubmitURL!=null 
       try {
         var logins = myLoginManager.findLogins({}, this.url, this.url, null);
-        myLoginManager.removeLogin(logins[0]);
+        if (logins != "")
+          myLoginManager.removeLogin(logins[0]);
       } catch (e) {}
       myLoginManager.addLogin(loginInfo);
     }

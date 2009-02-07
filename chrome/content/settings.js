@@ -3,17 +3,18 @@
 			_ = country
 			# = custom capacity
 		*/
-		var monitors = new Array(	"_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "Dommel", "dxADSL", "EDPnet", "#Eleven:E-leven", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo",   
-															"_France","Orange","iZi",
+		var monitors = new Array(
+															"_Australia", "Internode",
+		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "Dommel", "dxADSL", "#Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
 															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "#InternetExpres", "#Gtsnovera:GTS Novera",
+															"_England", "Bt",
+															"_France","Orange","iZi",
+															"_Germany","#Tmobile:T-Mobile",
 															"_New Zealand", "Xtra",
-															//"_Netherlands", "#Xs4all",
-															"_Russia", "Omsk:Omsk TeleCommunications", //"#Stream",
-															"_Turkey", "#Turk:Türk Telekom", 
-															//"_England", "Bt",
-															"_Australia", "Internode",
-															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions"//, "Iburst"
+															"_Russia", "Omsk:Omsk TeleCommunications",
+															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions", "Iburst",
+															"_Turkey", "#Turk:Türk Telekom"
 															);
 															
 

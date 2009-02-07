@@ -4,6 +4,7 @@ function Xtra(username, password) {
     this.password = password;
     this.image = "xtra.png"; // does not belong in class
     this.name = "Telecom Xtra";
+    this.url = "https://www.telecom.co.nz/xtralogin.fcc";
 }
 
 Xtra.prototype = new Monitor();
@@ -31,23 +32,31 @@ Xtra.prototype.callback = function(step, reply) {
           break;
         }
 				
-			  var used = /\s([0-9.]*) MB<\/nobr><br><img src=/;
-			  var total = /color=\"#003366\"><b>([0-9.]*) MB<\/b>/;
+			  var regUsed = /\s([0-9,.]*) MB<\/nobr><br><img src=/;
+			  var regTotal = /color=\"#003366\"><b>([0-9]*) MB<\/b>/;
+        var regDateEnd = /Usage for:<\/td>\s*<td>([0-9]*)/;
+        var regExcessPlans = /<td> (Basic|Pro) -/;
 			  
-			  if(!total.test(reply) || !used.test(reply)){
+			  if(!regTotal.test(reply) || !regUsed.test(reply)){
 					this.reportError(step, this.name, escape(reply));
-			  } else {
+			  }
 			  
-			    var totalValue = total.exec(reply);
-      		this.totalVolume = (totalValue[1] / 1000).toFixed(2);
+        var totalValue = regTotal.exec(reply);
+        this.totalVolume = Math.round(totalValue[1] / 1024*1000)/1000;
 
-      		var usedValue = used.exec(reply);
-      		this.usedVolume = (usedValue[1] / 1000).toFixed(2);
-      		
-      		this.percentVolume = this.usedVolume * 100 / this.totalVolume;
-      		this.update(true);	
+        var usedValue = regUsed.exec(reply);
+        usedValue = usedValue[1].replace(',','');
+        this.usedVolume = Math.round(usedValue / 1024*1000)/1000;
+      	
+        if(this.usedVolume > this.totalVolume && regExcessPlans.test(reply))
+          this.amountToPay = "$" + Math.round(Math.ceil(usedValue - totalValue[1])*0.02*100)/100;
+      	
+        if( regDateEnd.test(reply)) {
+          regDateEnd = regDateEnd.exec(reply);
+          this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
         }
-					
-		}	
-				
+      		
+      	this.update(true);	
+        
+		}
 }
