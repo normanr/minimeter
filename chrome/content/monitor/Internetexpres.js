@@ -19,10 +19,22 @@ Internetexpres.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-			  var postdata = "ctl00%24BodyContentHolder%24TextBoxUid="+this.username+"&ctl00%24BodyContentHolder%24TextBoxPwd="+this.password;
-			  http_post('https://konto.o2shop.cz/Pages/login.aspx?ReturnUrl=%2findex.aspx', postdata,this, 2);
+        http_get('https://konto.o2shop.cz/Pages/login.aspx', this, 2);
 				break;
 			case 2:
+        reply = unescape(reply);
+        var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z-\/=]*)"/;
+        var regEventValidation=/EVENTVALIDATION" value="([0-9a-zA-Z-\/=]*)"/;
+        if (!regViewstate.test(reply) || !regEventValidation.test(reply)) {
+          this.reportError(step, this.name, escape(reply));
+          break;
+        }
+        var viewstate = regViewstate.exec(reply);
+        var eventValidation = regEventValidation.exec(reply);
+			  var postdata = "__EVENTVALIDATION="+eventValidation[1]+"&__EVENTTARGET=ctl00$BodyContentHolder$LinkButtonLogin&__VIEWSTATE="+ viewstate[1] +"&ctl00$BodyContentHolder$TextBoxUid="+this.username+"&ctl00$BodyContentHolder$TextBoxPwd="+this.password;
+			  http_post('https://konto.o2shop.cz/Pages/login.aspx?ReturnUrl=%2findex.aspx', postdata,this, 3);
+				break;
+			case 3:
         reply = unescape(reply);
         var regErrorLogin=/no nebo heslo/;
         if (regErrorLogin.test(reply)) {
@@ -30,9 +42,9 @@ Internetexpres.prototype.callback = function(step, reply) {
           break;
         }
 				this.reportError(step, this.name, escape(reply)); //debug
-				http_get('https://konto.o2shop.cz/index.aspx', this, 3);
+				http_get('https://konto.o2shop.cz/index.aspx', this, 4);
 				break;
-			case 3:
+			case 4:
 				reply = unescape(reply);
 				var reg = /<span class="tableTerraCurrent">[0-9,]*/;
 				if(!reg.test(reply)){
