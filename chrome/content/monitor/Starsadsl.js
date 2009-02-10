@@ -49,14 +49,6 @@ Starsadsl.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        this.reportError(step, this.name, escape(reply)); //debug
-        break;                                            //debug
-        http_get("http://myaccount.3starsadsl.be/Beheer/Datavolume/Index.aspx", this, 4);
-        break;
-        
-      case 4:
-        reply = unescape(reply);
-        
         var regusedtotal=/([0-9,.]*) GB \/ ([0-9,.]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name, escape(reply));
