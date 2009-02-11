@@ -7,7 +7,7 @@
 															"_Australia", "Internode",
 		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "Dommel", "dxADSL", "#Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
 															"_Canada","#Videotron:Vidéotron",
-															"_Czech Republic", "#Karneval", "#Chello", "#InternetExpres", "#Gtsnovera:GTS Novera",
+															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
 															"_England", "Bt",
 															"_France","Orange","iZi",
 															"_Germany","#Tmobile:T-Mobile",

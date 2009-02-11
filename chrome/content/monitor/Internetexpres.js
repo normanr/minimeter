@@ -41,40 +41,30 @@ Internetexpres.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-				this.reportError(step, this.name, escape(reply)); //debug
-				http_get('https://konto.o2shop.cz/index.aspx', this, 4);
-				break;
-			case 4:
-				reply = unescape(reply);
-				var reg = /<span class="tableTerraCurrent">[0-9,]*/;
-				if(!reg.test(reply)){
-					this.reportError(step, this.name, escape(reply));
-				} else {
-					var volume = reg.exec(reply);
-					var s = new String(volume[0]);				
-					var pole = s.split ('>');
-					var data = pole[1].replace(",",".");
+				var regUsed = /<span class="tableTerraCurrent">([0-9,]*)/;
+        var regTotal = /<span class="tableTerraLimit">([0-9,]*)/;
+        var regUnlimited = /<span class="tableTerraLimit">bez limitu/;
         
-          var reg = /<span class="tableTerraLimit">[0-9,]*/;
-				  if(!reg.test(reply)){
-					  var limit = this.getCapacity();
-				  } else {
-					  volume = reg.exec(reply);		          			
-					  s = new String(volume[0]);				
-					  pole = s.split ('>');
-					  s = pole[1];
-					  pole = s.split (',');
-					  limit = pole[0];
-          }          
-         					
-					this.extraMessage = "P\u0159enesen\u00E1 data: " + data + " GB\nDatov\u00FD limit: " + limit + " GB";
-					this.usedVolume = data;
-					this.totalVolume = limit;
-      		
-					this.update(true);
+				if(!regUsed.test(reply)){
+					this.reportError(step, this.name, escape(reply));
+          break;
 				}
-					
-		}	
-				
+        var volumeUsed = regUsed.exec(reply);
+      
+        if(!regTotal.test(reply)){
+          if (regUnlimited.test(reply))
+            this.totalVolume = 0;
+          else {
+            this.reportError(step, this.name, escape(reply));
+            break;
+          }
+        }
+        else {
+          volumeTotal = regTotal.exec(reply);
+          this.totalVolume = volumeTotal[1].replace(",",".");
+        }
+        this.usedVolume = volumeUsed[1].replace(",",".");
+        
+        this.update(true);
+		}
 }
-
