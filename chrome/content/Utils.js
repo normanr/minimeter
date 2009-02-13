@@ -209,7 +209,7 @@ function htmlencode(str) {
   str = str.replace(/&/g, "%26");
   str = str.replace(/=/g, "%3D");
   str = str.replace(/\//g, "%2F");
-  str = str.replace(/\+/g, "%2F");
+  str = str.replace(/\+/g, "%2B");
   //_ %24
   return str;
 }

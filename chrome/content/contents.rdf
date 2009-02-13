@@ -7,9 +7,7 @@
   </RDF:Seq>
 
   <RDF:Description about="urn:mozilla:package:minimeter"
-    chrome:displayName="MiniMeter"
-    chrome:author="Tom Germeau"
-    chrome:authorURL="http://www.epigoon.com"
+    chrome:displayName="Minimeter"
     chrome:name="minimeter"
     chrome:extension="true"
     chrome:settingsURL="chrome://minimeter/content/settings.xul"
