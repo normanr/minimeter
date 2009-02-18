@@ -32,7 +32,7 @@ Izi.prototype.callback = function(step, reply) {
          break;
 			case 3:
         reply = unescape(reply);
-				var regused=/>([0-9.]*) Go<\/td><\/tr>\s*<\/table>/;
+				var regused=/>([0-9.]*) Go<\/td><\/tr><tr><td>/g;
 				var regAllowed = /97.647058823529px;">([0-9]*) Go<\/div>/;
 				var regDateEnd = /du ([0-9]*)[0-9\/]* au [0-9\/]*/;
 				if (!regused.test(reply))
