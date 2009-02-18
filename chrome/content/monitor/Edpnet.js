@@ -54,14 +54,19 @@ Edpnet.prototype.callback = function(step, reply) {
       case 4:
         reply = unescape(reply);
         var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
-        if(!regNumConn.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
-        }
-        else {
+        var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#; ]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
+        if(regNumConn.test(reply))
           numConnection = regNumConn.exec(reply);
+        else
+          if (regNumConnYellow.test(reply))
+            numConnection = regNumConnYellow.exec(reply);
+          else {
+            this.reportError(step, this.name, escape(reply));
+            break;
+          }
+
           this.url = "http://extra.edpnet.net/maint_dslconnection.aspx?ID="+numConnection[1];
           http_get(this.url, this, 5);
-        }
         break;
           
       case 5:
