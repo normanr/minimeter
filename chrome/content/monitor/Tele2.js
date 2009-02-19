@@ -45,7 +45,7 @@ Tele2.prototype.callback = function(step, reply) {
         var regused=/<th class="totals">([0-9, ]*) MB<\/th>/;
         var regDateEnd = /<td>([0-9]*)[0-9\/]*<\/td>/;
         var regServerError = /actuellement indisponible|Nous mettons tout en oeuvre|tijdelijk onbeschikbaar|We stellen alles in het werk/;
-        var regUnlimited = /De gebruiksmeter is niet van toepassing voor u/;
+        var regUnlimited = /De verbruiksmeter is voor u niet beschikbaar|pas accès à votre consommation car vous bénéficiez du téléchargement illimité/;
         if (regUnlimited.test(reply))
           this.setFlatRateWithoutInfos();
         else {
