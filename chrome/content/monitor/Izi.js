@@ -33,32 +33,39 @@ Izi.prototype.callback = function(step, reply) {
 			case 3:
         reply = unescape(reply);
 				var regused=/>([0-9.]*) Go<\/td><\/tr><tr><td>/g;
+				var regusedUnlimited=/>([0-9.]*) Go<\/td><\/tr>\s*<\/table>/;
 				var regAllowed = /97.647058823529px;">([0-9]*) Go<\/div>/;
 				var regDateEnd = /du ([0-9]*)[0-9\/]* au [0-9\/]*/;
-				if (!regused.test(reply))
-          this.reportError(step, this.name, escape(reply));
-			  else {
-          var volumeused = regused.exec(reply);
-          if (!regAllowed.test(reply))
-            this.totalVolume = 0;
+				var volumeused;
+				if (regused.test(reply))
+          volumeused = regused.exec(reply);
+				else
+          if (regusedUnlimited.test(reply))
+            volumeused = regusedUnlimited.exec(reply);
           else {
-            var volumetotal = regAllowed.exec(reply);
-            this.totalVolume = volumetotal[1];
+            this.reportError(step, this.name, escape(reply));
+            break;
           }
-          this.usedVolume = volumeused[1];
-          if (regDateEnd.test(reply)){
-            regDateEnd = regDateEnd.exec(reply);
-            this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
-          }
-          if (this.totalVolume != 0 && this.usedVolume > this.totalVolume) {
-            this.amountToPay = Math.ceil(this.usedVolume - this.totalVolume)*3;
-            if (this.amountToPay > 49.99)
-              this.amountToPay = 49.99;
-            this.amountToPay = this.amountToPay + " EUR";
-          }
-         
-          this.update(true);
-				}
+        var volumeused = regused.exec(reply);
+        if (!regAllowed.test(reply))
+          this.totalVolume = 0;
+        else {
+          var volumetotal = regAllowed.exec(reply);
+          this.totalVolume = volumetotal[1];
+        }
+        this.usedVolume = volumeused[1];
+        if (regDateEnd.test(reply)){
+          regDateEnd = regDateEnd.exec(reply);
+          this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
+        }
+        if (this.totalVolume != 0 && this.usedVolume > this.totalVolume) {
+          this.amountToPay = Math.ceil(this.usedVolume - this.totalVolume)*3;
+          if (this.amountToPay > 49.99)
+            this.amountToPay = 49.99;
+          this.amountToPay = this.amountToPay + " EUR";
+        }
+       
+        this.update(true);
 					
 		}	
 				
