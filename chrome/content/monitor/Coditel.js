@@ -23,7 +23,7 @@ Coditel.prototype.callback = function(step, reply) {
         break;
           
       case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regUsedTot = /<td>([0-9.]*) \/ ([0-9]*) GBytes\s*<\/tr>/;
         var regTotal = /<b class="forfait">([0-9]*) GBytes<\/b>/;
         var regUpload = /<b class="down">[0-9.]* GBytes<\/b> <span>\(([0-9.]*) MBytes\)/;
@@ -54,7 +54,7 @@ Coditel.prototype.callback = function(step, reply) {
               this.usedVolume = Math.round((volumeUpload[1]*1 + volumeDownload[1]*1)/1024*1000)/1000;
             }
             else {
-              this.reportError(step, this.name, escape(reply));
+              this.reportError(step, this.name, encodeURIComponent(reply));
               break;
             }
   

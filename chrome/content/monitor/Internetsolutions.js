@@ -24,22 +24,22 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			  break;
 
 			case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regErrorLogin=/User Name or Password/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
           break;
         }
-        this.reportError(step, this.name, escape(reply)); //debug
+        this.reportError(step, this.name, encodeURIComponent(reply)); //debug
 			  //http_get(this.url + 'loginhistoryuid.php', this, 3);
 			  break;
 
 			case 3:
-			  reply = unescape(reply).replace(/\n/g, '');
+			  reply = decodeURIComponent(reply).replace(/\n/g, '');
 			  var reg = /ACCOUNT HISTORY.*<td>([0-9]+):.*<td>([0-9\.]+) MB.*<td>([0-9\.]+) MB.*<td>([0-9\.]+) MB/;
 
 			  if(!reg.test(reply)){
-			    this.reportError(step, this.name, escape(reply));
+			    this.reportError(step, this.name, encodeURIComponent(reply));
 			  } else {
 			    var volume = reg.exec(reply);
 			    var hours = volume[1];

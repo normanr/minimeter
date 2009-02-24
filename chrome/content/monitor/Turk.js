@@ -10,7 +10,7 @@ function Turk(username, password) {
 Turk.prototype = new Monitor();
 
 Turk.prototype.callback = function(step, reply) {
-		reply = unescape(reply);
+		reply = decodeURIComponent(reply);
     if(this.aborted()){
       return;
     }
@@ -36,7 +36,7 @@ Turk.prototype.callback = function(step, reply) {
           this.errorPing("failed");
           this.state = this.STATE_ERROR;
 			  
-					//this.reportError(step, this.name, escape(reply));
+					//this.reportError(step, this.name, encodeURIComponent(reply));
 			  } else {
 			    var volume = reg.exec(reply);
 

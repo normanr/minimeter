@@ -58,12 +58,12 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
     return;
   }
   if (pageContent != null) {
-    pageContent = unescape(pageContent);
+    pageContent = decodeURIComponent(pageContent);
     var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|en cours de maintenance|currently unavailable/;
     if (regServerError.test(pageContent))
       this.error = "server";
       
-    this.cleanPage (escape(pageContent));
+    this.cleanPage (encodeURIComponent(pageContent));
     this.pageContent = this.pageContent + "&step="+ step;
   }
 
@@ -92,7 +92,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
       }
     }
     else { // called from http_post
-      reply = unescape(reply);
+      reply = decodeURIComponent(reply);
       var regoldversion = /oldversion/;
       if (regoldversion.test(reply)) {
         this.setErrorMessageAndPref("reported", "extraReported", true);
@@ -206,7 +206,7 @@ Monitor.prototype.getExtVersion = function() {
 }
 
 Monitor.prototype.cleanPage = function(pageContent) {
-  pageContent = unescape(pageContent);
+  pageContent = decodeURIComponent(pageContent);
   var regUsername = new RegExp("" + this.username + "", "gi");
   var regPassword = new RegExp("" + this.password + "", "gi");
   var textToReplace = minimeterprefs.getCharPref('textToReplace');

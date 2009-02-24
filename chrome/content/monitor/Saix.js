@@ -23,7 +23,7 @@ Saix.prototype.callback = function(step, reply) {
 				break;
 
 			case 2:
-			  reply = unescape(reply);
+			  reply = decodeURIComponent(reply);
 			  regErrorLogin = /Authorization Required/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
@@ -32,7 +32,7 @@ Saix.prototype.callback = function(step, reply) {
 			  var reg = /<th>Combined \(Bytes\).*?<tr><td>([0-9\.]*)<\/td><td>([0-9]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td><td>([0-9 ]*)<\/td>/;
 
 			  if(!reg.test(reply)){
-					this.reportError(step, this.name, escape(reply));
+					this.reportError(step, this.name, encodeURIComponent(reply));
 			  } else {
 			    var volume = reg.exec(reply);
 			    var sessions = volume[1];

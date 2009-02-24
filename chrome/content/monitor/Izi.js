@@ -22,7 +22,7 @@ Izi.prototype.callback = function(step, reply) {
         http_post('https://www.izi.re/moniZi/login.php', postdata,this, 2);
 				break;
       case 2:
-         reply = unescape(reply);
+         reply = decodeURIComponent(reply);
          var regErrorLogin=/Le Login et\/ou le Mot de passe que vous avez saisis sont incorrects/;
          if (regErrorLogin.test(reply)) {
            this.badLoginOrPass();
@@ -31,7 +31,7 @@ Izi.prototype.callback = function(step, reply) {
          http_get("https://www.izi.re/moniZi/consommation.php", this, 3);
          break;
 			case 3:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
 				var regused=/>([0-9.]*) Go<\/td><\/tr><tr><td>/g;
 				var regusedUnlimited=/>([0-9.]*) Go<\/td><\/tr>\s*<\/table>/;
 				var regAllowed = /97.647058823529px;">([0-9]*) Go<\/div>/;
@@ -43,7 +43,7 @@ Izi.prototype.callback = function(step, reply) {
           if (regusedUnlimited.test(reply))
             volumeused = regusedUnlimited.exec(reply);
           else {
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }
         var volumeused = regused.exec(reply);

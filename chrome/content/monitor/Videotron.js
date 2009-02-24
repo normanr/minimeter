@@ -22,7 +22,7 @@ Videotron.prototype.callback = function(step, reply) {
         break;
           
       case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regDateAndUsed = /<tbody>\s*<tr>\s*<td nowrap="nowrap">([0-9]*)-([0-9]*)-([0-9]*) (au|to)<br \/>[0-9-]*<\/td>\s*<td width="10"><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>/;
         
         if(!regDateAndUsed.test(reply)){
@@ -35,7 +35,7 @@ Videotron.prototype.callback = function(step, reply) {
           else {
             if (regErrorServer.test(reply))
               this.error = "server";
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }
         }

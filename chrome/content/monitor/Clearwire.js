@@ -26,14 +26,14 @@ Clearwire.prototype.callback = function(step, reply) {
 				var regtotal=/([0-9]*) GB.<\/p>/;
 				var regDateEnd = /([0-9]*)\/[0-9]*\/[0-9]*<br><br>/;
 				
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
 				if (!regused.test(reply)) {
           var regErrorLogin=/password incorrect|mot de passe incorrect|wachtwoord/;
           if (regErrorLogin.test(reply)) {
             this.badLoginOrPass();
           }
           else
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
 				} else {
             var volumeused = regused.exec(reply);
             var volumetotal = regtotal.exec(reply);

@@ -24,7 +24,7 @@ Euphony.prototype.callback = function(step, reply) {
 			case 2:
 				var regUsedAllowed=/<b>([0-9.]*) GB<\/b> [a-z ]* <b>([0-9.]*) GB<\/b>/;
 				var regAllowedOver=/([0-9.]*) GB [a-z ]* ([0-9.]*) GB/;
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
 				if (!regUsedAllowed.test(reply)) {
 					if (regAllowedOver.test(reply)) {
 					  var volumeAllowedOver = regAllowedOver.exec(reply);
@@ -37,7 +37,7 @@ Euphony.prototype.callback = function(step, reply) {
 							this.badLoginOrPass();
 							break;
 						}
-						this.reportError(step, this.name, escape(reply));
+						this.reportError(step, this.name, encodeURIComponent(reply));
 						break;
           }
 				}

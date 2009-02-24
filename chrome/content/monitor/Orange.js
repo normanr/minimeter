@@ -21,7 +21,7 @@ Orange.prototype.callback = function(step, reply) {
         http_get('http://compte.orange.fr/moninternet/compte/bin/compte.cgi', this, 2);
         break;
       case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regChargement = /Chargement en cours/;
         var regRemaining = /consommer :&nbsp;<\/td>\s*<td class="ligne_orange"><strong><nobr>([0-9.]*) Go/;
         var regTotal = /mois :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
@@ -34,7 +34,7 @@ Orange.prototype.callback = function(step, reply) {
 						break;
 					}
 					else {
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }
         }

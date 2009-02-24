@@ -25,7 +25,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
         http_post(this.urlstart+ '/acces/Acces-Actuel.asp', postdata,this, 2);
 				break;
 			case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regErrorLogin=/Mauvaise combinaison de nom d/;
         var regErrorUnauthorized=/s refus/;
         var regErrorUnknown=/TABLE CLASS=ACCESERROR/;
@@ -37,7 +37,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
           this.update(false);
         }
         else if (regErrorUnknown.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
         }
         else {
         http_get(this.urlstart+ '/acces/Acces-ConsoMenu.asp',this, 3);
@@ -45,9 +45,9 @@ Tvcablenet.prototype.callback = function(step, reply) {
 				break;
 			case 3:
 				var regNum=/Affiche_page_conso_giga\('([0-9]*)'\)/;
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
 				if (!regNum.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
 				}
 				else {
           var NumEquip = regNum.exec(reply);
@@ -58,9 +58,9 @@ Tvcablenet.prototype.callback = function(step, reply) {
       case 4:
         var regUsedTot=/<td align="" >.*<\/td>\s*<td class="TEXT" align="right" >([0-9.]*)<\/td>\s*<td class="TEXT" align="right" >([0-9.]*)<\/td>\s*<td class="TEXT" align="right" >([0-9.]*)<\/td>\s*<td  class="TEXT" align="right"  style="font-size:10pt"><b>([0-9,]*)/;
 
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
 				if (!regUsedTot.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
 				}
 				else {
 			

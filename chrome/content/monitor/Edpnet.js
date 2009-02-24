@@ -27,10 +27,10 @@ Edpnet.prototype.callback = function(step, reply) {
         break;
           
       case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regViewstateID=/VIEWSTATE_ID" value="([0-9a-z-]*)"/;
         if (!regViewstateID.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         viewstateID = regViewstateID.exec(reply);
@@ -39,7 +39,7 @@ Edpnet.prototype.callback = function(step, reply) {
         break;
           
       case 3:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regErrorLogin=/(Invalid user ID or password|Nom d'utilisateur ou mot de passe incorrect|Foutieve gebruikersnaam of wachtwoord)/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass("edpnet");
@@ -52,7 +52,7 @@ Edpnet.prototype.callback = function(step, reply) {
         break;
           
       case 4:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#; ]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         if(regNumConn.test(reply))
@@ -61,7 +61,7 @@ Edpnet.prototype.callback = function(step, reply) {
           if (regNumConnYellow.test(reply))
             numConnection = regNumConnYellow.exec(reply);
           else {
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }
 
@@ -70,7 +70,7 @@ Edpnet.prototype.callback = function(step, reply) {
         break;
           
       case 5:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regUsed = /(Consommation en total \(Net\)|Totaal verbruik \(Netto\)|Total Consumption \(Net\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
         var regUsedBrut = /(Consommation en total \(Brut\)|Totaal verbruik \(Bruto\)|Total Consumption \(Gross\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
         var regIncluded = /(Trafic compris \(gratuit\) |Inbegrepen \(gratis\) trafiek|Included \(Free\) Traffic):<\/td><td align="right">([0-9.]*)<\/td>/;
@@ -84,7 +84,7 @@ Edpnet.prototype.callback = function(step, reply) {
         if(!regUsed.test(reply) || (!regIncluded.test(reply) && !regAllowed.test(reply))){
 					if (regServerError.test(reply))
 						this.error = "server";
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         

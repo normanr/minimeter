@@ -21,7 +21,7 @@ Telenet.prototype.callback = function(step, reply) {
         http_post('https://telemeter4tools.services.telenet.be/TelemeterService', postdata,this, 2, null, "text/xml; charset=UTF-8");
 				break;
       case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         
         reply = reply.replace(/&lt;/g,"<");
         reply = reply.replace(/&gt;/g,">");
@@ -66,7 +66,7 @@ Telenet.prototype.callback = function(step, reply) {
           else {
             this.errorMessage = "Webservice error : " + errorMessage[4];
             consoleDump(errorMessage[2] + " " + errorMessage[4]);
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
           }
         }      
       

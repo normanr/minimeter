@@ -28,14 +28,14 @@ Gtsnovera.prototype.callback = function(step, reply) {
 		http_get("https://uzivatel.gtsnovera.cz/cgi-bin/fup.pl", this, 3);
 		break;
 	case 3:
-		reply = unescape(reply);
+		reply = decodeURIComponent(reply);
 		var reg = /<b>[ ]*([0-9]{1,3}\.[0-9]{3}) GB <\/b> [^0-9]* ([0-9.: ]*)<\/td>/;
 		if(!reg.test(reply)){
 			var reg_c = /[cC]ookie/;
 			if (reg_c.test(reply)){
 				this.callback(1,reply);
 			} else {
-				this.reportError(step, this.name, escape(reply));
+				this.reportError(step, this.name, encodeURIComponent(reply));
 			}
 		} else {
 			var volume = reg.exec(reply);

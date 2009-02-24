@@ -23,17 +23,17 @@ Internode.prototype.callback = function(step, reply) {
 				http_post('https://customer-webtools-api.internode.on.net/cgi-bin/padsl-usage', postdata,this, 2);
 				break;
 			case 2:
-			  reply = unescape(reply);
+			  reply = decodeURIComponent(reply);
 			  var reg = /([0-9\.]+) ([0-9]+) ([0-9\/]+)/;
 
 			  if(!reg.test(reply)){
-          reply = unescape(reply);
+          reply = decodeURIComponent(reply);
           var regErrorLogin=/Authentication failed/;
           if (regErrorLogin.test(reply)) {
             this.badLoginOrPass();
             break;
           }
-					this.reportError(step, this.name, escape(reply));
+					this.reportError(step, this.name, encodeURIComponent(reply));
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = (volume[1]/1000).toFixed(2);

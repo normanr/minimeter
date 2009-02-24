@@ -22,11 +22,11 @@ Tmobile.prototype.callback = function(step, reply) {
         break;
           
       case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regPostURL=/name="login" method="post" action="(\/cpc-sp\/loginhomepage\.do;ekp\.sessionId=[^".]*)"/;
         var regMeaSource=/name="mea_source" value="([^".]*)"/;
         if (!regPostURL.test(reply) || !regMeaSource.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         postURL = regPostURL.exec(reply);
@@ -36,7 +36,7 @@ Tmobile.prototype.callback = function(step, reply) {
         break;
           
       case 3:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regErrorLogin=/Benutzername oder Passwort ist falsch/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
@@ -44,7 +44,7 @@ Tmobile.prototype.callback = function(step, reply) {
         }
         regGetURL = /regPostURL.exec(reply);href="(\/cpc\/showHomepage\.do\?[^".]*)">Kostenkontrolle<\/a>/;
         if (!regGetURL.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         getURL = regGetURL.exec(reply);
@@ -52,11 +52,11 @@ Tmobile.prototype.callback = function(step, reply) {
         break;
           
       case 4:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regUsed = /<td class="cpc_homepage_cc_value">\s*([0-9.]*)\s*<\/td>\s*<td class="cpc_homepage_cc_unit">\s*Megabyte\s*<\/td>\s*<td class="cpc_homepage_cc_info">\s*und ([0-9]*) Kilobyte\s*<\/td>/;
         
         if(!regUsed.test(reply)){
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         

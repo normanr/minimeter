@@ -24,24 +24,24 @@ Adsl20.prototype.callback = function(step, reply) {
         break;
           
       case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=+]*)"/;
         var regEventvalidation=/EVENTVALIDATION" value="([0-9a-zA-Z\/=+]*)"/;
         if (!regViewstate.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         viewstate = (regViewstate.exec(reply));
-        viewstate = viewstate[1].replace(/\//g,"%2F").replace(/\+/g,"%2B");
+        viewstate = encodeURIComponent(viewstate[1]);
         eventvalidation = (regEventvalidation.exec(reply));
-        eventvalidation = eventvalidation[1].replace(/\//g,"%2F").replace(/\+/g,"%2B");
+        eventvalidation = encodeURIComponent(eventvalidation[1]);
     
         var postdata = "ctl02_ToolkitScriptManager1_HiddenField=&__EVENTTARGET=ctl02%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&ctl02%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&ctl02%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
         http_post('http://myaccount.adsl20.be/Beheer/index.aspx', postdata,this, 3);
         break;
         
       case 3:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regErrorLogin=/pas pu retrouver la combinaison de votre nom|We konden de combinatie van je gebruikersnaam en wachtwoord/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
@@ -51,11 +51,11 @@ Adsl20.prototype.callback = function(step, reply) {
         break;
         
       case 4:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         
         var regusedtotal=/([0-9,.]*) GB \/ ([0-9,.]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         var volumeusedtotal = regusedtotal.exec(reply);

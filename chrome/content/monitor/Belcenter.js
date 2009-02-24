@@ -25,7 +25,7 @@ Belcenter.prototype.callback = function(step, reply) {
           break;
           
        case 2:
-         reply = unescape(reply);
+         reply = decodeURIComponent(reply);
          var regQuota = /<b> ([0-9.]*)GB <\/font><\/b> sur ([0-9]*) GB disponibles/;
          var regSupp = /Provision restante<\/b> : <b>([0-9.]*)GB<\/b>/;
         
@@ -36,7 +36,7 @@ Belcenter.prototype.callback = function(step, reply) {
              break;
            }
            else {
-             this.reportError(step, this.name, escape(reply));
+             this.reportError(step, this.name, encodeURIComponent(reply));
              break;
            }
          } 

@@ -24,7 +24,7 @@ Xtra.prototype.callback = function(step, reply) {
 				break;
 
 			case 2:
-			  reply = unescape(reply);
+			  reply = decodeURIComponent(reply);
 			  
         var regErrorLogin=/incorrect User Name or password/;
         if (regErrorLogin.test(reply)) {
@@ -38,7 +38,7 @@ Xtra.prototype.callback = function(step, reply) {
         var regExcessPlans = /<td> (Basic|Pro) -/;
 			  
 			  if(!regTotal.test(reply) || !regUsed.test(reply)){
-					this.reportError(step, this.name, escape(reply));
+					this.reportError(step, this.name, encodeURIComponent(reply));
 			  }
 			  
         var totalValue = regTotal.exec(reply);

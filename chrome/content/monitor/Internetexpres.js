@@ -22,20 +22,20 @@ Internetexpres.prototype.callback = function(step, reply) {
         http_get('https://konto.o2shop.cz/Pages/login.aspx', this, 2);
 				break;
 			case 2:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z-\/=+]*)"/;
         var regEventValidation=/EVENTVALIDATION" value="([0-9a-zA-Z-\/=+]*)"/;
         if (!regViewstate.test(reply) || !regEventValidation.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         var viewstate = regViewstate.exec(reply);
         var eventValidation = regEventValidation.exec(reply);
-			  var postdata = "__EVENTVALIDATION="+htmlencode(eventValidation[1])+"&__EVENTTARGET=ctl00$BodyContentHolder$LinkButtonLogin&__VIEWSTATE="+ htmlencode(viewstate[1]) +"&ctl00$BodyContentHolder$TextBoxUid="+this.username+"&ctl00$BodyContentHolder$TextBoxPwd="+this.password;
+			  var postdata = "__EVENTVALIDATION="+encodeURIComponent(eventValidation[1])+"&__EVENTTARGET=ctl00$BodyContentHolder$LinkButtonLogin&__VIEWSTATE="+ encodeURIComponent(viewstate[1]) +"&ctl00$BodyContentHolder$TextBoxUid="+this.username+"&ctl00$BodyContentHolder$TextBoxPwd="+this.password;
 			  http_post('https://konto.o2shop.cz/Pages/login.aspx?ReturnUrl=%2findex.aspx', postdata,this, 3);
 				break;
 			case 3:
-        reply = unescape(reply);
+        reply = decodeURIComponent(reply);
         var regErrorLogin=/no nebo heslo/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
@@ -46,7 +46,7 @@ Internetexpres.prototype.callback = function(step, reply) {
         var regUnlimited = /<span class="tableTerraLimit">bez limitu/;
         
 				if(!regUsed.test(reply)){
-					this.reportError(step, this.name, escape(reply));
+					this.reportError(step, this.name, encodeURIComponent(reply));
           break;
 				}
         var volumeUsed = regUsed.exec(reply);
@@ -55,7 +55,7 @@ Internetexpres.prototype.callback = function(step, reply) {
           if (regUnlimited.test(reply))
             this.totalVolume = 0;
           else {
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }
         }

@@ -27,11 +27,11 @@ Iburst.prototype.callback = function(step, reply) {
 				http_post('http://helpdesk.wbs.co.za/cfusion/wbs/crm/userdata.cfm', postdata, this, 3);
 				break;	
 			case 3:
-			  reply = unescape(reply);
+			  reply = decodeURIComponent(reply);
 			  var reg = /Gebruikt volume voor deze maand <strong>   ([0-9\.]+) GB<\/strong> van de beschikbare <strong>(.*) GB<\/strong>/;
 			  
 			  if(!reg.test(reply)){
-					this.reportError(step, this.name, escape(reply));
+					this.reportError(step, this.name, encodeURIComponent(reply));
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = volume[1];

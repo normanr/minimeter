@@ -22,21 +22,21 @@ Karneval.prototype.callback = function(step, reply) {
       http_post('https://www.upc.cz/pkmslogin.form?REDIRURL=https%3A%2F%2Fwww.upc.cz%2F%3Faction%3Dlogin%26loc%3D1', postdata,this, 2);
       break;
     case 2:
-      reply = unescape(reply);
+      reply = decodeURIComponent(reply);
       var regErrorLogin=/Chybn/;
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
         break;
       }
-      this.reportError(step, this.name, escape(reply));
+      this.reportError(step, this.name, encodeURIComponent(reply));
       //http_get('https://muj.karneval.cz/internet/traffic.php', this, 3);
       break;
     case 3:
-      reply = unescape(reply);
+      reply = decodeURIComponent(reply);
       //var reg = /traffic.php' class='list2'>([0-9.]*) (G|M)B \/ ([0-9.]*) (G|M)B <\/a>/;
       var reg = /<td>([0-9,]*)(G|M)B<\/td>\s*<td>([0-9,]*)(G|M)B/;
       if(!reg.test(reply)){
-        this.reportError(step, this.name, escape(reply));
+        this.reportError(step, this.name, encodeURIComponent(reply));
       } else {
         var volume = reg.exec(reply);
         s1 = new String (volume[1]);

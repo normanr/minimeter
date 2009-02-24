@@ -92,7 +92,7 @@ function http_get(purl, callback, step){
               }catch(ex){monitor.error = "connection";}
               if (req.responseText == '')
                 monitor.error = "connection";
-              callback.callback(step, escape(req.responseText));
+              callback.callback(step, encodeURIComponent(req.responseText));
             }
   			}
   		}
@@ -119,10 +119,10 @@ function http_post(purl, postdata, callback, step, cookie, contenttype){
             if (req.responseText == '')
               monitor.error = "connection";
             if (callback == "reportError")
-              monitor.reportError(null, null, null, escape(req.responseText));
+              monitor.reportError(null, null, null, encodeURIComponent(req.responseText));
             else
               if(callback != "errorPing")
-                callback.callback(step, escape(req.responseText));
+                callback.callback(step, encodeURIComponent(req.responseText));
   				}
   			}
   		}
@@ -147,7 +147,7 @@ function http_auth(purl, username, password, callback, step){
 		  var listener = {
 		    finished : function(data){
 		  		if(callback != null){
-						callback.callback(step, escape(data));    
+						callback.callback(step, encodeURIComponent(data));    
 		  		}
 		    }
 		  }
@@ -202,16 +202,6 @@ function encode64(str) {
 	}
 
 	return res;
-}
-
-function htmlencode(str) {
-  str = escape(str);
-  str = str.replace(/&/g, "%26");
-  str = str.replace(/=/g, "%3D");
-  str = str.replace(/\//g, "%2F");
-  str = str.replace(/\+/g, "%2B");
-  //_ %24
-  return str;
 }
 
 function debug(va){

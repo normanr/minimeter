@@ -23,7 +23,7 @@ Skynet.prototype.callback = function(step, reply) {
          http_post('https://admit.belgacom.be/pkmslogin.form', postdata,this, 2);
          break;
        case 2:
-         reply = unescape(reply);
+         reply = decodeURIComponent(reply);
          var regErrorLogin = /HPDIA0200W   Authen/;
          if (regErrorLogin.test(reply))
            this.tryAgain("oldMethod");
@@ -39,7 +39,7 @@ Skynet.prototype.callback = function(step, reply) {
          break;
          
        case 3:
-         reply = unescape(reply);
+         reply = decodeURIComponent(reply);
          var regAdrQuota = /function%3[dD]connection.getVolume!26farg.login%3[dD]([0-9a-z]*)!26farg.login_type%3[dD]connection!26farg.sso_date%3[dD]([0-9]*)!26farg.type%3[dD]([0-9])!26farg.key%3[dD]([0-9A-Z#_]*)">(Consulter le volume mensuel|Het maandelijkse volume raadplegen|Consult monthly volume)<\/a><\/div>/;
          var regNoConnectionLinked = /no Internet connection account linked|Aucun compte de connexion Internet|geen enkele internetaccount gelinkt/;
          if(!regAdrQuota.test(reply)) {
@@ -53,7 +53,7 @@ Skynet.prototype.callback = function(step, reply) {
 							http_get("https://admit.belgacom.be/" + adrBackLink[1], this, 3);
 						}
 						else
-             this.reportError(step, this.name, escape(reply));
+             this.reportError(step, this.name, encodeURIComponent(reply));
            }
          }
          else {
@@ -63,7 +63,7 @@ Skynet.prototype.callback = function(step, reply) {
          
          break;
        case 4:
-         reply = unescape(reply);
+         reply = decodeURIComponent(reply);
          var regmb = /(Volume mensuel utilis[&eacute;È√©]*|Gebruikt volume voor deze maand|Monthly volume used)\s*<strong>([0-9]+) MB<\/strong>\s*(sur|van de beschikbare|out of)\s*<strong>(.*) GB<\/strong>/;// 1(2),2(4)
          var reggb = /(Volume mensuel utilis[&eacute;È√©]*|Gebruikt volume voor deze maand|Monthly volume used)\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*(sur|van de beschikbare|out of)\s*<strong>(.*) GB<\/strong>/;// 1(2),2(3),3(5)
          var reggbl = /(Volume mensuel utilis[&eacute;È√©]*|Gebruikt volume voor deze maand|Monthly volume used)\s*<strong>([0-9]*) GB<\/strong>\s*(sur|van de beschikbare|out of)\s*<strong>(.*) GB<\/strong>/;// 1(2),2(4)

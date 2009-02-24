@@ -25,11 +25,11 @@ Bt.prototype.callback = function(step, reply) {
 				http_get('http://www.bt.com/btbroadband/usage/',this, 3);
 				break;
 			case 3:
-			  reply = unescape(reply);
+			  reply = decodeURIComponent(reply);
 			  var reg = /([0-9\.]+) ([0-9]+) ([0-9\/]+)/;
 
 			  if(!reg.test(reply)){
-			     this.reportError(step, this.name, escape(reply));
+			     this.reportError(step, this.name, encodeURIComponent(reply));
 			  } else {
 			    var volume = reg.exec(reply);
       		this.usedVolume = volume[1];

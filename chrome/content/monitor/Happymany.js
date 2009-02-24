@@ -23,7 +23,7 @@ Happymany.prototype.callback = function(step, reply) {
          http_post('https://secure.happymany.be/scripts/Login_action_new.asp', postdata,this, 2);
          break;
        case 2:
-         reply = unescape(reply);
+         reply = decodeURIComponent(reply);
          var regErrorLogin = /Failed Login/;
          var regAdrQuota = /https:\/\/secure.happymany.be\/Report\/([0-9A-Za-z_\-.?=]*)&Report=TrafficVodslReportForm.aspx/;
          if (regErrorLogin.test(reply)) {
@@ -32,7 +32,7 @@ Happymany.prototype.callback = function(step, reply) {
          }
          else {
            if(!regAdrQuota.test(reply)) {
-             this.reportError(step, this.name, escape(reply));
+             this.reportError(step, this.name, encodeURIComponent(reply));
              break;
            }
            else {
@@ -43,14 +43,14 @@ Happymany.prototype.callback = function(step, reply) {
          break;
          
        case 3:
-         reply = unescape(reply);
+         reply = decodeURIComponent(reply);
          
          var regVolume = /<td class="FormGridItem" align="center" style="font-weight:bold;">[0-9]*<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td>/;
         
         
         
          if(!regVolume.test(reply)){
-             this.reportError(step, this.name, escape(reply));
+             this.reportError(step, this.name, encodeURIComponent(reply));
              break;
            }
          else {

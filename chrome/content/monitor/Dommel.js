@@ -28,7 +28,7 @@ Dommel.prototype.callback = function(step, reply) {
       http_post('https://crm.schedom-europe.net/index.php', postdata,this, 2);
       break;
     case 2:
-      reply = unescape(reply);
+      reply = decodeURIComponent(reply);
       var regErrorLogin=/your login is incorrect|uw paswoord werd niet aanvaard/;
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
@@ -37,13 +37,13 @@ Dommel.prototype.callback = function(step, reply) {
       http_get('https://crm.schedom-europe.net/user.php?op=view&tile=mypackages', this, 3);
       break;
     case 3:
-      reply = unescape(reply);
+      reply = decodeURIComponent(reply);
       var servid = /servid=([0-9]+)&/;
       var client_id = /client_id=([0-9]+)'/;
       var servidValue = servid.exec(reply);
       var client_idValue = client_id.exec(reply);
       if( !servid.test(reply) || !client_id.test(reply) ){
-        this.reportError(step, this.name, escape(reply));
+        this.reportError(step, this.name, encodeURIComponent(reply));
       } else {
         var servidValue = servid.exec(reply);
         var client_idValue = client_id.exec(reply);
@@ -51,7 +51,7 @@ Dommel.prototype.callback = function(step, reply) {
       }
       break;
     case 4:
-      reply = unescape(reply);
+      reply = decodeURIComponent(reply);
       
       var reg_homeconnect = /homeconnect/;
       var reg_connection_type = /<td><b>type :<\/b><\/td>\s*<td>(broadband|mediumband)<\/td>/;
@@ -72,7 +72,7 @@ Dommel.prototype.callback = function(step, reply) {
       else {
         
         if( !reg_connection_type.test(reply)) {
-          this.reportError(step, this.name, escape(reply));
+          this.reportError(step, this.name, encodeURIComponent(reply));
         } else {
           // Grab connection type (broadband|mediumband)
           var connection_typeValue = reg_connection_type.exec(reply);
@@ -146,7 +146,7 @@ Dommel.prototype.callback = function(step, reply) {
             this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb + " (Real: " + real_traffic.toFixed(2) + gb + ")\nConnection type : " + connection_typeValue[1];
             http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
           } else {
-            this.reportError(step, this.name, escape(reply));
+            this.reportError(step, this.name, encodeURIComponent(reply));
           }
         }
         break;
