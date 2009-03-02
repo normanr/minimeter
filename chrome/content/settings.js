@@ -9,7 +9,7 @@
 															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
 															"_England", "Bt",
-															"_France","Orange","iZi",
+															"_France","#Bouygues:Bouygues Telecom","Orange","Orange3g:Orange 3G","iZi",
 															"_Germany","#Tmobile:T-Mobile",
 															"_New Zealand", "Xtra",
 															"_Russia", "Omsk:Omsk TeleCommunications",

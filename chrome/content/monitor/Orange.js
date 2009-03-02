@@ -22,6 +22,11 @@ Orange.prototype.callback = function(step, reply) {
         break;
       case 2:
         reply = decodeURIComponent(reply);
+        var regErrorLogin=/saisie incorrecte/;
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass();
+          break;
+        }
         var regChargement = /Chargement en cours/;
         var regRemaining = /consommer :&nbsp;<\/td>\s*<td class="ligne_orange"><strong><nobr>([0-9.]*) Go/;
         var regTotal = /mois :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
