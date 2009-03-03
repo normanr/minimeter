@@ -47,12 +47,6 @@ Adsl20.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        http_get("http://myaccount.adsl20.be/Beheer/Datavolume/Index.aspx", this, 4);
-        break;
-        
-      case 4:
-        reply = decodeURIComponent(reply);
-        
         var regusedtotal=/([0-9,.]*) GB \/ ([0-9,.]*) GB<\/span>/;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));

@@ -11,10 +11,10 @@
 															"_France","#Bouygues:Bouygues Telecom","Orange","Orange3g:Orange 3G","iZi",
 															"_Germany","#Tmobile:T-Mobile",
 															"_New Zealand", "Xtra",
-															"_United Kingdom", "Bt",
 															"_Russia", "Omsk:Omsk TeleCommunications",
 															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions", "Iburst",
-															"_Turkey", "#Turk:Türk Telekom"
+															"_Turkey", "#Turk:Türk Telekom",
+															"_United Kingdom", "Bt"
 															);
 															
 
