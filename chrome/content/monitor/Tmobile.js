@@ -18,40 +18,27 @@ Tmobile.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("https://mein.t-mobile.de/cpc-sp/actiondispatcher", this, 2);
+        var postdata = "action=loginnow&username="+this.username+"&passwort="+this.password;
+        http_post("https://mein.t-mobile.de/cpc-sp/actiondispatcher", postdata,this, 2);
         break;
           
       case 2:
-        reply = decodeURIComponent(reply);
-        var regPostURL=/name="login" method="post" action="(\/cpc-sp\/loginhomepage\.do;ekp\.sessionId=[^".]*)"/;
-        var regMeaSource=/name="mea_source" value="([^".]*)"/;
-        if (!regPostURL.test(reply) || !regMeaSource.test(reply)) {
-          this.reportError(step, this.name, encodeURIComponent(reply));
-          break;
-        }
-        postURL = regPostURL.exec(reply);
-        meaSource = regMeaSource.exec(reply);
-        var postdata = "target=%2Fcpc%2F%3Fnull&username="+this.username+"&password="+this.password+"&Login=Login&mea_source="+meaSource[1];
-        http_post("https://mein.t-mobile.de"+postURL[1], postdata,this, 3);
-        break;
-          
-      case 3:
         reply = decodeURIComponent(reply);
         var regErrorLogin=/Benutzername oder Passwort ist falsch/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
           break;
         }
-        regGetURL = /regPostURL.exec(reply);href="(\/cpc\/showHomepage\.do\?[^".]*)">Kostenkontrolle<\/a>/;
+        var regGetURL = /regPostURL.exec(reply);href="(\/cpc\/showHomepage\.do\?[^".]*)">Kostenkontrolle<\/a>/;
         if (!regGetURL.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
-        getURL = regGetURL.exec(reply);
-        http_get("https://mein.t-mobile.de"+getURL[1], this, 4);
+        var getURL = regGetURL.exec(reply);
+        http_get("https://mein.t-mobile.de"+getURL[1], this, 3);
         break;
           
-      case 4:
+      case 3:
         reply = decodeURIComponent(reply);
         var regUsed = /<td class="cpc_homepage_cc_value">\s*([0-9.]*)\s*<\/td>\s*<td class="cpc_homepage_cc_unit">\s*Megabyte\s*<\/td>\s*<td class="cpc_homepage_cc_info">\s*und ([0-9]*) Kilobyte\s*<\/td>/;
         

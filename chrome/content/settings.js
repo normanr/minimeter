@@ -8,10 +8,10 @@
 		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "Dommel", "dxADSL", "#Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
 															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
-															"_England", "Bt",
 															"_France","#Bouygues:Bouygues Telecom","Orange","Orange3g:Orange 3G","iZi",
 															"_Germany","#Tmobile:T-Mobile",
 															"_New Zealand", "Xtra",
+															"_United Kingdom", "Bt",
 															"_Russia", "Omsk:Omsk TeleCommunications",
 															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions", "Iburst",
 															"_Turkey", "#Turk:Türk Telekom"

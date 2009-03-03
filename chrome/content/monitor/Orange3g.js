@@ -29,6 +29,12 @@ Orange3g.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
+        var regVersionClassique = /href="(servlet\/ecareweb\.servlet\.consommation\.ConsommationHtmlPageServletGoTo[^"]*)"[^"]*<span class="orange2b">[^ ]* retour version classique/;
+        if(regVersionClassique.test(reply)) {
+          var lienVersionClassique = regVersionClassique.exec(reply);
+          http_get("https://webclients.orange.fr/EcareAsGenerator/"+lienVersionClassique[1], this, 3);
+          break;
+        }
         http_get("http://r.orange.fr/r/Omoncomptemobile_suiviconso", this, 3);
         break;
         
