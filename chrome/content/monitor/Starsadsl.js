@@ -25,18 +25,21 @@ Starsadsl.prototype.callback = function(step, reply) {
           
       case 2:
         reply = decodeURIComponent(reply);
+        var regctl = /head id="([^_]*)_Head1"/;
         var regViewstate=/VIEWSTATE" value="([0-9a-zA-Z\/=+]*)"/;
         var regEventvalidation=/EVENTVALIDATION" value="([0-9a-zA-Z\/=+]*)"/;
-        if (!regViewstate.test(reply)) {
+        if (!regctl.test(reply) || !regViewstate.test(reply) || !regEventvalidation.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
-        viewstate = (regViewstate.exec(reply));
+        var ctl = regctl.exec(reply);
+        ctl = ctl[1];
+        var viewstate = regViewstate.exec(reply);
         viewstate = encodeURIComponent(viewstate[1]);
-        eventvalidation = (regEventvalidation.exec(reply));
+        var eventvalidation = (regEventvalidation.exec(reply));
         eventvalidation = encodeURIComponent(eventvalidation[1]);
     
-        var postdata = "ctl02_ToolkitScriptManager1_HiddenField=&__EVENTTARGET=ctl02%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&ctl02%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&ctl02%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
+        var postdata = ctl+"_ToolkitScriptManager1_HiddenField=&__EVENTTARGET="+ctl+"%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&"+ctl+"%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&"+ctl+"%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
         
         http_post('http://myaccount.3starsadsl.be/Beheer/index.aspx', postdata,this, 3);
         break;
