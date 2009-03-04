@@ -29,17 +29,18 @@ Orange3g.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
+        http_get("http://r.orange.fr/r/Omoncomptemobile_suiviconso", this, 3);
+        break;
+        
+      case 3:
+        reply = decodeURIComponent(reply);
         var regVersionClassique = /href="(servlet\/ecareweb\.servlet\.consommation\.ConsommationHtmlPageServletGoTo[^"]*)"[^"]*<span class="orange2b">[^ ]* retour version classique/;
         if(regVersionClassique.test(reply)) {
           var lienVersionClassique = regVersionClassique.exec(reply);
           http_get("https://webclients.orange.fr/EcareAsGenerator/"+lienVersionClassique[1], this, 3);
           break;
         }
-        http_get("http://r.orange.fr/r/Omoncomptemobile_suiviconso", this, 3);
-        break;
         
-      case 3:
-        reply = decodeURIComponent(reply);
         var regTotal = /Disponible initial<!--]--><\/th>\s*<td class="orange2 centre">([0-9,]*) Mo<\/td>/;
         var regUsed = /Consommé<!--]--><\/th>\s*<td class="orange2 centre">([0-9,]*) Mo<\/td>/
         var regDateEnd = /Prochaine facturation<!--]--><\/th>\s*<td class="orange2 centre">([0-9]*)/
