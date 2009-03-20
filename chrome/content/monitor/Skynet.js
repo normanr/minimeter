@@ -40,9 +40,9 @@ Skynet.prototype.callback = function(step, reply) {
         break;
         
       case "oldMethod":
-        this.url = "https://e-care.skynet.be/index.cfm?function=connection.getVolume";
+        this.url = "https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume";
         var postdata = "fuseaction=CheckLoginConnection&form_login="+this.username+"&form_password="+this.password+"&Langue_Id=3&Submit=Connexion";
-        http_post('https://e-care.skynet.be/index.cfm?function=connection.getVolume', postdata,this, 4);
+        http_post('https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume', postdata,this, 4);
         break;
         
       case 3:
@@ -59,8 +59,12 @@ Skynet.prototype.callback = function(step, reply) {
 							var adrBackLink = backToTheHomepageFromAdvantage.exec(reply);
 							http_get("https://admit.belgacom.be/" + adrBackLink[1], this, 3);
 						}
-						else
+						else {
+              var regServerUnavailable = /ne sont pas disponibles|problème technique|technical problem|technisch probleem|Une erreur s'est produite|An error has occurred/;
+              if (regServerUnavailable.test(reply))
+                this.error = "server";
               this.reportError(step, this.name, encodeURIComponent(reply));
+            }
           }
         }
         else {

@@ -28,7 +28,7 @@ Clearwire.prototype.callback = function(step, reply) {
 				
         reply = decodeURIComponent(reply);
 				if (!regused.test(reply)) {
-          var regErrorLogin=/password incorrect|mot de passe incorrect|wachtwoord/;
+          var regErrorLogin=/password incorrect|mot de passe incorrect|wachtwoord|Your user name and\/or password are\/is incorrect/;
           if (regErrorLogin.test(reply)) {
             this.badLoginOrPass();
           }

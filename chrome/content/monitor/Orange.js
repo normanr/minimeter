@@ -32,6 +32,7 @@ Orange.prototype.callback = function(step, reply) {
         var regTotal = /mois :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
         var regUsedNoLimit = /Volume consomm&eacute; \*\* :&nbsp;<\/td>\s*<td class="ligne_orange"><strong><nobr>([0-9.< ]*)Go<\/nobr>/
         var regSupp = /dit :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
+        var regErrorServer = /pas disponibles pour le moment/;
        
         if((!regRemaining.test(reply) || !regTotal.test(reply)) && !regUsedNoLimit.test(reply)){
           if (this.trialNumber == 2 && regChargement.test(reply)) {
@@ -39,6 +40,8 @@ Orange.prototype.callback = function(step, reply) {
 						break;
 					}
 					else {
+            if (regErrorServer.test(reply))
+              this.error = "server";
             this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }

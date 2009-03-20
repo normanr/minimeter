@@ -59,7 +59,7 @@ Telenet.prototype.callback = function(step, reply) {
             
           /* Incorrect Login or Password */
           else
-           if (errorMessage[2] == "ERRTLMTLS_00004")
+           if (errorMessage[2] == "ERRTLMTLS_00004" || errorMessage[2] == "ERRTLMTLS_00002")
             this.badLoginOrPass();
           
           /* Another error. */

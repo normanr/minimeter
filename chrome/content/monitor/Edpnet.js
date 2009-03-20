@@ -54,7 +54,7 @@ Edpnet.prototype.callback = function(step, reply) {
       case 4:
         reply = decodeURIComponent(reply);
         var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
-        var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#; ]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
+        var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[^<]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         if(regNumConn.test(reply))
           numConnection = regNumConn.exec(reply);
         else
