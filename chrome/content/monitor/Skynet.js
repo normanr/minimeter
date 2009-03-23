@@ -48,23 +48,23 @@ Skynet.prototype.callback = function(step, reply) {
       case 3:
         reply = decodeURIComponent(reply);
         var regAdrQuota = /function%3[dD]connection.getVolume!26farg.login%3[dD]([0-9a-z]*)!26farg.login_type%3[dD]connection!26farg.sso_date%3[dD]([0-9]*)!26farg.type%3[dD]([0-9])!26farg.key%3[dD]([0-9A-Z#_]*)">(Consulter le volume mensuel|Het maandelijkse volume raadplegen|Consult monthly volume)<\/a><\/div>/;
-        var regNoConnectionLinked = /no Internet connection account linked|Aucun compte de connexion Internet|geen enkele internetaccount gelinkt/;
+        var regNoConnectionLinked = /no Internet connection account linked|Aucun compte de connexion Internet|geen enkele internetaccount gelinkt|Ajouter une connexion Internet|Add an Account|Een Internetverbinding toevoegen/;
+        var changePassword = /and choose a new personal password/;
         if(!regAdrQuota.test(reply)) {
           if(regNoConnectionLinked.test(reply))
             this.noConnectionLinked();
           else {
-						var backToTheHomepageFromAdvantage = /<a href="(\/eservices\/wps\/myportal\/!ut\/p\/kcxml\/[0-9a-zA-Z_\-!]*\/delta\/base64xml\/[0-9a-zA-Z!]*\?PC_7_0_1EU_spf_strutsAction=!2fmyadvantages!2fgoBackToHomepage.do)/;
+						var backToTheHomepageFromAdvantage = /<a href="(\/eservices\/wps\/myportal\/!ut\/p\/kcxml\/[0-9a-zA-Z_\-!]*\/delta\/base64xml\/[^\.]*!2fgoBackToHomepage.do)/;
 					
 						if (backToTheHomepageFromAdvantage.test(reply)) { // is the advantages page shown ?
 							var adrBackLink = backToTheHomepageFromAdvantage.exec(reply);
 							http_get("https://admit.belgacom.be/" + adrBackLink[1], this, 3);
 						}
-						else {
-              var regServerUnavailable = /ne sont pas disponibles|problème technique|technical problem|technisch probleem|Une erreur s'est produite|An error has occurred/;
-              if (regServerUnavailable.test(reply))
-                this.error = "server";
-              this.reportError(step, this.name, encodeURIComponent(reply));
-            }
+						else
+              if (changePassword.test(reply))
+                this.userActionRequired();
+              else
+                this.reportError(step, this.name, encodeURIComponent(reply));
           }
         }
         else {

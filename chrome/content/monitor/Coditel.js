@@ -61,12 +61,12 @@ Coditel.prototype.callback = function(step, reply) {
             this.remainingDays = getInterval("firstDayNextMonth");
             if (this.usedVolume > this.totalVolume && this.totalVolume != 0) {
               if (this.totalVolume == 3) // 2€ / Gio
-                this.amountToPay = Math.floor(this.usedVolume - this.totalVolume)*2 + " EUR";
+                this.amountToPay = Math.ceil(this.usedVolume - this.totalVolume)*2 + " EUR";
               else
-                if (this.totalVolume == 30 || this.totalVolume == 60) // 5€ / 10 Gio
-                  this.amountToPay = Math.floor((this.usedVolume - this.totalVolume)/10)*10*5 + " EUR";
+                if (this.totalVolume == 30 || this.totalVolume == 60 || this.totalVolume == 100) // 5€ / 10 Gio
+                  this.amountToPay = Math.ceil((this.usedVolume - this.totalVolume)/10)*5 + " EUR";
                 else // 0.5€ / 250 Mio
-                  this.amountToPay = Math.floor((this.usedVolume - this.totalVolume)*4)*0.5 + " EUR";
+                  this.amountToPay = Math.ceil((this.usedVolume - this.totalVolume)*4)*0.5 + " EUR";
             }
             this.update(true);
     }

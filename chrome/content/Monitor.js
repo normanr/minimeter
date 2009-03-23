@@ -177,6 +177,12 @@ Monitor.prototype.noConnectionLinked = function() {
 	this.update(false);
 }
 
+Monitor.prototype.userActionRequired = function() {
+  this.setErrorMessageAndPref("userActionRequired", "userActionRequiredExtra", true);
+
+	this.update(false);
+}
+
 Monitor.prototype.badLoginOrPass = function(provider) {
   if(provider=="belgacom")
     this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassBg", true);
