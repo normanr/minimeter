@@ -57,9 +57,9 @@ Mobistariew.prototype.callback = function(step, reply) {
         var regDateEnd=/(avant le) ([0-9]*) /; // avant le (15) Janvier 2009
         var regServerError=/en cours de maintenance/;
         var regNbDayUsed=/votre Internet Everywhere <strong>([0-9]*)<\/strong> jours et/;
-        var regdataInRoaming=/étranger\:\s*([0-9.]*) MB/; //Oula ca va couter cher
+        var regdataInRoaming=/tranger\: <strong>\s*([0-9.]*)\s*MB<\/strong>/; //Oula ca va couter cher
         reply = decodeURIComponent(reply);
-        if((!regUsedMB.test(reply) && !regUsedGB.test(reply) && !regUsedExceeded.test(reply)) || !regAllowed.test(reply) || !regNbDayUsed.test(reply)  ){
+        if((!regUsedMB.test(reply) && !regUsedGB.test(reply) && !regUsedExceeded.test(reply)) || !regAllowed.test(reply) || !regNbDayUsed.test(reply) || !regdataInRoaming.test(reply)){
           if (regServerError.test(reply))
             this.error = "server";
           this.reportError(step, this.name, encodeURIComponent(reply));
@@ -111,7 +111,7 @@ Mobistariew.prototype.callback = function(step, reply) {
           extraPrixMsgRoamingInfo = "("+getString("info.plusRoamingDataInPrice")+")";
         }
         
-        //Ont va calculer les supléments.
+        //On va calculer les suppléments.
         var calculGbsupplement = (volumeUsed - this.totalVolume) * 1024;
         var supplementCalculMbEuros = 0;
         if(calculGbsupplement >= 0) {
