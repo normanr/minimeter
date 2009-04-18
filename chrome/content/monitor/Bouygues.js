@@ -55,22 +55,25 @@ Bouygues.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        var regused=/<strong><span>([0-9.]*) Go<\/span><\/strong>/;
-        var regDateEnd = /Date de ma prochaine facture\s*<\/h3>\s*<\/td>\s*<td align="right">\s*<span><strong>\s*<span>([0-9]*)\/([0-9]*)\/([0-9]*)<\/span>/;
-        if (!regused.test(reply)) {
+        var regused=/<strong><span>([0-9.]*) (Mo|Go)<\/span><\/strong>/;
+        var regDateEnd = /dateEmissionFacture">([0-9]+)\/([0-9]+)\/([0-9]+)/;
+        var regtotal = /illimit/;
+        if (!regused.test(reply) || !regtotal.test(reply) || !regDateEnd.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         var volumeused = regused.exec(reply);
+        if (volumeused[2] == "Mo")
+          volumeused[1] = Math.round(volumeused[1]/1.024)/1000;
         this.usedVolume = volumeused[1];
-        this.totalVolume = this.getCapacity();
+
+          
+        this.totalVolume = 5;
         
-        if(regDateEnd.test(reply)){
-          var dateEnd = regDateEnd.exec(reply);
-          dateEnd = new Date(dateEnd[3], dateEnd[2], dateEnd[1]);
-          dateEnd.setTime(86400000 + dateEnd.getTime());
-          this.remainingDays = getInterval("nearestOccurence", dateEnd.getDate());
-        }
+        var dateEnd = regDateEnd.exec(reply);
+        dateEnd = new Date(dateEnd[3], dateEnd[2], dateEnd[1]);
+        dateEnd.setTime(86400000 + dateEnd.getTime());
+        this.remainingDays = getInterval("nearestOccurence", dateEnd.getDate());
           
         this.update(true);
     }

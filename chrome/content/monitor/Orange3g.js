@@ -42,7 +42,7 @@ Orange3g.prototype.callback = function(step, reply) {
         }
         
         var regTotal = /Disponible initial<!--]--><\/th>\s*<td class="orange2 centre">([0-9,]*) Mo<\/td>/;
-        var regUsed = /Consommé<!--]--><\/th>\s*<td class="orange2 centre">([0-9,]*) Mo<\/td>/
+        var regUsed = /Consommé<!--]--><\/th>\s*<td class="orange2 centre">([0-9,]*) (Mo|ko)<\/td>/
         var regDateEnd = /Prochaine facturation<!--]--><\/th>\s*<td class="orange2 centre">([0-9]*)/
        
         if(!regTotal.test(reply) || !regUsed.test(reply)){
@@ -51,15 +51,21 @@ Orange3g.prototype.callback = function(step, reply) {
         }
         var volumeTotal = 0;
         var volumeUsed = 0;
+        var volumeUsedUnit = "";
+        var factor = 1;
        
         volumeTotal = regTotal.exec(reply);
         volumeUsed = regUsed.exec(reply);
           
         volumeTotal = volumeTotal[1].replace(",", ".");
+        volumeUsedUnit = volumeUsed[2];
         volumeUsed = volumeUsed[1].replace(",", ".");
         
+        if (volumeUsedUnit == "ko")
+          factor = 1024;
+        
         this.totalVolume = Math.round(volumeTotal/1.024)/1000;
-        this.usedVolume = Math.round(volumeUsed/1.024)/1000;
+        this.usedVolume = Math.round(volumeUsed/1.024/factor)/1000;
         
         if(regDateEnd.test(reply)){
           regDateEnd = regDateEnd.exec(reply);
