@@ -26,12 +26,16 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			case 2:
         reply = decodeURIComponent(reply);
         var regErrorLogin=/User Name or Password/;
+        var regLoggedIn = /Logout/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
           break;
         }
-        this.reportError(step, this.name, encodeURIComponent(reply)); //debug
-			  //http_get(this.url + 'loginhistoryuid.php', this, 3);
+        if (!regLoggedIn.test(reply) {
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
+			  http_get(this.url + 'history.php', this, 3);
 			  break;
 
 			case 3:
