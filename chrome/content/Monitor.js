@@ -31,12 +31,12 @@ Monitor.prototype.check = function(silent) { // override default action
   this.newData = true;
   this.trialNumber = 1;
   this.callback(1);
-}
+};
 
 
 Monitor.prototype.abort = function(){
     this.state = this.STATE_ABORT;
-}
+};
 
 Monitor.prototype.getCapacity = function(){
 	var capacity;
@@ -50,20 +50,20 @@ Monitor.prototype.getCapacity = function(){
   capacity = minimeterprefs.getCharPref('capacitychar');
   
 	return capacity;
-}
+};
 
 Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   if (this.trialNumber < 2) {
     this.tryAgain(1);
     return;
   }
-  if (pageContent != null) {
+  if (pageContent !== null) {
     pageContent = decodeURIComponent(pageContent);
     var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|en cours de maintenance|currently unavailable/;
     if (regServerError.test(pageContent))
       this.error = "server";
       
-    this.cleanPage (encodeURIComponent(pageContent));
+    this.cleanPage(encodeURIComponent(pageContent));
     this.pageContent = this.pageContent + "&step="+ step;
   }
 
@@ -72,7 +72,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
     setTimeout("monitor.check('silent');", 60000);
   }
   else {
-    if (reply == null) { // 1st call of reportError
+    if (reply === null) { // 1st call of reportError
 			var prefService = Components.classes["@mozilla.org/preferences-service;1"]
 									 .getService(Components.interfaces.nsIPrefService).getBranch("network.cookie.");
 			if (prefService.getIntPref('cookieBehavior') != 0) {
@@ -81,9 +81,9 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
 			else {
         this.setErrorMessageAndPref("unknown", null, false);
 				this.errorPing("failed");
-				if (step != null) {
-					var dumpMessage = getString("error.unknownErrorDump").replace ("%step", step);
-					dumpMessage = dumpMessage.replace ("%monitor", monitor);
+				if (step !== null) {
+					var dumpMessage = getString("error.unknownErrorDump").replace("%step", step);
+					dumpMessage = dumpMessage.replace("%monitor", monitor);
 					consoleDump(dumpMessage);
 				}
 				var extVersion = this.getExtVersion();
@@ -97,8 +97,6 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
       if (regoldversion.test(reply)) {
         this.setErrorMessageAndPref("reported", "extraReported", true);
         
-        var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-                              .getService(Components.interfaces.nsIPrefService);
         var browserprefs = prefService.getBranch("general.useragent.");
         var locale = browserprefs.getCharPref('locale');
         if (locale == "fr")
@@ -117,7 +115,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
         
         var regTestDebug = /debug/;
         
-        if (regTestDebug.test(reply) && this.pageContent != null) {
+        if (regTestDebug.test(reply) && this.pageContent !== null) {
           if (sendDebug) {
             this.pageContent = "&pageContent=" + this.pageContent;
             
@@ -129,7 +127,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
               lastExtVersion = regLastExtVersion.exec(reply);
               lastExtVersion = lastExtVersion[2];
             }
-            if (!this.isVersionLowerThan (extVersion, lastExtVersion)) {
+            if (!this.isVersionLowerThan(extVersion, lastExtVersion)) {
             
               http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
             }
@@ -141,47 +139,47 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
     }
   }
   this.update(false);
-}
+};
 
 Monitor.prototype.setFlatRateWithoutInfos = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
   this.extraMessage = getString("error.extraFlatRate");
   minimeterprefs.setCharPref("errorExtraMessage", "extraFlatRate");
-}
+};
 
 Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
   var vc =
      Components.classes["@mozilla.org/xpcom/version-comparator;1"].
      getService(Components.interfaces.nsIVersionComparator);
   return (vc.compare(versionToCheck, versionRef) < 0);
-}
+};
 
 
 
 Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
   this.error = error;
   minimeterprefs.setCharPref("error", error);
-  if (setMessage == true)
+  if (setMessage === true)
     this.errorMessage = getString("error."+error);
   
-  if (extraError != null) {
+  if (extraError !== null) {
     minimeterprefs.setCharPref("errorExtraMessage", extraError);
     this.extraMessage = getString("error."+extraError);
   }
-}
+};
 
 Monitor.prototype.noConnectionLinked = function() {
   this.setErrorMessageAndPref("noConnectionLinked", "noConnectionLinkedExtra", true);
 
 	this.update(false);
-}
+};
 
 Monitor.prototype.userActionRequired = function() {
   this.setErrorMessageAndPref("userActionRequired", "userActionRequiredExtra", true);
 
 	this.update(false);
-}
+};
 
 Monitor.prototype.badLoginOrPass = function(provider) {
   if(provider=="belgacom")
@@ -192,7 +190,7 @@ Monitor.prototype.badLoginOrPass = function(provider) {
     this.setErrorMessageAndPref("badLoginOrPass", null, true);
     
 	this.update(false);
-}
+};
 
 Monitor.prototype.getExtVersion = function() {
   var nsIUpdateItem = Components.interfaces.nsIUpdateItem;
@@ -209,7 +207,7 @@ Monitor.prototype.getExtVersion = function() {
   }
   
   return extVersion;
-}
+};
 
 Monitor.prototype.cleanPage = function(pageContent) {
   pageContent = decodeURIComponent(pageContent);
@@ -217,22 +215,22 @@ Monitor.prototype.cleanPage = function(pageContent) {
   var regPassword = new RegExp("" + this.password + "", "gi");
   var textToReplace = minimeterprefs.getCharPref('textToReplace');
 
-  pageContent = pageContent.replace (regUsername,"monlogin");
+  pageContent = pageContent.replace(regUsername,"monlogin");
   if(this.password != '' && this.password != ' ')
-    pageContent = pageContent.replace (regPassword,"monpassword");
+    pageContent = pageContent.replace(regPassword,"monpassword");
   
   if (textToReplace != "") {
-    textToReplace = textToReplace.split (",");
+    textToReplace = textToReplace.split(",");
     var toreplace;
     var regToreplace;
     
-    for each (toreplace in textToReplace) {
+    for (toreplace in textToReplace) {
       regToreplace = new RegExp("" + toreplace + "", "gi");
-      pageContent = pageContent.replace (regToreplace,"replaced");
+      pageContent = pageContent.replace(regToreplace,"replaced");
     }
   }
   this.pageContent = encode64(pageContent);
-}
+};
 
 Monitor.prototype.errorPing = function(status) {
   var date = new Date().getDate();
@@ -246,12 +244,12 @@ Monitor.prototype.errorPing = function(status) {
     
     http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&version="+extVersion+"&status="+status, "errorPing");
   }
-}
+};
 
 Monitor.prototype.tryAgain = function(step) {
   this.trialNumber++;
   this.callback(step);
-}
+};
 
 /*
  * Is called at the end of the transaction
@@ -281,11 +279,11 @@ Monitor.prototype.update = function(success) {
   
   this.notify();
 
-}
+};
 
 Monitor.prototype.aborted = function(){
   return (this.state == this.STATE_ABORT);
-}
+};
 
  
 
@@ -294,20 +292,20 @@ Monitor.prototype.addListener = function(listener){
   if(!this.listeners.contains(listener)){
       this.listeners.push(listener);
   }
-}
+};
 
 Monitor.prototype.removeListener = function(listener){
   this.listeners.remove(listener);
-}
+};
 Monitor.prototype.removeAllListeners = function(listener){
   this.listeners = new JArray();
-}
+};
 
 Monitor.prototype.notify = function(){
   for(i=0;i<this.listeners.length;i++){
       this.listeners[i].update(this);
   }
-}
+};
 
 Monitor.prototype.checkCache = function(calledByTimeout){
   updateTimeout = minimeterprefs.getIntPref('updateTimeout');
@@ -384,7 +382,7 @@ Monitor.prototype.checkCache = function(calledByTimeout){
       setTimeout("monitor.checkCache(true);", updateTimeout);
     }
   }
-}
+};
 
 Monitor.prototype.loadCache = function(isNotNewWindow){
   var cache = minimeterprefs.getCharPref('cache');
@@ -409,7 +407,7 @@ Monitor.prototype.loadCache = function(isNotNewWindow){
     this.newData = false;
     
   this.notify();
-}
+};
 
 Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
   cache = minimeterprefs.getCharPref('cache');
@@ -422,7 +420,7 @@ Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
   }
   else
     this.newData = (cache[6] == "true");
-}
+};
 
 Monitor.prototype.storeCache = function(){
   provider = minimeterprefs.getCharPref('provider');
@@ -442,9 +440,9 @@ Monitor.prototype.storeCache = function(){
   cache[8] = this.remainingAverage;
   
   minimeterprefs.setCharPref('cache', cache.join(";"));
-}
+};
 
 Monitor.prototype.clearCache = function(){
   minimeterprefs.setCharPref('cache', '');
-}
+};
 

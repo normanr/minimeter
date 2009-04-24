@@ -49,14 +49,14 @@ Mobistariew.prototype.callback = function(step, reply) {
         break;
 		
       case 4:
-        var regUsedMB=/jours et consomm&eacute; <strong>\s*([0-9.]*) MB/;
-        var regUsedGB=/jours et consomm&eacute; <strong>\s*([0-9.]*) GB/;
+        var regUsedMB=/et consomm&eacute; <strong>\s*([0-9.]*) MB/;
+        var regUsedGB=/et consomm&eacute; <strong>\s*([0-9.]*) GB/;
         var regUsedExceeded =/<strong>([0-9.]*) GB<\/strong>/;
         var regAmountToPay=/<strong>([0-9.]*)[\w&;]*EUR<\/strong>/;
         var regAllowed=/abonnement Internet Everywhere est de <strong>\s*([0-9.]*) MB/;
         var regDateEnd=/(avant le) ([0-9]*) /; // avant le (15) Janvier 2009
         var regServerError=/en cours de maintenance/;
-        var regNbDayUsed=/votre Internet Everywhere <strong>([0-9]*)<\/strong> jours et/;
+        var regNbDayUsed=/votre Internet Everywhere <strong>([0-9]*)<\/strong>/;
         var regdataInRoaming=/tranger\: <strong>\s*([0-9.]*)\s*MB<\/strong>/; //Oula ca va couter cher
         reply = decodeURIComponent(reply);
         if((!regUsedMB.test(reply) && !regUsedGB.test(reply) && !regUsedExceeded.test(reply)) || !regAllowed.test(reply) || !regNbDayUsed.test(reply) || !regdataInRoaming.test(reply)){
