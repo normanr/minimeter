@@ -18,7 +18,8 @@ Videotron.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("https://www.videotron.com/services/secur/ConsommationInternet.do?compteInternet="+this.username, this, 2);
+        var postdata = "compteInternet=" + this.username;
+        http_post("https://www.videotron.com/services/secur/fr/votre_compte/StartTransaction.jsp", postdata,this, 2);
         break;
           
       case 2:
@@ -43,24 +44,22 @@ Videotron.prototype.callback = function(step, reply) {
           var volumeused = 0;
            
           volumeused = regDateAndUsed.exec(reply);
-           this.totalVolume = this.getCapacity();
+          this.totalVolume = this.getCapacity();
           
           this.extraMessage = "";
           
-          if (this.totalVolume == 2 || this.totalVolume == 30 || this.totalVolume == 50 || this.totalVolume == 100) {
-            this.usedVolume = volumeused[7]; // combiné
-          }
-          else {
+          this.usedVolume = volumeused[7];
+          
+          if (this.totalVolume == 30) { // jusqu'en mars 2010, pour les connexions datant d'avant mars 2009
             var gb;
             if (isUseSI())
                 gb = getString("unitSI.GiB");
             else
                 gb = getString("unit.GB");
             gb = " " + gb;
-            this.usedVolume = volumeused[5];
             var upload = Math.round(volumeused[6]/1024*1000)/1000;
             var download = Math.round(volumeused[5]/1024*1000)/1000;
-            this.extraMessage = "Upload : "+ upload  + gb + "\nDownload : " + download + gb;
+            this.extraMessage = "       Upload : "+ upload.toString().replace(".",",")  + gb + "\n       Download : " + download.toString().replace(".",",") + gb;
           }
           
           var usedVolumeM = this.usedVolume;
@@ -70,20 +69,16 @@ Videotron.prototype.callback = function(step, reply) {
             var totalVolumeM = this.totalVolume * 1024;
             var pricePerM;
           
-            if (this.totalVolume == 2 || this.totalVolume == 20)
+            if (this.totalVolume == 2 || this.totalVolume == 30)
               pricePerM = 0.00776;
             else
               pricePerM = 0.00146;
               
             this.amountToPay = Math.round(Math.ceil(usedVolumeM - totalVolumeM)*pricePerM*100)/100;
             
-            if (this.totalVolume == 2)
+            if (this.totalVolume == 2 || this.totalVolume == 30)
               if (this.amountToPay > 50)
                 this.amountToPay = 50;
-            else
-              if (this.totalVolume == 20)
-                if (this.amountToPay > 30)
-                  this.amountToPay = 30;
             
             this.amountToPay = this.amountToPay + " CAD";
           
