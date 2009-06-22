@@ -204,7 +204,7 @@ function encode64(str) {
 	return res;
 }
 
-function debug(va){
+function Minimeter_debug(va){
       const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
     .getService(Components.interfaces.nsIClipboardHelper);
       gClipboardHelper.copyString(va);
