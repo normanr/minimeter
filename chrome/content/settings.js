@@ -14,7 +14,8 @@
 															"_Russia", "Omsk:Omsk TeleCommunications",
 															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions", "Iburst",
 															"_Turkey", "#Turk:Türk Telekom",
-															"_United Kingdom", "Bt"
+															"_United Kingdom", "Bt",
+															"_United States", "WildBlue"
 															);
 															
 
