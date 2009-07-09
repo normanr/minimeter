@@ -26,8 +26,8 @@ Telenet.prototype.callback = function(step, reply) {
         reply = reply.replace(/&lt;/g,"<");
         reply = reply.replace(/&gt;/g,">");
         
-        var regAllowed = /<limits>max-up>([0-9]*)<\/max-up>/;
-        var regUsed = /<totalusage>up>([0-9.]*)<\/up>/;
+        var regAllowed = /<limits><max-up>([0-9]*)<\/max-up>/;
+        var regUsed = /<totalusage><up>([0-9.]*)<\/up>/;
         var regDateEnd = /<usage day="([0-9]*)">/;
         var regError = /<status>([^µ]*)<\/status>/;
         
@@ -39,6 +39,11 @@ Telenet.prototype.callback = function(step, reply) {
         var errorMessage = regError.exec(reply);
         
         if (errorMessage[1] == "OK") {
+        
+          if (!regAllowed.test(reply) || !regUsed.test(reply) || !regDateEnd.test(reply)) {
+            this.reportError(step, this.name, encodeURIComponent(reply));
+            break;
+          }
         
           var volumeused = regUsed.exec(reply);
           var volumetotal = regAllowed.exec(reply);
@@ -59,8 +64,9 @@ Telenet.prototype.callback = function(step, reply) {
           
           
           /* Too much requests (more than 2) for the last 60 minutes */
-          if (errorMessage[2] == "ERRTLMTLS_00003")
-            this.errorMessage = "Expiry time not reached, please check later.";
+          if (errorMessage[2] == "ERRTLMTLS_00003") {
+            this.errorMessage = "Expiry time not reached, please check later";
+          }
             
           /* Incorrect Login or Password */
           else
