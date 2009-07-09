@@ -112,8 +112,13 @@ Edpnet.prototype.callback = function(step, reply) {
         this.usedVolume = volumeused/1024;
         this.totalVolume = volumetotal/1024;
         
-        if(this.usedVolume > this.totalVolume)
-          this.amountToPay = Math.round(Math.ceil(this.usedVolume - this.totalVolume)*0.25*100)/100 + " EUR";
+        if(this.usedVolume > this.totalVolume) {
+          var pricePerGiB = 0.25;
+          if (volumetotal >= 100)
+            pricePerGiB = 1;
+            
+          this.amountToPay = Math.round(Math.ceil(this.usedVolume - this.totalVolume)*pricePerGiB*100)/100 + " EUR";
+        }
         
         if( regDateEnd.test(reply) ){
           regDateEnd = regDateEnd.exec(reply);
