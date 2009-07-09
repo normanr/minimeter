@@ -14,8 +14,7 @@
 															"_Russia", "Omsk:Omsk TeleCommunications",
 															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions", "Iburst",
 															"_Turkey", "#Turk:Türk Telekom",
-															"_United Kingdom", "Bt",
-															"_United States", "WildBlue"
+															"_United Kingdom", "Bt"
 															);
 															
 
@@ -76,6 +75,9 @@
 						alert(getString("error.ispCountry"));
 						return false;
 					}
+					var textToReplace = document.getElementById('textToReplace').value;
+					if (textToReplace == " ")
+            textToReplace = "";
 					
           minimeterprefs.setIntPref("updateTimeout", 
               Math.round(document.getElementById('updateTimeout').value.replace(",",".")) * 60);

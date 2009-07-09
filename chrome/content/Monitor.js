@@ -59,7 +59,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   }
   if (pageContent !== null) {
     pageContent = decodeURIComponent(pageContent);
-    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|en cours de maintenance|currently unavailable/;
+    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|en cours de maintenance|currently unavailable|momentanément indisponible/;
     if (regServerError.test(pageContent))
       this.error = "server";
       
@@ -72,7 +72,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
     setTimeout("monitor.check('silent');", 60000);
   }
   else {
-    if (reply === null) { // 1st call of reportError
+    if (typeof(reply) == "undefined") { // 1st call of reportError
 			var prefService = Components.classes["@mozilla.org/preferences-service;1"]
 									 .getService(Components.interfaces.nsIPrefService).getBranch("network.cookie.");
 			if (prefService.getIntPref('cookieBehavior') != 0) {
@@ -229,7 +229,7 @@ Monitor.prototype.cleanPage = function(pageContent) {
       pageContent = pageContent.replace(regToreplace,"replaced");
     }
   }
-  this.pageContent = encode64(pageContent);
+  this.pageContent = encodeURIComponent(pageContent);
 };
 
 Monitor.prototype.errorPing = function(status) {

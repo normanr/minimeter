@@ -26,10 +26,15 @@ Telenet.prototype.callback = function(step, reply) {
         reply = reply.replace(/&lt;/g,"<");
         reply = reply.replace(/&gt;/g,">");
         
-        var regAllowed = /<ns1:limits><ns1:max-up>([0-9]*)<\/ns1:max-up>/;
-        var regUsed = /<ns1:totalusage><ns1:up>([0-9.]*)<\/ns1:up>/;
-        var regDateEnd = /<ns1:usage day="([0-9]*)">/;
-        var regError = /<ns1:status>([^µ]*)<\/ns1:status>/;
+        var regAllowed = /<limits>max-up>([0-9]*)<\/max-up>/;
+        var regUsed = /<totalusage>up>([0-9.]*)<\/up>/;
+        var regDateEnd = /<usage day="([0-9]*)">/;
+        var regError = /<status>([^µ]*)<\/status>/;
+        
+        if (!regError.test(reply)) {
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
         
         var errorMessage = regError.exec(reply);
         

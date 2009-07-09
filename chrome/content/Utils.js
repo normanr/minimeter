@@ -163,6 +163,24 @@ function http_auth(purl, username, password, callback, step){
 		}catch(ex){consoleDump(ex);}			
 }
 
+ /*
+var Base64 = {
+ 
+	encode : function (input) {
+ 
+		input = Base64._utf8_encode(input);
+
+		return output;
+	},
+ 
+	_utf8_encode : function (string) {
+
+		return utftext;
+	}
+}
+*/
+
+
 function encode64(str) {
   // netusage code
   
