@@ -63,16 +63,13 @@ Tele2.prototype.callback = function(step, reply) {
             }
             else
               this.usedVolume = 0;
-            this.totalVolume = (this.adsllight ? 0.244 : 15);
+            this.totalVolume = (this.adsllight ? 0.244 : 0);
             this.remainingDays = getInterval("nearestOccurence", dateEnd[1]);
-            if(this.usedVolume > this.totalVolume) {
-              this.amountToPay = this.usedVolume - this.totalVolume;
               
-              if (this.adsllight) {
-                this.amountToPay = this.amountToPay * 51,2;
-                if (this.amountToPay > 10)
-                  this.amountToPay = 10;
-              }
+            if (this.adsllight && this.usedVolume > this.totalVolume) {
+              this.amountToPay = (this.usedVolume - this.totalVolume) * 51,2;
+              if (this.amountToPay > 10)
+                this.amountToPay = 10;
               this.amountToPay = Math.round(this.amountToPay*100)/100 + " EUR";
             }
           }

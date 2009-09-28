@@ -4,8 +4,9 @@
 			# = custom capacity
 		*/
 		var monitors = new Array(
-															"_Australia", "Internode",
-		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "Dommel", "dxADSL", "#Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
+															"_Australia", "iiNet", "Internode",
+		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "#Destiny", "Dommel", "dxADSL", "Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
+															"_Bosnia and Herzegovina","Monet",
 															"_Canada","#Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
 															"_France","#Bouygues:Bouygues Telecom","Orange","Orange3g:Orange 3G","iZi",

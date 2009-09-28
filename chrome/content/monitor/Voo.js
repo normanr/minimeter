@@ -69,8 +69,8 @@ Voo.prototype.callback = function(step, reply) {
 			
 					var volumeUsedTot = regUsedTot.exec(reply);
 					
-					this.usedVolume = Math.round(volumeUsedTot[1]*1000)/1000;
-					this.totalVolume = Math.round(volumeUsedTot[2]*1000)/1000;
+					this.usedVolume = volumeUsedTot[1];
+					this.totalVolume = volumeUsedTot[2];
 
 					if(this.totalVolume != 0 && this.usedVolume > this.totalVolume)
 						if(volumeUsedTot[4] != 0)

@@ -76,7 +76,7 @@ Wildblue.prototype.callback = function(step, reply) {
         else
             gb = getString("unit.GB");
         gb = " " + gb;
-        this.extraMessage = "       Download: "+ volumeUsedDownload + " / " + volumeTotalDownload + gb + " (" + Math.round(volumeUsedDownload / volumeTotalDownload * 100) + " %)" + "\n       Upload: " + volumeUsedUpload + " / " + volumeTotalUpload + gb + " (" + Math.round(volumeUsedUpload / volumeTotalUpload * 100) + " %)" + "\n       Total: " + (volumeUsedDownload*1 + volumeUsedUpload*1) + " / " + (volumeTotalDownload*1 + volumeTotalUpload*1) + gb + " (" + Math.round((volumeUsedDownload*1 + volumeUsedUpload*1) / (volumeTotalDownload*1 + volumeTotalUpload*1) * 100) + " %)";
+        this.extraMessage = "        Download: "+ volumeUsedDownload + " / " + volumeTotalDownload + gb + " (" + Math.round(volumeUsedDownload / volumeTotalDownload * 100) + " %)" + "\n        Upload: " + volumeUsedUpload + " / " + volumeTotalUpload + gb + " (" + Math.round(volumeUsedUpload / volumeTotalUpload * 100) + " %)" + "\n       Total: " + (volumeUsedDownload*1 + volumeUsedUpload*1) + " / " + (volumeTotalDownload*1 + volumeTotalUpload*1) + gb + " (" + Math.round((volumeUsedDownload*1 + volumeUsedUpload*1) / (volumeTotalDownload*1 + volumeTotalUpload*1) * 100) + " %)";
         
         this.update(true);
     }

@@ -262,6 +262,7 @@ Monitor.prototype.update = function(success) {
           
   if(success){
     this.usedVolume = Math.round(this.usedVolume * 1000)/1000;
+    this.totalVolume = Math.round(this.totalVolume * 1000)/1000;
     this.state = this.STATE_DONE;
     if(this.remainingDays != null && (this.totalVolume - this.usedVolume) > 0) {
       var remainingGB = Math.floor((monitor.totalVolume - monitor.usedVolume) / monitor.remainingDays * 1000) /1000;
