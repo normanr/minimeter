@@ -4,7 +4,7 @@ function Tele2(username, password) {
     this.password = password;
     this.image = "tele2.png";
     this.name = "Tele2";
-    this.url = "http://www.tele2.be/mytele2/usage.php";
+    this.url = "http://internetselfcare.base.be/usage.php";
     this.adsllight = false;
 }
 
@@ -19,8 +19,8 @@ Tele2.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        var postdata = "username="+this.username+"&domain=tele2allin.be&password="+this.password;
-        http_post('http://www.tele2.be/mytele2/index.php', postdata,this, 2);
+        var postdata = "username="+this.username+"&password="+this.password;
+        http_post('http://internetselfcare.base.be/index.php', postdata,this, 2);
         break;
       case 2:
         reply = unescape(reply);
@@ -29,7 +29,7 @@ Tele2.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        http_get("http://www.tele2.be/mytele2/adsl_index.php", this, 3);
+        http_get("http://internetselfcare.base.be/adsl_index.php", this, 3);
         break;
       case 3:
         reply = unescape(reply);
@@ -37,7 +37,7 @@ Tele2.prototype.callback = function(step, reply) {
         
         if (regAdslLight.test(reply))
           this.adsllight = true;
-        http_get("http://www.tele2.be/mytele2/usage.php", this, 4);
+        http_get("http://internetselfcare.base.be/usage.php", this, 4);
         break;
           
       case 4:
@@ -45,7 +45,7 @@ Tele2.prototype.callback = function(step, reply) {
         var regused=/<th class="totals">([0-9, ]*) MB<\/th>/;
         var regDateEnd = /<td>([0-9]*)[0-9\/]*<\/td>/;
         var regServerError = /indisponible|Nous mettons tout en oeuvre|tijdelijk onbeschikbaar|We stellen alles in het werk/;
-        var regUnlimited = /gebruiksmeter is niet van toepassing voor u|De verbruiksmeter is voor u niet beschikbaar|pas accès à votre consommation car vous bénéficiez du téléchargement illimité/;
+        var regUnlimited = /gebruiksmeter is niet van toepassing voor u|De verbruiksmeter is voor u niet beschikbaar|pas accès à votre consommation car vous bénéficiez du téléchargement illimité|est pas d'application pour vous/;
         if (regUnlimited.test(reply))
           this.setFlatRateWithoutInfos();
         else {

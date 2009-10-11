@@ -1,6 +1,6 @@
 <!ENTITY settings.title "Minimeter settings">
 <!ENTITY tab.provider "Provider">
-<!ENTITY tab.statusbar "Statusbar">
+<!ENTITY tab.statusbar "Display">
 <!ENTITY tab.checking "Miscellaneous">
 <!ENTITY tab.advanced "Advanced">
 <!ENTITY label.provider "Provider:">

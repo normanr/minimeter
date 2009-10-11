@@ -1,6 +1,6 @@
 <!ENTITY settings.title "Předvolby rozšíření Minimeter">
 <!ENTITY tab.provider "Poskytovatel">
-<!ENTITY tab.statusbar "Stavový řádek">
+<!ENTITY tab.statusbar "Display">
 <!ENTITY tab.checking "Miscellaneous">
 <!ENTITY tab.advanced "Advanced">
 <!ENTITY label.provider "Poskytovatel:">

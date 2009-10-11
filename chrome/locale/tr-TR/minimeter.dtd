@@ -1,6 +1,6 @@
 <!ENTITY settings.title "Minimeter ayarları">
 <!ENTITY tab.provider "İSS">
-<!ENTITY tab.statusbar "Durum Çubuğu">
+<!ENTITY tab.statusbar "Display">
 <!ENTITY tab.checking "Miscellaneous">
 <!ENTITY tab.advanced "Advanced">
 <!ENTITY label.provider "İSS:">

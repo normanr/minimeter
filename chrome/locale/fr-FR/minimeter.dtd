@@ -1,6 +1,6 @@
 <!ENTITY settings.title "Paramètres de Minimeter">
 <!ENTITY tab.provider "Fournisseur d'accès">
-<!ENTITY tab.statusbar "Barre d'état">
+<!ENTITY tab.statusbar "Affichage">
 <!ENTITY tab.checking "Divers">
 <!ENTITY tab.advanced "Avancé">
 <!ENTITY label.provider "Fournisseur d'accès :">

@@ -20,7 +20,7 @@
 
 	
 	<toolbarpalette id="BrowserToolbarPalette">                                            
-		<toolbaritem tooltip="minimeter-tooltip" id="minimeter-container" class="chromeclass-toolbar-additional" title="Minimeter"  align="center">
+		<toolbaritem context="minimeter-context-menu" tooltip="minimeter-tooltip" id="minimeter-container" class="chromeclass-toolbar-additional" title="Minimeter"  align="center">
     	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="clickIcon(event);" ondblclick="loadPage();"/>
     	
 		</toolbaritem>
