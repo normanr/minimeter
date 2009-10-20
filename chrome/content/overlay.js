@@ -4,6 +4,7 @@ var minimeterprefs = null;
 var toolbarMeter = null;
 var statusbarMeter = null;
 var singleClick = true;
+var Minimeter_OriginalCustomizeDone = null;
 
 function initialize(){
 
@@ -12,6 +13,8 @@ function initialize(){
                         .getService(Components.interfaces.nsIPrefService);
   minimeterprefs = prefService.getBranch("extensions.minimeter.");
 
+  if (monitor == null)
+    setTimeout(Minimeter_DelayedStartup, 10); // Needs to happen after Firefox's delayedStartup()
 
   checknow = !minimeterprefs.getBoolPref('click_check');
 
@@ -56,9 +59,12 @@ function configureMonitors(){
 	
   toolbarMeter = document.getElementById("toolbarMeter");
   if(toolbarMeter != null){
-    toolbarMeter.showProgressmeter = true;
-    toolbarMeter.showText = false;
-    toolbarMeter.showIcon = false;
+    showtext = minimeterprefs.getBoolPref('showtext');
+    showmeter = minimeterprefs.getBoolPref('showmeter');
+    showicon = minimeterprefs.getBoolPref('showicon');
+    toolbarMeter.showProgressmeter = showmeter;
+    toolbarMeter.showText = showtext;
+    toolbarMeter.showIcon = showicon;
     monitor.addListener(toolbarMeter);	
   }
   
@@ -92,6 +98,28 @@ function configureMonitors(){
   }
 }
 
+function Minimeter_ToolboxCustomizeDone(somethingChanged)
+{
+  checkNow();
+  consoleDump("ok");
+	this.Minimeter_OriginalCustomizeDone(somethingChanged);
+}
+
+function Minimeter_BuildFunction(obj, method)
+{
+	return function()
+	{
+		return method.apply(obj, arguments);
+	}
+}
+
+function Minimeter_DelayedStartup()
+{
+  // handle the absence of customize toolbar event
+  var navtoolbox = document.getElementById("navigator-toolbox");
+	Minimeter_OriginalCustomizeDone = navtoolbox.customizeDone;
+	navtoolbox.customizeDone = Minimeter_BuildFunction(this, Minimeter_ToolboxCustomizeDone);
+}
 
 
 function loadMonitor(){

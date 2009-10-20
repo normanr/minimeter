@@ -325,7 +325,7 @@ Monitor.prototype.checkCache = function(calledByTimeout){
   updateTimeout = updateTimeout * 1000;
   var errorpref = minimeterprefs.getCharPref('error');
   if(errorpref != "no") {
-    if(calledByTimeout != "error") {
+    if(calledByTimeout != "error" && errorpref !="badLoginOrPass") {
       minimeterprefs.setCharPref('error','isit');
       setTimeout("monitor.checkCache('error');", 100);
     }
