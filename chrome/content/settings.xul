@@ -44,7 +44,7 @@
             <label width="70" control="username" value="&label.username;"/>
             <textbox id="username" value="" />
         </row>
-        <row>
+        <row id="passwordrow">
           <label control="password" value="&label.password;"/>
           <textbox type="password" id="password" value="" />
         </row>

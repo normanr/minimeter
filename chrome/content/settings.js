@@ -2,12 +2,13 @@
 			"Classname:Realname"
 			_ = country
 			# = custom capacity
+			* = no password required
 		*/
 		var monitors = new Array(
 															"_Australia", "iiNet", "Internode",
-		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "#Destiny", "Dommel", "dxADSL", "Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
+		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "#Destiny", "Dommel", "dxADSL", "Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "*Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
 															"_Bosnia and Herzegovina","Monet",
-															"_Canada","#Videotron:Vidéotron",
+															"_Canada","#*Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
 															"_France","#Bouygues:Bouygues Telecom","Orange","Orange3g:Orange 3G","iZi",
 															"_Germany","#Tmobile:T-Mobile",
@@ -179,6 +180,10 @@
     				isp.setAttribute( "capacity" , true);
     				m = m.substr(1);
     			}
+          if(m[0] == "*"){
+            isp.setAttribute( "password" , true);
+            m = m.substr(1);
+          }
 	    		ml = m.split(":")[0].toLowerCase();
 	    				
 	    		if(!m.split(":")[1]) m = m.split(":")[0]; else m = m.split(":")[1];
@@ -214,6 +219,8 @@
   		} else {
   			setFlatrate (document.getElementById('flatrate').checked );
   		}
+  		passwordfield = document.getElementById('provider').selectedItem.hasAttribute('password');
+  		document.getElementById('passwordrow').setAttribute('hidden', passwordfield );
   	}
   	
 

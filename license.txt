@@ -34,5 +34,7 @@ Contributor(s):
   myster_e <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=3897>
   Didier Cardoso <admin@ptitgnu.be>
   ced1202 <ced1202@servperso.com>
+  Tommy Atkinson <tommy.atkinson@nsc.co.ba>
+  
 
 ***** END LICENSE BLOCK *****

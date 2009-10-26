@@ -98,10 +98,11 @@ function configureMonitors(){
   }
 }
 
+// three functions from Googlebar Lite by Jonah Bishop
+// handle the absence of customize toolbar event by using callback function
 function Minimeter_ToolboxCustomizeDone(somethingChanged)
 {
   checkNow();
-  consoleDump("ok");
 	this.Minimeter_OriginalCustomizeDone(somethingChanged);
 }
 
@@ -115,7 +116,6 @@ function Minimeter_BuildFunction(obj, method)
 
 function Minimeter_DelayedStartup()
 {
-  // handle the absence of customize toolbar event
   var navtoolbox = document.getElementById("navigator-toolbox");
 	Minimeter_OriginalCustomizeDone = navtoolbox.customizeDone;
 	navtoolbox.customizeDone = Minimeter_BuildFunction(this, Minimeter_ToolboxCustomizeDone);

@@ -1,9 +1,12 @@
 function Happymany(username, password) {
-    this.username = username;
+    this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "happymany.png"; // does not belong in class
     this.name = "Happymany";
     this.url = "https://secure.happymany.be/Report/TrafficVodslReportForm.aspx";
+    this.contrat = null;
+    if(username.indexOf(",") > 0)
+      this.contrat = username.substr(username.indexOf(",")+1);
 }
 
 Happymany.prototype = new Monitor();
@@ -44,8 +47,11 @@ Happymany.prototype.callback = function(step, reply) {
          
        case 3:
          reply = decodeURIComponent(reply);
-         
-         var regVolume = /<td class="FormGridItem" align="center" style="font-weight:bold;">[0-9]*<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td>/;
+         var regVolume = "";
+        if(this.contrat != null)
+          regVolume = new RegExp('<td class="FormGridItem" align="center" style="font-weight:bold;">'+this.contrat+'<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td>');
+        else
+          regVolume = /<td class="FormGridItem" align="center" style="font-weight:bold;">[0-9]*<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">[0-9]*<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td><td class="FormGridItem" align="center">([0-9]*)<\/td>/;
         
         
         
