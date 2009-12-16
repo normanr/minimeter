@@ -3,7 +3,7 @@ function Tele2(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "tele2.png";
-    this.name = "Tele2";
+    this.name = "Base";
     this.url = "http://internetselfcare.base.be/usage.php";
     this.adsllight = false;
 }

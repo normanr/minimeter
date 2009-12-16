@@ -287,11 +287,20 @@ function readAllFromSocket(host,port,outputData,listener)
   return null;
 }
 
-function getString(id){
+function getString(id, altString) {
 	var src = 'chrome://minimeter/locale/settings.properties';
   var stringBundleService =
      Components.classes["@mozilla.org/intl/stringbundle;1"]
      .getService(Components.interfaces.nsIStringBundleService);
- return stringBundleService.createBundle(src).GetStringFromName(id);
- 
+  var retValue = "";
+  try {
+    retValue = stringBundleService.createBundle(src).GetStringFromName(id);
+  }
+  catch(ex) {
+    if (altString != null)
+      retValue = altString;
+    else
+      throw ex;
+  }
+ return retValue;
 }

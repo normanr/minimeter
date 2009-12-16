@@ -80,21 +80,15 @@ function configureMonitors(){
     statusbarMeter.showIcon = showicon;
     monitor.addListener(statusbarMeter);
     if (useSI) {
-      monitor.measure = " " + getString("unitSI.GiB");
-      monitor.measureMB = " " + getString("unitSI.MiB");
+      monitor.measure = " " + getString("unitSI.GiB", "GiB");
+      monitor.measureMB = " " + getString("unitSI.MiB", "MiB");
     }
     else {
-      monitor.measure = " " + getString("unit.GB");
-      monitor.measureMB = " " + getString("unit.MB");
+      monitor.measure = " " + getString("unit.GB", "GB");
+      monitor.measureMB = " " + getString("unit.MB", "MB");
     }
-    try {
-			monitor.remaining = getString("info.remaining");
-			monitor.remainings = getString("info.remainings");
-    }
-    catch(e) {
-      monitor.remaining = "remaining";
-      monitor.remainings = "remaining";
-    }
+    monitor.remaining = getString("info.remaining", "remaining");
+    monitor.remainings = getString("info.remainings", "remaining");
   }
 }
 
@@ -169,20 +163,20 @@ function fillTooltip(tooltip){
     rate.value = statusbarMeter.textLabel;
     if (minimeterprefs.getBoolPref('showRemainingDays') && monitor.remainingDays != null){
       if (monitor.remainingDays > 1)
-        remainingDays.value = getString("info.remainingDays").replace ("%d", monitor.remainingDays);
+        remainingDays.value = getString("info.remainingDays", "%d days remaining before reset").replace ("%d", monitor.remainingDays);
       else
         if (monitor.remainingDays == 1)
-          remainingDays.value = getString("info.remainingOneDay");
+          remainingDays.value = getString("info.remainingOneDay", "1 day remaining before reset");
         else
           if (monitor.remainingDays < 1)
-            remainingDays.value = getString("info.remainingLessOneDay");
+            remainingDays.value = getString("info.remainingLessOneDay", "Less than one day before reset");
       remainingDaysBox.collapsed = false;
     }
     if (minimeterprefs.getBoolPref('showAmountToPay') && monitor.amountToPay != '') {
       amountToPay.value = monitor.amountToPay.replace(".",",");
       amountToPay.value = amountToPay.value.replace ("EUR", "€");
       amountToPay.value = amountToPay.value.replace ("CAD", "$");
-      amountToPay.value = amountToPay.value + " " + getString("info.amountToPay");
+      amountToPay.value = amountToPay.value + " " + getString("info.amountToPay", "extra");
       amountToPayBox.collapsed = false;
     }
     rbox.collapsed = false;
@@ -211,7 +205,7 @@ function fillTooltip(tooltip){
   ebox.collapsed = (monitor.extraMessage == '');
   if(!canLogin()){
     box.collapsed = false;
-    error.value = getString("warning.fillInCredentials");
+    error.value = getString("warning.fillInCredentials", "Fill in your credentials: open Minimeter preferences");
   }
 
 }
@@ -316,7 +310,7 @@ var myPrefObserver =
           else
             if (errorpref != "no" && errorpref != "checking") {
               monitor.error = errorpref;
-              monitor.errorMessage = getString("error."+errorpref);
+              monitor.errorMessage = getString("error."+errorpref, "incomplete translation");
               monitor.state = monitor.STATE_ERROR;
               monitor.notify();
             }
@@ -337,7 +331,7 @@ var myPrefObserver =
         case "errorExtraMessage":
           var errorExtraMessage = minimeterprefs.getCharPref('errorExtraMessage');
           if (errorExtraMessage != '')
-            monitor.extraMessage = getString("error."+errorExtraMessage);
+            monitor.extraMessage = getString("error."+errorExtraMessage, "incomplete translation");
           break;
         case "url":
           monitor.url = minimeterprefs.getCharPref('url');

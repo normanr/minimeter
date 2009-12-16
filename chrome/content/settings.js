@@ -5,8 +5,8 @@
 			* = no password required
 		*/
 		var monitors = new Array(
-															"_Australia", "iiNet", "Internode",
-		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Belcenter", "Skynet:Belgacom", "Clearwire", "#Destiny", "Dommel", "dxADSL", "Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "*Coditel:Numericable", "Scarlet", "Tele2", "Telenet", "Tvcablenet", "Voo", 
+															"_Australia", "aaNet", "iiNet", "Internode",
+		       	                  "_Belgium", "Starsadsl:3Stars ADSL", "ADSL20", "Tele2:Base", "Belcenter", "Skynet:Belgacom", "Clearwire", "#Destiny", "Dommel", "dxADSL", "Eleven:E-leven", "EDPnet", "Euphony", "FullADSL", "HappyMany", "Mobistar", "Mobistariew:Mobistar Internet Everywhere", "*Coditel:Numericable", "Scarlet", "Telenet", "Tvcablenet", "Voo", 
 															"_Bosnia and Herzegovina","Monet",
 															"_Canada","#*Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
@@ -14,7 +14,7 @@
 															"_Germany","#Tmobile:T-Mobile",
 															"_New Zealand", "Xtra",
 															"_Russia", "Omsk:Omsk TeleCommunications",
-															"_South Africa", "#Saix:Saix ISPs", "#Mweb", "#Internetsolutions:Internet Solutions", "Iburst",
+															"_South Africa", "Cybersmart", "Iburst", "#Internetsolutions:Internet Solutions", "#Saix:Saix ISPs", "#Mweb",
 															"_Turkey", "#Turk:Türk Telekom",
 															"_United Kingdom", "Bt"
 															);
@@ -47,7 +47,7 @@
       try{
           var username = document.getElementById("username").value;
           if(username == "") {
-            alert(getString("error.emptyUsername"));
+            alert(getString("error.emptyUsername", "A username can't be empty"));
             return false;
           }
           
@@ -63,18 +63,18 @@
           else {
             capacity = capacity.replace(",",".");
             if(!parseFloat(capacity)){
-              alert(getString("error.capacityDecimal"));
+              alert(getString("error.capacityDecimal", "The capacity should be a decimal"));
               return false;
               capacity = parseFloat(capacity);
             }
           }
 					if(!document.getElementById('flatrate').checked && capacity <= 0){
-						alert(getString("error.capacityNotZero"));
+						alert(getString("error.capacityNotZero", "The capacity should be greater than 0 Gigabyte"));
 						return false;
 					} 
           var provider = document.getElementById('provider')
 	    		if(monitors[provider.selectedIndex][0] == "_"){
-						alert(getString("error.ispCountry"));
+						alert(getString("error.ispCountry", "You can't select a country as ISP"));
 						return false;
 					}
 					var textToReplace = document.getElementById('textToReplace').value;

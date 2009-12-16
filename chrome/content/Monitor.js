@@ -82,7 +82,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
         this.setErrorMessageAndPref("unknown", null, false);
 				this.errorPing("failed");
 				if (step !== null) {
-					var dumpMessage = getString("error.unknownErrorDump").replace("%step", step);
+					var dumpMessage = getString("error.unknownErrorDump", "Undefined error on step n°%step in the module %monitor").replace("%step", step);
 					dumpMessage = dumpMessage.replace("%monitor", monitor);
 					consoleDump(dumpMessage);
 				}
@@ -107,9 +107,9 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
       }
       else {
         var sendDebug = minimeterprefs.getBoolPref('sendDebug');
-        this.errorMessage = getString("error.unknown");
+        this.errorMessage = getString("error.unknown", "Module error");
         if (!sendDebug) {
-          this.extraMessage = getString("error.extraDebug");
+          this.extraMessage = getString("error.extraDebug", "You can make it possible to correct the module\nby enabling the corresponding option in Minimeter settings.");
           minimeterprefs.setCharPref("errorExtraMessage", "extraDebug");
         }
         
@@ -144,7 +144,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
 Monitor.prototype.setFlatRateWithoutInfos = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
-  this.extraMessage = getString("error.extraFlatRate");
+  this.extraMessage = getString("error.extraFlatRate", "Quota is not available for this flat rate connection.");
   minimeterprefs.setCharPref("errorExtraMessage", "extraFlatRate");
 };
 
@@ -161,11 +161,11 @@ Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessag
   this.error = error;
   minimeterprefs.setCharPref("error", error);
   if (setMessage === true)
-    this.errorMessage = getString("error."+error);
+    this.errorMessage = getString("error."+error, "incomplete translation");
   
   if (extraError !== null) {
     minimeterprefs.setCharPref("errorExtraMessage", extraError);
-    this.extraMessage = getString("error."+extraError);
+    this.extraMessage = getString("error."+extraError, "incomplete translation");
   }
 };
 
@@ -267,7 +267,7 @@ Monitor.prototype.update = function(success) {
     if(this.remainingDays != null && (this.totalVolume - this.usedVolume) > 0) {
       var remainingGB = Math.floor((monitor.totalVolume - monitor.usedVolume) / monitor.remainingDays * 1000) /1000;
       var remainingMB = Math.floor((remainingGB - Math.floor(remainingGB)) *1024);
-      monitor.remainingAverage = (remainingGB>=1 ? Math.floor(remainingGB) + monitor.measure + " " : "") + remainingMB + monitor.measureMB + " " + getString("info.remainingAverage");
+      monitor.remainingAverage = (remainingGB>=1 ? Math.floor(remainingGB) + monitor.measure + " " : "") + remainingMB + monitor.measureMB + " " + getString("info.remainingAverage", "per remaining day");
     }
     minimeterprefs.setCharPref("error", "no");
     this.storeCache();
@@ -336,10 +336,10 @@ Monitor.prototype.checkCache = function(calledByTimeout){
         else {
           this.state = this.STATE_ERROR;
           this.error = errorpref;
-          this.errorMessage = getString("error."+this.error);
+          this.errorMessage = getString("error."+this.error, "incomplete translation");
           errorExtraMessage = minimeterprefs.getCharPref('errorExtraMessage');
           if (errorExtraMessage != '')
-            this.extraMessage = getString("error."+errorExtraMessage);
+            this.extraMessage = getString("error."+errorExtraMessage, "incomplete translation");
         }
         this.notify();
       }

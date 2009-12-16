@@ -134,7 +134,7 @@
 					  this.setBusy(true);
 					}
 					if(monitor.state ==  monitor.STATE_ERROR){
-						this.label = "  " + getString("statusbar.error");
+						this.label = "  " + getString("statusbar.error", "Error");
 						
 						this.setBusy(false);
 						this.value = 0;
