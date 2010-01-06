@@ -12,11 +12,12 @@
 															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
 															"_France","#Bouygues:Bouygues Telecom","Orange","Orange3g:Orange 3G","iZi",
 															"_Germany","#Tmobile:T-Mobile",
-															"_New Zealand", "Xtra",
+															"_New Zealand", "Vodaphonenz:Vodaphone", "Xtra",
 															"_Russia", "Omsk:Omsk TeleCommunications",
 															"_South Africa", "Cybersmart", "Iburst", "#Internetsolutions:Internet Solutions", "#Saix:Saix ISPs", "#Mweb",
 															"_Turkey", "#Turk:Türk Telekom",
-															"_United Kingdom", "Bt"
+															"_United Kingdom", "Bt",
+															"_United States", "Comcast"
 															);
 															
 

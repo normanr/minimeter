@@ -25,6 +25,7 @@ Internode.prototype.callback = function(step, reply) {
 			case 2:
 			  reply = decodeURIComponent(reply);
 			  var reg = /([0-9\.]+) ([0-9]+) ([0-9\/]+)/;
+        var regDateEnd = /([0-9]+)\/([0-9]+)\/([0-9]+)/;
 
 			  if(!reg.test(reply)){
           reply = decodeURIComponent(reply);
@@ -38,6 +39,10 @@ Internode.prototype.callback = function(step, reply) {
 			    var volume = reg.exec(reply);
       		this.usedVolume = (volume[1]/1000).toFixed(2);
       		this.totalVolume = (volume[2]/1000).toFixed(2);
+          var dateEnd = regDateEnd.exec(reply);
+          dateEnd = new Date(dateEnd[3], dateEnd[2], dateEnd[1]);
+          dateEnd.setTime(86400000 + dateEnd.getTime());
+          this.remainingDays = getInterval("nearestOccurence", dateEnd.getDate());
       		this.update(true);	
         }
 		}	

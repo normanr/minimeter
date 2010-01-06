@@ -19,7 +19,7 @@ Cybersmart.prototype.callback = function(step, reply) {
     default:
     case 1:
       var postdata = "accountName="+this.username+"&password="+this.password+"&submit.x=44&submit.y=18&submit=submit";
-      http_get('http://extensions.geckozone.org/test/Cybersmart.cgi.htm', this, 2);
+      http_get('http://www.cybersmart.co.za/getAccountDetails.cgi', this, 2);
       break;
         
     case 2:

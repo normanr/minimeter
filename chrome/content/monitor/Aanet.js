@@ -53,9 +53,9 @@ Aanet.prototype.callback = function(step, reply) {
       var volumeused = 0;
       
       if (volumeusedup[1] > volumeuseddown[1])
-        volumeused = volumeusedup;
+        volumeused = volumeusedup[1];
       else
-        volumeused = volumeuseddown;
+        volumeused = volumeuseddown[1];
       
       this.usedVolume = volumeused/1024;
       this.totalVolume = volumetotal[1]/1024;

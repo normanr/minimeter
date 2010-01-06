@@ -24,7 +24,7 @@ Destiny.prototype.callback = function(step, reply) {
           
       case 2:
         reply = decodeURIComponent(reply);
-        var regAllUsed = /<td style="text-align: right;">([0-9.]*) GB<\/td>\s*<td style="text-align: right;">([0-9.]*) GB<\/td>\s*<td style="text-align: right;">([0-9.]*) GB<\/td>\s*<\/tr>/;
+        var regAllUsed = /<td style="text-align: right;">([0-9.]*) ([MG])B<\/td>\s*<td style="text-align: right;">([0-9.]*) ([MG])B<\/td>\s*<td style="text-align: right;">([0-9.]*) ([MG])B<\/td>\s*<\/tr>/;
 
         
         if(!regAllUsed.test(reply)){
@@ -40,16 +40,24 @@ Destiny.prototype.callback = function(step, reply) {
         } 
         else {
         
-          var volumeUsed = 0;
-          var volumeUpload = 0;
-          var volumeDownload = 0;
-          
           var volumeAllUsed = regAllUsed.exec(reply);
-          var volumeUsedUpload = volumeAllUsed[1];
-          var volumeUsedDownload = volumeAllUsed[2];
-            
-          this.usedVolume = volumeAllUsed[3];
-          this.totalVolume = this.getCapacity();
+          
+          var volumeUpload =       volumeAllUsed[1];
+          var volumeUploadUnit =   volumeAllUsed[2];
+          var volumeDownload =     volumeAllUsed[3];
+          var volumeDownloadUnit = volumeAllUsed[4];
+          var volumeTotal =        volumeAllUsed[5];
+          var volumeTotalUnit =    volumeAllUsed[6];
+          
+          if(volumeUploadUnit == "M")
+            volumeUpload = Math.round(volumeUpload * 1000/1024)/1000;
+          if(volumeDownloadUnit == "M")
+            volumeDownload = Math.round(volumeDownload * 1000/1024)/1000;
+          if(volumeTotalUnit == "M")
+            volumeTotal = volumeTotal/1024;
+          
+          this.usedVolume = volumeTotal;
+          this.totalVolume = this.getCapacity();;
           
           var gb;
           if (isUseSI())
@@ -57,7 +65,7 @@ Destiny.prototype.callback = function(step, reply) {
           else
             gb = getString("unit.GB");
           gb = " " + gb;
-          this.extraMessage = "       Download: "+ volumeUsedDownload  + gb + "\n       Upload: " + volumeUsedUpload  + gb;
+          this.extraMessage = "       Download: "+ volumeDownload  + gb + "\n       Upload: " + volumeUpload  + gb;
           this.remainingDays = getInterval("firstDayNextMonth");
           this.update(true);
         }

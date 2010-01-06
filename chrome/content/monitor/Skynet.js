@@ -4,6 +4,7 @@ function Skynet(username, password) {
     this.image = "skynet.png"; // does not belong in class
     this.name = "Belgacom";
     this.url = "https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume";
+    this.BgErrLoginEservices = false;
 }
 
 Skynet.prototype = new Monitor();
@@ -25,9 +26,11 @@ Skynet.prototype.callback = function(step, reply) {
         
       case 2:
         reply = decodeURIComponent(reply);
+        this.BgErrLoginEservices = false;
         var regErrorLogin = /HPDIA0200W   Authen/;
         var regRedirection = /location='YPA\/ypa/; // vérifie qu'aucune erreur n'est indiquée
         if (regErrorLogin.test(reply)) {
+          this.BgErrLoginEservices = true;
           this.tryAgain("oldMethod");
           break;
         }
@@ -88,7 +91,10 @@ Skynet.prototype.callback = function(step, reply) {
         
         if( !reggb.test(reply) && !regmb.test(reply) && !reggbl.test(reply) ){
           this.url = "https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume";
-          this.badLoginOrPass("belgacom"); // pendant la transition vers les e-Services
+          if (this.BgErrLoginEservices)
+            this.badLoginOrPass("belgacom"); // pendant la transition vers les e-Services
+          else
+            this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         else {
