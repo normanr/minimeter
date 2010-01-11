@@ -51,12 +51,7 @@ Videotron.prototype.callback = function(step, reply) {
           this.usedVolume = volumeused[7];
           
           if (this.totalVolume == 30) { // jusqu'en mars 2010, pour les connexions datant d'avant mars 2009
-            var gb;
-            if (isUseSI())
-                gb = getString("unitSI.GiB");
-            else
-                gb = getString("unit.GB");
-            gb = " " + gb;
+            var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
             var upload = Math.round(volumeused[6]/1024*1000)/1000;
             var download = Math.round(volumeused[5]/1024*1000)/1000;
             this.extraMessage = "       Upload : "+ upload.toString().replace(".",",")  + gb + "\n       Download : " + download.toString().replace(".",",") + gb;

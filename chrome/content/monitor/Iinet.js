@@ -4,6 +4,7 @@ function Iinet(username, password) {
     this.image = "iinet.png";
     this.name = "iiNet";
     this.url = "https://toolbox.iinet.net.au/";
+    this.useSIPrefixes = true;
 }
 
 Iinet.prototype = new Monitor();
@@ -84,15 +85,11 @@ Iinet.prototype.callback = function(step, reply) {
             volumeTot = volumeTotPeak;
           }
           
-          this.usedVolume = volumeUsed/1024;
-          this.totalVolume = volumeTot/1024;
+          this.usedVolume = volumeUsed/1000;
+          this.totalVolume = volumeTot/1000;
           
-          var mb;
-          if (isUseSI())
-            mb = getString("unitSI.MiB");
-          else
-            mb = getString("unit.MB");
-          mb = " " + mb;
+          var mb = " " + getunitPrefix("MB"); // Unit as selected in locale
+          
           this.extraMessage = "        Offpeak: "+ volumeUsedOffpeak + " / " + volumeTotOffpeak + mb + "\n        Peak: "+ volumeUsedPeak + " / " + volumeTotPeak + mb;
           
           this.remainingDays = getInterval("nearestOccurence", remainingDays[1]);

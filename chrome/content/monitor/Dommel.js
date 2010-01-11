@@ -1,9 +1,12 @@
 function Dommel(username, password) {
-  this.username = username;
+  this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
   this.password = password;
   this.image = "dommel.png";
   this.name = "Dommel";
   this.url = "https://crm.schedom-europe.net/index.php";
+  this.servid = null;
+  if(username.indexOf(",") > 0)
+    this.servid = username.substr(username.indexOf(",")+1);
 }
 
 Dommel.prototype = new Monitor();
@@ -40,14 +43,22 @@ Dommel.prototype.callback = function(step, reply) {
       reply = decodeURIComponent(reply);
       var servid = /servid=([0-9]+)&/;
       var client_id = /client_id=([0-9]+)'/;
+      
       var servidValue = servid.exec(reply);
       var client_idValue = client_id.exec(reply);
       if( !servid.test(reply) || !client_id.test(reply) ){
         this.reportError(step, this.name, encodeURIComponent(reply));
       } else {
-        var servidValue = servid.exec(reply);
+        var servidValue = null;
+        if(this.servid != null)
+          servidValue = this.servid;
+        else {
+          servidValue = servid.exec(reply);
+          servidValue = servidValue[1];
+        }
+        
         var client_idValue = client_id.exec(reply);
-        http_get("https://crm.schedom-europe.net/include/scripts/linked/dslinfo/dslinfo.php?servid="+servidValue[1]+"&password="+this.password+"&client_id="+client_idValue[1], this, 4);
+        http_get("https://crm.schedom-europe.net/include/scripts/linked/dslinfo/dslinfo.php?servid="+servidValue+"&password="+this.password+"&client_id="+client_idValue[1], this, 4);
       }
       break;
     case 4:
@@ -55,15 +66,9 @@ Dommel.prototype.callback = function(step, reply) {
       
       var reg_homeconnect = /homeconnect/;
       var reg_connection_type = /<td><b>type :<\/b><\/td>\s*<td>(broadband|mediumband)<\/td>/;
-      //var reg_broad_DL = /broadband download : ([0-9\.]+) gb/;
-      //var reg_broad_UP = /broadband upload : ([0-9\.]+) gb/;
-      var reg_broad_TOTAL = /total traffic downloaded in broadband: ([0-9\.]+) gb/;
+      var reg_broad_TOTAL = /total traffic (downloaded|transferred) in broadband: ([0-9\.]+) gb/;
       var reg_real_traffic = /<b>real traffic that was transferred <\/b> was<b> ([0-9\.]+) gb<\/b>/;
       var reg_real_upload = /your line nor the ([0-9\.]+) gb uploadtraffic/;
-      //var reg_medium_DL = /medium\/smallband download : ([0-9\.]+) gb/;
-      //var reg_medium_UP = /medium\/smallband upload : ([0-9\.]+) gb/;
-      //var reg_medium_TOTAL = /total transferred in medium\/smallband : ([0-9\.]+) gb/;
-      //var reg_overall = /overall transferred during the current period : ([0-9\.]+) gb/;
       var reg_broad_REMAINING = /remaining in broadband: <\/b>([0-9\.]+) gb/;
       var reg_remainingDays = /days remaining: ([0-9]+)/;
     
@@ -77,12 +82,7 @@ Dommel.prototype.callback = function(step, reply) {
           // Grab connection type (broadband|mediumband)
           var connection_typeValue = reg_connection_type.exec(reply);
           
-          var gb; // Unit as selected in options and locale
-          if (isUseSI())
-              gb = getString("unitSI.GiB");
-          else
-              gb = getString("unit.GB");
-          gb = " " + gb;
+          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
       
           // Grab remaining days before reset
           if( !reg_remainingDays.test(reply) ) {
@@ -93,14 +93,11 @@ Dommel.prototype.callback = function(step, reply) {
           }
       
           // Grab common info to broadband & mediumband
-          //var broad_DLValue = reg_broad_DL.exec(reply);
-          //var broad_UPValue = reg_broad_UP.exec(reply);
           var broad_TOTALValue = reg_broad_TOTAL.exec(reply);  
-          var real_traffic = 0;
           var real_upload = 0;
           if( reg_real_traffic.test(reply) ) {
             var real_trafficValue = reg_real_traffic.exec(reply);
-            real_traffic= real_trafficValue[1]*1;
+            var real_traffic= real_trafficValue[1]*1;
           } 
           if( reg_real_upload.test(reply) ) {
             var real_uploadValue = reg_real_upload.exec(reply);
@@ -117,33 +114,23 @@ Dommel.prototype.callback = function(step, reply) {
               remainingVolume = broad_REMAININGValue[1]*1;
             }
       
-            //var down = broad_DLValue[1]*1;
-            //var up = broad_UPValue[1]*1;
-            this.usedVolume = broad_TOTALValue[1]*1;
+            this.usedVolume = broad_TOTALValue[2]*1;
             this.totalVolume = this.usedVolume + remainingVolume;
-            //this.extraMessage = "Download: " + down.toFixed(2) +" GB, Upload: " + up.toFixed(2) +" GB";
-            this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb + "\nTotal Traffic: " + real_traffic.toFixed(2) + gb + " (Upload: " + real_upload.toFixed(2) + gb + ")\nConnection type : " + connection_typeValue[1];
+            this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb;
+            if (typeof(real_traffic) != 'undefined')
+              this.extraMessage += "\nTotal Traffic: " + real_traffic.toFixed(2) + gb + " (Upload: " + real_upload.toFixed(2) + gb + ")";
+            this.extraMessage += "\nConnection type : " + connection_typeValue[1];
             http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
           }
           // Grab info in mediumband
           else if( connection_typeValue[1] == "mediumband") {
-            //var medium_DLValue = reg_medium_DL.exec(reply);
-            //var medium_UPValue = reg_medium_UP.exec(reply);
-            //var medium_TOTALValue = reg_medium_TOTAL.exec(reply);
-            //var overallValue = reg_overall.exec(reply);
       
-            //var down1 = broad_DLValue[1]*1;
-            //var up1 = broad_UPValue[1]*1;
-            //var down2 = medium_DLValue[1]*1;
-            //var up2 = medium_UPValue[1]*1;
-            //var overall = overallValue[1]*1;
-            //this.usedVolume = broad_TOTALValue[1]*1 + medium_TOTALValue[1]*1;
-            //this.totalVolume = this.usedVolume;
-            //this.extraMessage = "Broadband download : " + down1.toFixed(2) +" GB, Up: " + up1.toFixed(2) +" GB\n" + "Mediumband download : " + down2.toFixed(2) +" GB, Up: " + up2.toFixed(2) +" GB\n" + "Overall transfer : " + overall.toFixed(2) +" GB";
-      
-            this.usedVolume = broad_TOTALValue[1]*1;
+            this.usedVolume = broad_TOTALValue[2]*1;
             this.totalVolume = this.usedVolume;
-            this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb + " (Real: " + real_traffic.toFixed(2) + gb + ")\nConnection type : " + connection_typeValue[1];
+            this.extraMessage = "Counted Traffic: " + (this.usedVolume).toFixed(2) + gb;
+            if (typeof(real_traffic) != 'undefined')
+              this.extraMessage += " (Real: " + real_traffic.toFixed(2) + gb + ")";
+            this.extraMessage += "\nConnection type : " + connection_typeValue[1];
             http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
           } else {
             this.reportError(step, this.name, encodeURIComponent(reply));

@@ -12,7 +12,7 @@
 <!ENTITY checkbox.numerical "Afficher les informations sous forme numérique">
 <!ENTITY checkbox.graphical "Afficher le compteur graphique">
 <!ENTITY checkbox.iconical "Afficher l'icône du fournisseur">
-<!ENTITY checkbox.useSI "Utiliser les unités du Système international">
+<!ENTITY checkbox.useSI "Utiliser les préfixes de la Commission électrotechnique internationale">
 <!ENTITY checkbox.remainingDays "Indiquer le nombre de jours restants avant remise à zéro">
 <!ENTITY checkbox.amountToPay "Indiquer le supplément à payer">
 <!ENTITY checkbox.remainingAverage "Indiquer la moyenne par jour restant">

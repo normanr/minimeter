@@ -10,7 +10,7 @@
 															"_Bosnia and Herzegovina","Monet",
 															"_Canada","#*Videotron:Vidéotron",
 															"_Czech Republic", "#Karneval", "#Chello", "InternetExpres", "#Gtsnovera:GTS Novera",
-															"_France","#Bouygues:Bouygues Telecom","Orange","Orange3g:Orange 3G","iZi",
+															"_France","#Bouygues:Bouygues Telecom", "iZi", "Orange","Orange3g:Orange 3G", "Sat2way",
 															"_Germany","#Tmobile:T-Mobile",
 															"_New Zealand", "Vodaphonenz:Vodaphone", "Xtra",
 															"_Russia", "Omsk:Omsk TeleCommunications",

@@ -59,12 +59,7 @@ Destiny.prototype.callback = function(step, reply) {
           this.usedVolume = volumeTotal;
           this.totalVolume = this.getCapacity();;
           
-          var gb;
-          if (isUseSI())
-            gb = getString("unitSI.GiB");
-          else
-            gb = getString("unit.GB");
-          gb = " " + gb;
+          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
           this.extraMessage = "       Download: "+ volumeDownload  + gb + "\n       Upload: " + volumeUpload  + gb;
           this.remainingDays = getInterval("firstDayNextMonth");
           this.update(true);

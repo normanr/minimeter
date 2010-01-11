@@ -12,7 +12,7 @@
 <!ENTITY checkbox.numerical "Zobrazovat číselné hodnoty">
 <!ENTITY checkbox.graphical "Zobrazovat grafické počítadlo">
 <!ENTITY checkbox.iconical "Show the provider's icon">
-<!ENTITY checkbox.useSI "Použít soustavu jednotek SI">
+<!ENTITY checkbox.useSI "Use International Electrotechnical Commission prefixes">
 <!ENTITY checkbox.remainingDays "Show the remaining days before reset">
 <!ENTITY checkbox.amountToPay "Show the extra to pay">
 <!ENTITY checkbox.remainingAverage "Show the remaining average per day">

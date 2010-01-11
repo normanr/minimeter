@@ -11,6 +11,7 @@ function Monitor(){
 	this.error = "no";
 	this.pageContent = null;
   this.trialNumber = 1; // nombre de tentatives (2 tentatives avant prise en compte erreur)
+  this.useSIPrefixes = false; // si true, 1 Go = 1000 Mo (et jamais d'affichage de G*i*o)
 
 }
 
@@ -59,7 +60,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   }
   if (pageContent !== null) {
     pageContent = decodeURIComponent(pageContent);
-    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|en cours de maintenance|currently unavailable|momentanément indisponible/;
+    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|temporarily unavailable|en cours de maintenance|currently unavailable|momentanément indisponible/;
     if (regServerError.test(pageContent))
       this.error = "server";
       
@@ -266,7 +267,7 @@ Monitor.prototype.update = function(success) {
     this.state = this.STATE_DONE;
     if(this.remainingDays != null && (this.totalVolume - this.usedVolume) > 0) {
       var remainingGB = Math.floor((monitor.totalVolume - monitor.usedVolume) / monitor.remainingDays * 1000) /1000;
-      var remainingMB = Math.floor((remainingGB - Math.floor(remainingGB)) *1024);
+      var remainingMB = Math.floor((remainingGB - Math.floor(remainingGB)) * (this.useSIPrefixes ? 1000 : 1024));
       monitor.remainingAverage = (remainingGB>=1 ? Math.floor(remainingGB) + monitor.measure + " " : "") + remainingMB + monitor.measureMB + " " + getString("info.remainingAverage", "per remaining day");
     }
     minimeterprefs.setCharPref("error", "no");

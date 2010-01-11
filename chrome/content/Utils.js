@@ -68,15 +68,29 @@ function getInterval(endDateText, dayNum){
   return interval +1;
 }
 
-function isUseSI(){
+function getunitPrefix(unit){
   var prefs = null;
+  var unitPrefix;
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                .getService(Components.interfaces.nsIPrefService);
   prefs = prefService.getBranch("extensions.minimeter.");
-
   useSI = prefs.getBoolPref('useSI');
-  return (useSI);
+  
+  if(useSI && !monitor.useSIPrefixes) {
+    if (unit == "GB")
+      unitPrefix = getString("unit.GiB");
+    else // == "MB"
+      unitPrefix = getString("unit.MiB");
+    }
+    else {
+      if (unit == "GB")
+        unitPrefix = getString("unit.GB");
+      else // == "MB"
+        unitPrefix = getString("unit.MB");
+    }
+  return unitPrefix;
 }
+
 
 function http_get(purl, callback, step){
 		monitor.error = "no";

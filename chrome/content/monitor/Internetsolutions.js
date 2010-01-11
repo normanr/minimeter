@@ -51,12 +51,9 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			    var down = (volume[3]/1024).toFixed(2);
 			    var both = (volume[4]/1024).toFixed(2);
 			    
-			    if (isUseSI())
-			        gb = getString("unitSI.GiB");
-			    else
-			        gb = getString("unit.GB");
+          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
 			    
-			    this.extraMessage = "Connected: " + hours + " hours\nUp: " + up +" " + gb + ", Down: " + down +" " + gb;
+			    this.extraMessage = "Connected: " + hours + " hours\nUp: " + up + gb + ", Down: " + down + gb;
 			    this.usedVolume = both;
 			    this.totalVolume = this.getCapacity();
 			    this.remainingDays = getInterval("firstDayNextMonth");

@@ -12,7 +12,7 @@
 <!ENTITY checkbox.numerical "Show numerical information">
 <!ENTITY checkbox.graphical "Show graphical meter">
 <!ENTITY checkbox.iconical "Show the provider's icon">
-<!ENTITY checkbox.useSI "Use International system units">
+<!ENTITY checkbox.useSI "Use International Electrotechnical Commission prefixes">
 <!ENTITY checkbox.remainingDays "Show the remaining days before reset">
 <!ENTITY checkbox.amountToPay "Show the extra to pay">
 <!ENTITY checkbox.remainingAverage "Show the remaining average per day">

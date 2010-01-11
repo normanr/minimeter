@@ -73,15 +73,15 @@ function configureMonitors(){
     showtext = minimeterprefs.getBoolPref('showtext');
     showmeter = minimeterprefs.getBoolPref('showmeter');
     showicon = minimeterprefs.getBoolPref('showicon');
-    useSI = minimeterprefs.getBoolPref('useSI');
+    useIEC = minimeterprefs.getBoolPref('useSI');
     
     statusbarMeter.showProgressmeter = showmeter;
     statusbarMeter.showText = showtext;
     statusbarMeter.showIcon = showicon;
     monitor.addListener(statusbarMeter);
-    if (useSI) {
-      monitor.measure = " " + getString("unitSI.GiB", "GiB");
-      monitor.measureMB = " " + getString("unitSI.MiB", "MiB");
+    if (useIEC && !monitor.useSIPrefixes) {
+      monitor.measure = " " + getString("unit.GiB", "GiB");
+      monitor.measureMB = " " + getString("unit.MiB", "MiB");
     }
     else {
       monitor.measure = " " + getString("unit.GB", "GB");

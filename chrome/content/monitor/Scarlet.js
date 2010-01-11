@@ -7,6 +7,7 @@ function Scarlet(username, password) {
     this.contrat = null;
     if(username.indexOf(",") > 0)
       this.contrat = username.substr(username.indexOf(",")+1);
+    this.selectProductTried = 0;
 }
 
 Scarlet.prototype = new Monitor();
@@ -21,7 +22,8 @@ Scarlet.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password+'&language=nl',this, 2);
+        this.selectProductTried = 0;
+				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password,this, 2);
 				break;
       case 2:
         reply = decodeURIComponent(reply);
@@ -44,15 +46,36 @@ Scarlet.prototype.callback = function(step, reply) {
         break;
    		case 3:
 			  reply = decodeURIComponent(reply);
-			  var total = /(est actuellement fixée à|verbruik staat momenteel ingesteld op) <b>(.*)\s*GB<\/b>/;
+			  var total = /(est actuellement fixée à|verbruik staat momenteel ingesteld op|Votre limite de transfert de donnée est) <b>([0-9,.]*)\s*GB<\/b>/;
 			  var used = /<th class="digit">(.*)\s*([kMG])B<\/th>\s*<\/tr>(\s*<\/tbody>|)\s*<\/table>/;
 			  var badpage = /GESELECTEERD/;
+			  var regSelectProduct = /<OPTION VALUE="([0-9]*)">Scarlet ONE/;
+			  var regSelectFeature = /<OPTION VALUE="([0-9]*)">Ip Access/;
 			  
 			  if(!used.test(reply) ){
-          if(!badpage.test(reply))
-            this.reportError(step, this.name, encodeURIComponent(reply));
+          if(!badpage.test(reply)) {
+            if(this.selectProductTried == 0 && regSelectProduct.test(reply)) {
+              this.selectProductTried++;
+              var selectProduct = regSelectProduct.exec(reply);
+              var postdata = "selectedProductId="+selectProduct[1];
+              if(regSelectFeature.test(reply)) {
+                var selectFeature = regSelectFeature.exec(reply);
+                postdata += "&selectedFeatureId="+selectFeature[1];
+              }
+              http_post('http://customercare.scarlet.be/usage/dispatch.do', postdata, this, 3);
+              break;
+            }
+            else
+              if (this.selectProductTried == 1) {
+                http_get('http://www.scarlet.be/customercare/usage/detail.do', this, 3);
+                break;
+              }
+            else
+              this.reportError(step, this.name, encodeURIComponent(reply));
+          }
           else
-            http_get('http://customercare.scarlet.be//customercare/selectbillcontract.do', this, "error");
+            this.reportError(step, this.name, encodeURIComponent(reply));
+            //http_get('http://customercare.scarlet.be//customercare/selectbillcontract.do', this, "error");
 			  } else {
           
           if (!total.test(reply))

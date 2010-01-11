@@ -38,12 +38,9 @@ Mweb.prototype.callback = function(step, reply) {
 			    var down = (volume[4].replace(/ /g, "")/1073741824).toFixed(2);
 			    var both = (volume[5].replace(/ /g, "")/1073741824).toFixed(2);
 			    
-			    if (isUseSI())
-			        gb = getString("unitSI.GiB");
-			    else
-			        gb = getString("unit.GB");
+          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
 			    
-			    this.extraMessage = "Connected: " + sessions + " sessions, " + hours + " hours\nUp: " + up +" " + gb + ", Down: " + down +" " + gb;
+			    this.extraMessage = "Connected: " + sessions + " sessions, " + hours + " hours\nUp: " + up + gb + ", Down: " + down + gb;
 			    this.usedVolume = both;
 			    this.totalVolume = this.getCapacity();
 			    this.remainingDays = getInterval("firstDayNextMonth");

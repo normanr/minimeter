@@ -81,13 +81,7 @@ Mobistariew.prototype.callback = function(step, reply) {
           }
         //volumeUsed = 5; //Volume forcé pour test
         
-        if(isUseSI()) {
-          var isSiGbValue = getString("unitSI.GiB");
-          var ifSiMbValue = getString("unitSI.MiB");
-        } else {
-          var isSiGbValue = getString("unit.GB");
-          var ifSiMbValue = getString("unit.MB");
-        }
+        var mb = " " + getunitPrefix("MB"); // Unit as selected in options and locale
     
         var volumeAllowed = regAllowed.exec(reply);
         this.usedVolume = volumeUsed*1;
@@ -107,7 +101,7 @@ Mobistariew.prototype.callback = function(step, reply) {
         var extraMsgRoamingInfo = "";
         var extraPrixMsgRoamingInfo = "";
         if(nbDataWhenRoaming != "0.00") {
-          extraMsgRoamingInfo = "\n       "+nbDataWhenRoaming+" "+ifSiMbValue+" "+getString("info.MIEWInRoaming");
+          extraMsgRoamingInfo = "\n       "+nbDataWhenRoaming +mb +" "+getString("info.MIEWInRoaming");
           extraPrixMsgRoamingInfo = "("+getString("info.plusRoamingDataInPrice")+")";
         }
         
