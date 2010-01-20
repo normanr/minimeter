@@ -1,5 +1,5 @@
 
-function Omsk(username, password) {
+Minimeter.Omsk = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "omsk.png"; // does not belong in class
@@ -8,16 +8,16 @@ function Omsk(username, password) {
     this.measure = " $";
 }
 
-Omsk.prototype = new Monitor();
+Minimeter["Omsk"].prototype = new Minimeter.Monitor();
 
-Omsk.prototype.check = function() {
+Minimeter["Omsk"].prototype.check = function() {
 		this.state = this.STATE_BUSY;
 		this.notify();
 		this.callback(1);
 }
 
 
-Omsk.prototype.callback = function(step, reply) {
+Minimeter["Omsk"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -28,10 +28,10 @@ Omsk.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "login="+this.username+"&pass="+this.password+"";
-				http_post('http://giv.omsktele.com/stat/login.php', postdata,this, 2);
+				Minimeter.http_post('http://giv.omsktele.com/stat/login.php', postdata,this, 2);
 				break;
 			case 2:
-				http_get('http://giv.omsktele.com/stat/stat.xml',this, 3);
+				Minimeter.http_get('http://giv.omsktele.com/stat/stat.xml',this, 3);
 				break;
 			case 3:
 				var objDOMParser = new DOMParser();

@@ -1,43 +1,45 @@
-function JArray(){}
+if (typeof Minimeter == "undefined")
+  var Minimeter;
 
-JArray.prototype = new Array();
+Minimeter.JArray = function(){};
 
-JArray.prototype.getInd = function(value) {
-        for (var i in this) {
-                if (this[i] == value) {
-                        return i;
-                }
-        }
+Minimeter["JArray"].prototype = new Array();
+
+Minimeter["JArray"].prototype.getInd = function(value) {
+  for (var i in this) {
+    if (this[i] == value) {
+            return i;
+    }
+  }
 };
 
-JArray.prototype.contains = function(obj) {
-        for (var i in this) {
-                if (this[i]==obj) return true;
-        }
-        return false;
+Minimeter["JArray"].prototype.contains = function(obj) {
+  for (var i in this) {
+          if (this[i]==obj) return true;
+  }
+  return false;
 };
 
-JArray.prototype.add = function(obj) {
-        this.push(obj);
+Minimeter["JArray"].prototype.add = function(obj) {
+  this.push(obj);
 };
 
-JArray.prototype.remove = function(value) {
-        var ind=this.getInd(value);
-        if (isNaN(ind)) {
-                this.removeByIndex(ind);
-        } else {
-                this.splice(ind,1);
-        }
+Minimeter["JArray"].prototype.remove = function(value) {
+  var ind=this.getInd(value);
+  if (isNaN(ind)) {
+          this.removeByIndex(ind);
+  } else {
+          this.splice(ind,1);
+  }
 };
 
-JArray.prototype.clear = function() {
-        for (var i in this) {
-                this.splice(i,1);
-        }
+Minimeter["JArray"].prototype.clear = function() {
+  for (var i in this) {
+          this.splice(i,1);
+  }
 };
 
-
-function getInterval(endDateText, dayNum){
+Minimeter.getInterval = function(endDateText, dayNum){
   var nowDate = new Date();
   var interval = 0;
   if (endDateText == "firstDayNextMonth"){
@@ -68,7 +70,7 @@ function getInterval(endDateText, dayNum){
   return interval +1;
 }
 
-function getunitPrefix(unit){
+Minimeter.getunitPrefix = function(unit){
   var prefs = null;
   var unitPrefix;
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
@@ -76,7 +78,7 @@ function getunitPrefix(unit){
   prefs = prefService.getBranch("extensions.minimeter.");
   useSI = prefs.getBoolPref('useSI');
   
-  if(useSI && !monitor.useSIPrefixes) {
+  if(useSI && !Minimeter.monitor.useSIPrefixes) {
     if (unit == "GB")
       unitPrefix = getString("unit.GiB");
     else // == "MB"
@@ -92,8 +94,8 @@ function getunitPrefix(unit){
 }
 
 
-function http_get(purl, callback, step){
-		monitor.error = "no";
+Minimeter.http_get = function(purl, callback, step){
+		Minimeter.monitor.error = "no";
 		try{
   		var req = new XMLHttpRequest();
   
@@ -102,10 +104,10 @@ function http_get(purl, callback, step){
             if (req.readyState == 4){
               try{
                 if(req.status == 500 || req.status == 503)
-                  monitor.error = "server";
-              }catch(ex){monitor.error = "connection";}
+                  Minimeter.monitor.error = "server";
+              }catch(ex){Minimeter.monitor.error = "connection";}
               if (req.responseText == '')
-                monitor.error = "connection";
+                Minimeter.monitor.error = "connection";
               callback.callback(step, encodeURIComponent(req.responseText));
             }
   			}
@@ -115,11 +117,11 @@ function http_get(purl, callback, step){
 		req.setRequestHeader('Cookie', 'usageConfirm=true');
 		  req.send('');	
 			
-		}catch(ex){consoleDump(ex);}			
+		}catch(ex){Minimeter.consoleDump(ex);}			
 }
 
-function http_post(purl, postdata, callback, step, cookie, contenttype){
-		monitor.error = "no";
+Minimeter.http_post = function(purl, postdata, callback, step, cookie, contenttype){
+		Minimeter.monitor.error = "no";
 		try{
   		var req = new XMLHttpRequest();
   		
@@ -128,12 +130,12 @@ function http_post(purl, postdata, callback, step, cookie, contenttype){
   				if (req.readyState == 4){
             try{
               if(req.status == 500 || req.status == 503)
-                monitor.error = "server";
-            }catch(ex){monitor.error = "connection";}
+                Minimeter.monitor.error = "server";
+            }catch(ex){Minimeter.monitor.error = "connection";}
             if (req.responseText == '')
-              monitor.error = "connection";
+              Minimeter.monitor.error = "connection";
             if (callback == "reportError")
-              monitor.reportError(null, null, null, encodeURIComponent(req.responseText));
+              Minimeter.monitor.reportError(null, null, null, encodeURIComponent(req.responseText));
             else
               if(callback != "errorPing")
                 callback.callback(step, encodeURIComponent(req.responseText));
@@ -151,11 +153,11 @@ function http_post(purl, postdata, callback, step, cookie, contenttype){
         req.setRequestHeader('Cookie', cookie);
 			req.send(postdata);		
 			
-		}catch(ex){consoleDump("Error posting: " + ex);}			
+		}catch(ex){Minimeter.consoleDump("Error posting: " + ex);}			
 		
 }	
 
-function http_auth(purl, username, password, callback, step){
+Minimeter.http_auth = function(purl, username, password, callback, step){
 
 		try{
 		  var listener = {
@@ -170,11 +172,11 @@ function http_auth(purl, username, password, callback, step){
 		  var end = httphost.indexOf("/");
 		  path = httphost.substr(end);
 			httphost = httphost.substr(0, end  );
-			var auth = "\nAuthorization: Basic " + encode64(username+':'+password);
-		  readAllFromSocket(httphost,80,"GET "+ path +" HTTP/1.0\nHost: " + httphost + auth + "\n\n",listener);
+			var auth = "\nAuthorization: Basic " + Minimeter.encode64(username+':'+password);
+		  Minimeter.readAllFromSocket(httphost,80,"GET "+ path +" HTTP/1.0\nHost: " + httphost + auth + "\n\n",listener);
 			
 			
-		}catch(ex){consoleDump(ex);}			
+		}catch(ex){Minimeter.consoleDump(ex);}			
 }
 
  /*
@@ -195,7 +197,7 @@ var Base64 = {
 */
 
 
-function encode64(str) {
+Minimeter.encode64 = function(str) {
   // netusage code
   
 	var b64 = [
@@ -236,31 +238,29 @@ function encode64(str) {
 	return res;
 }
 
-function Minimeter_debug(va){
+Minimeter.debug = function(va){
       const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
     .getService(Components.interfaces.nsIClipboardHelper);
       gClipboardHelper.copyString(va);
 }
 
-	function listObject(obj, s) {
-    	var res = "List: " + obj + "\n";
-    	for(var list in obj) {
-    		if (list.indexOf(s) == -1)
-    			res += list + ", ";
-	    }
+Minimeter.listObject = function(obj, s) {
+  var res = "List: " + obj + "\n";
+  for(var list in obj) {
+    if (list.indexOf(s) == -1)
+      res += list + ", ";
+  }
 
-        consoleDump(res);
+  Minimeter.consoleDump(res);
 }
 
-function consoleDump(aMessage) {
+Minimeter.consoleDump = function(aMessage) {
   var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                        .getService(Components.interfaces.nsIConsoleService);
   consoleService.logStringMessage("Minimeter : " + aMessage);
 }
 
-
-
-function readAllFromSocket(host,port,outputData,listener)
+Minimeter.readAllFromSocket = function(host,port,outputData,listener)
 {
   try {
     var transportService =
@@ -301,7 +301,7 @@ function readAllFromSocket(host,port,outputData,listener)
   return null;
 }
 
-function getString(id, altString) {
+Minimeter.getString = function(id, altString) {
 	var src = 'chrome://minimeter/locale/settings.properties';
   var stringBundleService =
      Components.classes["@mozilla.org/intl/stringbundle;1"]

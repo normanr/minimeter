@@ -1,4 +1,4 @@
-function Videotron(username, password) {
+Minimeter.Videotron = function(username, password) {
     this.username = username;
     this.password = "vide";
     this.image = "videotron.png"; // does not belong in class
@@ -6,9 +6,9 @@ function Videotron(username, password) {
     this.url = "https://www.videotron.com/services/secur/ConsommationInternet.do?compteInternet="+this.username;
 }
 
-Videotron.prototype = new Monitor();
+Minimeter["Videotron"].prototype = new Minimeter.Monitor();
 
-Videotron.prototype.callback = function(step, reply) {
+Minimeter["Videotron"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Videotron.prototype.callback = function(step, reply) {
       default:
       case 1:
         var postdata = "compteInternet=" + this.username;
-        http_post("https://www.videotron.com/services/secur/fr/votre_compte/StartTransaction.jsp", postdata,this, 2);
+        Minimeter.http_post("https://www.videotron.com/services/secur/fr/votre_compte/StartTransaction.jsp", postdata,this, 2);
         break;
           
       case 2:
@@ -51,7 +51,7 @@ Videotron.prototype.callback = function(step, reply) {
           this.usedVolume = volumeused[7];
           
           if (this.totalVolume == 30) { // jusqu'en mars 2010, pour les connexions datant d'avant mars 2009
-            var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
+            var gb = " " + Minimeter.getunitPrefix("GB"); // Unit as selected in options and locale
             var upload = Math.round(volumeused[6]/1024*1000)/1000;
             var download = Math.round(volumeused[5]/1024*1000)/1000;
             this.extraMessage = "       Upload : "+ upload.toString().replace(".",",")  + gb + "\n       Download : " + download.toString().replace(".",",") + gb;
@@ -79,7 +79,7 @@ Videotron.prototype.callback = function(step, reply) {
           
           }
         }
-        this.remainingDays = getInterval(volumeused[3]+"/"+volumeused[2]+"/"+volumeused[1]);
+        this.remainingDays = Minimeter.getInterval(volumeused[3]+"/"+volumeused[2]+"/"+volumeused[1]);
         this.update(true);
     }
 }

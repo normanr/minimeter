@@ -1,5 +1,5 @@
 
-function Xtra(username, password) {
+Minimeter.Xtra = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "xtra.png"; // does not belong in class
@@ -7,9 +7,9 @@ function Xtra(username, password) {
     this.url = "https://www.telecom.co.nz/xtralogin.fcc";
 }
 
-Xtra.prototype = new Monitor();
+Minimeter["Xtra"].prototype = new Minimeter.Monitor();
 
-Xtra.prototype.callback = function(step, reply) {
+Minimeter["Xtra"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -20,7 +20,7 @@ Xtra.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = 'USER='+this.username+'&PASSWORD='+this.password+'&SMENC=ISO-8859-1&SMLOCALE=US-EN&target=https://www.telecom.co.nz/jetstreamum/xtraSum&smauthreason=0&SSOLoginPage.btLogin=Log In ';
-        http_post('https://www.telecom.co.nz/xtralogin.fcc?TYPE=33554433&REALMOID=06-000eea98-b0df-12c4-808b-832af374000f&GUID=&SMAUTHREASON=0&METHOD=GET&SMAGENTNAME=$SM$5l9ZZOndBSrRIiJtF6CCGA%2fmNCiw87eRYL4EXOhS1OntVhKwVqD5IA%3d%3d&TARGET=$SM$https%3a%2f%2fwww.telecom.co.nz%2fjetstreamum%2fxtraSum', postdata, this, 2);
+        Minimeter.http_post('https://www.telecom.co.nz/xtralogin.fcc?TYPE=33554433&REALMOID=06-000eea98-b0df-12c4-808b-832af374000f&GUID=&SMAUTHREASON=0&METHOD=GET&SMAGENTNAME=$SM$5l9ZZOndBSrRIiJtF6CCGA%2fmNCiw87eRYL4EXOhS1OntVhKwVqD5IA%3d%3d&TARGET=$SM$https%3a%2f%2fwww.telecom.co.nz%2fjetstreamum%2fxtraSum', postdata, this, 2);
 				break;
 
 			case 2:
@@ -61,7 +61,7 @@ Xtra.prototype.callback = function(step, reply) {
       	
         if( regDateEnd.test(reply)) {
           regDateEnd = regDateEnd.exec(reply);
-          this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
+          this.remainingDays = Minimeter.getInterval("nearestOccurence", regDateEnd[1]);
         }
       		
       	this.update(true);

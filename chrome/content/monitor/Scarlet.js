@@ -1,4 +1,4 @@
-function Scarlet(username, password) {
+Minimeter.Scarlet = function(username, password) {
     this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "scarlet.png"; // does not belong in class
@@ -10,9 +10,9 @@ function Scarlet(username, password) {
     this.selectProductTried = 0;
 }
 
-Scarlet.prototype = new Monitor();
+Minimeter["Scarlet"].prototype = new Minimeter.Monitor();
 
-Scarlet.prototype.callback = function(step, reply) {
+Minimeter["Scarlet"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -23,7 +23,7 @@ Scarlet.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         this.selectProductTried = 0;
-				http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password,this, 2);
+				Minimeter.http_get('http://customercare.scarlet.be/logon.do?username='+this.username+'&password='+this.password,this, 2);
 				break;
       case 2:
         reply = decodeURIComponent(reply);
@@ -33,12 +33,12 @@ Scarlet.prototype.callback = function(step, reply) {
           break;
         }
         if(this.contrat != null)
-          http_get('http://customercare.scarlet.be/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, "2b");
+          Minimeter.http_get('http://customercare.scarlet.be/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, "2b");
         else 
-          http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
+          Minimeter.http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
         break;
       case "2b":
-        http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
+        Minimeter.http_get('http://customercare.scarlet.be/usage/dispatch.do', this, 3);
         break;
       case "error":
         reply = decodeURIComponent(reply);
@@ -62,12 +62,12 @@ Scarlet.prototype.callback = function(step, reply) {
                 var selectFeature = regSelectFeature.exec(reply);
                 postdata += "&selectedFeatureId="+selectFeature[1];
               }
-              http_post('http://customercare.scarlet.be/usage/dispatch.do', postdata, this, 3);
+              Minimeter.http_post('http://customercare.scarlet.be/usage/dispatch.do', postdata, this, 3);
               break;
             }
             else
               if (this.selectProductTried == 1) {
-                http_get('http://www.scarlet.be/customercare/usage/detail.do', this, 3);
+                Minimeter.http_get('http://www.scarlet.be/customercare/usage/detail.do', this, 3);
                 break;
               }
             else
@@ -75,7 +75,7 @@ Scarlet.prototype.callback = function(step, reply) {
           }
           else
             this.reportError(step, this.name, encodeURIComponent(reply));
-            //http_get('http://customercare.scarlet.be//customercare/selectbillcontract.do', this, "error");
+            //Minimeter.http_get('http://customercare.scarlet.be//customercare/selectbillcontract.do', this, "error");
 			  } else {
           
           if (!total.test(reply))

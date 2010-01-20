@@ -1,4 +1,4 @@
-function Skynet(username, password) {
+Minimeter.Skynet = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "skynet.png"; // does not belong in class
@@ -7,9 +7,9 @@ function Skynet(username, password) {
     this.BgErrLoginEservices = false;
 }
 
-Skynet.prototype = new Monitor();
+Minimeter["Skynet"].prototype = new Minimeter.Monitor();
 
-Skynet.prototype.callback = function(step, reply) {
+Minimeter["Skynet"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -21,7 +21,7 @@ Skynet.prototype.callback = function(step, reply) {
       case 1:
         this.extraMessage = '';
         var postdata = "login-form-type=pwd&username="+this.username+"&password="+this.password;
-        http_post('https://admit.belgacom.be/pkmslogin.form', postdata,this, 2);
+        Minimeter.http_post('https://admit.belgacom.be/pkmslogin.form', postdata,this, 2);
         break;
         
       case 2:
@@ -39,13 +39,13 @@ Skynet.prototype.callback = function(step, reply) {
           break;
         }
         
-        http_get("https://admit.belgacom.be/eservices/wps/myportal/my_internet?pageChanged=true", this, 3);
+        Minimeter.http_get("https://admit.belgacom.be/eservices/wps/myportal/my_internet?pageChanged=true", this, 3);
         break;
         
       case "oldMethod":
         this.url = "https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume";
         var postdata = "fuseaction=CheckLoginConnection&form_login="+this.username+"&form_password="+this.password+"&Langue_Id=3&Submit=Connexion";
-        http_post('https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume', postdata,this, 4);
+        Minimeter.http_post('https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume', postdata,this, 4);
         break;
         
       case 3:
@@ -61,7 +61,7 @@ Skynet.prototype.callback = function(step, reply) {
 					
 						if (backToTheHomepageFromAdvantage.test(reply)) { // is the advantages page shown ?
 							var adrBackLink = backToTheHomepageFromAdvantage.exec(reply);
-							http_get("https://admit.belgacom.be/" + adrBackLink[1], this, 3);
+							Minimeter.http_get("https://admit.belgacom.be/" + adrBackLink[1], this, 3);
 						}
 						else
               if (changePassword.test(reply))
@@ -72,7 +72,7 @@ Skynet.prototype.callback = function(step, reply) {
         }
         else {
           var adrQuota = regAdrQuota.exec(reply);
-          http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume&farg.login="+adrQuota[1]+"&farg.login_type=connection&farg.sso_date="+adrQuota[2]+"&farg.type="+adrQuota[3]+"&farg.key="+adrQuota[4], this, 4);
+          Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume&farg.login="+adrQuota[1]+"&farg.login_type=connection&farg.sso_date="+adrQuota[2]+"&farg.type="+adrQuota[3]+"&farg.key="+adrQuota[4], this, 4);
         }
         
         break;
@@ -144,7 +144,7 @@ Skynet.prototype.callback = function(step, reply) {
            
            
           var belgacomVP
-          try {belgacomVP = minimeterprefs.getCharPref('belgacomVP');} catch(e){belgacomVP = "-1;0;0;0;0;0"};// lastUpdateMonth;totalVP;lastShowedVP;boughtLastMonth;lastCurrentVPUsedState;VPSizeSaved
+          try {belgacomVP = Minimeter.prefs.getCharPref('belgacomVP');} catch(e){belgacomVP = "-1;0;0;0;0;0"};// lastUpdateMonth;totalVP;lastShowedVP;boughtLastMonth;lastCurrentVPUsedState;VPSizeSaved
           var nowMonth = new Date();
           nowMonth = nowMonth.getMonth();
           belgacomVP = belgacomVP.split(";");
@@ -170,13 +170,13 @@ Skynet.prototype.callback = function(step, reply) {
           else
             VPSize=belgacomVP[5];
           
-          minimeterprefs.setCharPref('belgacomVP', belgacomVP.join(";"));
+          Minimeter.prefs.setCharPref('belgacomVP', belgacomVP.join(";"));
 
 
           this.usedVolume = volumeused*1 + currentVpUse*1 + VPSize*(belgacomVP[1] - nbofVPShowed);
           this.totalVolume = volumetotal*1 + VPSize*belgacomVP[1];
          
-          this.remainingDays = getInterval("firstDayNextMonth");
+          this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
           var numberOfVPBought = belgacomVP[1] - belgacomVP[3];
           if(numberOfVPBought>0)
             this.amountToPay = numberOfVPBought*5 + " EUR (" + numberOfVPBought +" volume pack"+(numberOfVPBought>1?"s)":")");

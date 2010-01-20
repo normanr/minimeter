@@ -1,14 +1,14 @@
 
-function Telenet(username, password) {
+Minimeter.Telenet = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "telenet.png"; 
     this.name = "Telenet";
 }
 
-Telenet.prototype = new Monitor();
+Minimeter["Telenet"].prototype = new Minimeter.Monitor();
 
-Telenet.prototype.callback = function(step, reply) {
+Minimeter["Telenet"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -18,7 +18,7 @@ Telenet.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:enc="http://schemas.xmlsoap.org/soap/encoding/" env:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xs="http://www.w3.org/1999/XMLSchema" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"><env:Header/><env:Body><getUsage xmlns="partns"><string xsi:type="xs:string">'+this.username+'</string><string0 xsi:type="xs:string">'+this.password+'</string0></getUsage></env:Body></env:Envelope>';
-        http_post('https://telemeter4tools.services.telenet.be/TelemeterService', postdata,this, 2, null, "text/xml; charset=UTF-8");
+        Minimeter.http_post('https://telemeter4tools.services.telenet.be/TelemeterService', postdata,this, 2, null, "text/xml; charset=UTF-8");
 				break;
       case 2:
         reply = decodeURIComponent(reply);
@@ -53,7 +53,7 @@ Telenet.prototype.callback = function(step, reply) {
           this.usedVolume = Math.round(volumeused[1]/1024*1000)/1000;
           
           dateEnd = dateEnd[1].substr(6, 2);
-          this.remainingDays = getInterval("nearestOccurence", dateEnd);
+          this.remainingDays = Minimeter.getInterval("nearestOccurence", dateEnd);
         }
         
         /* Service error. */
@@ -76,7 +76,7 @@ Telenet.prototype.callback = function(step, reply) {
           /* Another error. */
           else {
             this.errorMessage = "Webservice error : " + errorMessage[4];
-            consoleDump(errorMessage[2] + " " + errorMessage[4]);
+            Minimeter.consoleDump(errorMessage[2] + " " + errorMessage[4]);
             this.reportError(step, this.name, encodeURIComponent(reply));
           }
         }      

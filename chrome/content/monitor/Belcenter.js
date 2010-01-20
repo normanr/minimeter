@@ -1,17 +1,17 @@
-function Belcenter(username, password) {
-    this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
-    this.password = password;
-    this.image = "belcenter.png"; // does not belong in class
-    this.name = "Belcenter";
-    this.url = "https://secure.belcenter.com/Adsl.FrontEnd.FR/My.Adsl/";
-    this.BelcenterFirstTime = true;
+Minimeter.Belcenter = function (username, password) {
+  this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
+  this.password = password;
+  this.image = "belcenter.png"; // does not belong in class
+  this.name = "Belcenter";
+  this.url = "https://secure.belcenter.com/Adsl.FrontEnd.FR/My.Adsl/";
+  this.BelcenterFirstTime = true;
 }
 
 // corriger aussi Eleven
 
-Belcenter.prototype = new Monitor();
+Minimeter["Belcenter"].prototype = new Minimeter.Monitor();
 
-Belcenter.prototype.callback = function(step, reply) {
+Minimeter["Belcenter"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -23,7 +23,7 @@ Belcenter.prototype.callback = function(step, reply) {
     case 1:
       this.BelcenterFirstTime = true;
       var postdata = "login="+this.username+"&password="+this.password+"&B1=Envoyer&server=smtp.belcenter.com&port=143&maildomain=belcenter.com&protocol=imap&mailbox=INBOX&redirect_url=&actionID=105&realm=belcenter.com&new_lang=fr_FR&imapuser=USERNAME&pass=PASSWORD";
-      http_post(this.url, postdata,this, 2);
+      Minimeter.http_post(this.url, postdata,this, 2);
       break;
         
     case 2:
@@ -41,7 +41,7 @@ Belcenter.prototype.callback = function(step, reply) {
         else
           if (regRedirect.test(reply) && this.BelcenterFirstTime == true) {
             this.BelcenterFirstTime = false;
-            http_get(this.url, this, 2);
+            Minimeter.http_get(this.url, this, 2);
           }
           else {
             this.reportError(step, this.name, encodeURIComponent(reply));
@@ -62,7 +62,7 @@ Belcenter.prototype.callback = function(step, reply) {
         }
         this.usedVolume = volumeQuota[1];
         this.totalVolume = volumeTotal + (volumeQuota[2]*1);
-        this.remainingDays = getInterval("firstDayNextMonth");
+        this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
         this.update(true);
       }
   }

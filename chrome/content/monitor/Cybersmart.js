@@ -1,4 +1,4 @@
-function Cybersmart(username, password) {
+Minimeter.Cybersmart = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "cybersmart.png"; // does not belong in class
@@ -6,9 +6,9 @@ function Cybersmart(username, password) {
     this.url = "http://www.cybersmart.co.za/getAccountDetails.cgi";
 }
 
-Cybersmart.prototype = new Monitor();
+Minimeter["Cybersmart"].prototype = new Minimeter.Monitor();
 
-Cybersmart.prototype.callback = function(step, reply) {
+Minimeter["Cybersmart"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Cybersmart.prototype.callback = function(step, reply) {
     default:
     case 1:
       var postdata = "accountName="+this.username+"&password="+this.password+"&submit.x=44&submit.y=18&submit=submit";
-      http_get('http://www.cybersmart.co.za/getAccountDetails.cgi', this, 2);
+      Minimeter.http_get('http://www.cybersmart.co.za/getAccountDetails.cgi', this, 2);
       break;
         
     case 2:
@@ -43,7 +43,7 @@ Cybersmart.prototype.callback = function(step, reply) {
       this.usedVolume = volumeused[1]*-1;
       this.totalVolume = volumetotal[1];
       
-      this.remainingDays = getInterval("firstDayNextMonth");
+      this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
         
       this.update(true);
   }

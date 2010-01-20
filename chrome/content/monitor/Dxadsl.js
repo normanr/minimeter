@@ -1,5 +1,5 @@
 
-function Dxadsl(username, password) {
+Minimeter.Dxadsl = function(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "dxadsl.png";
@@ -9,9 +9,9 @@ function Dxadsl(username, password) {
 
 // similaire à Fulladsl et dérivés
 
-Dxadsl.prototype = new Monitor();
+Minimeter["Dxadsl"].prototype = new Minimeter.Monitor();
 
-Dxadsl.prototype.callback = function(step, reply) {
+Minimeter["Dxadsl"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -20,7 +20,7 @@ Dxadsl.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("http://myaccount.dxadsl.be/Beheer/index.aspx", this, 2);
+        Minimeter.http_get("http://myaccount.dxadsl.be/Beheer/index.aspx", this, 2);
         break;
           
       case 2:
@@ -41,7 +41,7 @@ Dxadsl.prototype.callback = function(step, reply) {
     
         var postdata = ctl+"_ToolkitScriptManager1_HiddenField=&__EVENTTARGET="+ctl+"%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&"+ctl+"%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&"+ctl+"%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
         
-        http_post('http://myaccount.dxadsl.be/Beheer/index.aspx', postdata,this, 3);
+        Minimeter.http_post('http://myaccount.dxadsl.be/Beheer/index.aspx', postdata,this, 3);
         break;
         
       case 3:
@@ -59,7 +59,7 @@ Dxadsl.prototype.callback = function(step, reply) {
         var volumeusedtotal = regusedtotal.exec(reply);
         this.usedVolume = volumeusedtotal[1].replace(',','.')*1;
         this.totalVolume = volumeusedtotal[2].replace(',','.')*1;
-        this.remainingDays = getInterval("firstDayNextMonth");
+        this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
           
         this.update(true);
     }

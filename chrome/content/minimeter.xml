@@ -50,8 +50,8 @@
 				this.showIcon = false; 
 				//alert("constructed");
 				
-				if(monitor != null){
-					monitor.addListener(this);
+				if(Minimeter.monitor != null){
+					Minimeter.monitor.addListener(this);
 				}
 
       ]]>
@@ -92,17 +92,17 @@
     <property name="percentageLabel"> 
       <getter>
       <![CDATA[
-	      	if(monitor.totalVolume <= 0){
+	      	if(Minimeter.monitor.totalVolume <= 0){
 	      		return "";
 	      	} else {
 						var remaining = ""
-						if (monitor.usedVolume < monitor.totalVolume) {
+						if (Minimeter.monitor.usedVolume < Minimeter.monitor.totalVolume) {
 							
-							remaining = (Math.round((monitor.totalVolume - monitor.usedVolume)*1000)/1000);
-							remainingloc = remaining.toLocaleString();
-							remaining = " (" + remainingloc + monitor.measure + " " + (remaining >= 2 ? monitor.remainings : monitor.remaining) + ")";
+							remaining = (Math.round((Minimeter.monitor.totalVolume - Minimeter.monitor.usedVolume)*1000)/1000);
+							var remainingloc = remaining.toLocaleString();
+							remaining = " (" + remainingloc + Minimeter.monitor.measure + " " + (remaining >= 2 ? Minimeter.monitor.remainings : Minimeter.monitor.remaining) + ")";
 						}
-	        	return (Math.round(monitor.usedVolume / monitor.totalVolume * 10000)/100).toLocaleString() + "%" + remaining;
+	        	return (Math.round(Minimeter.monitor.usedVolume / Minimeter.monitor.totalVolume * 10000)/100).toLocaleString() + "%" + remaining;
 	        }
     		]]>
       </getter>
@@ -112,10 +112,10 @@
     <property name="textLabel"> 
       <getter>
       <![CDATA[
-	      	if(monitor.totalVolume <= 0){
-	      		return " " + parseFloat(monitor.usedVolume).toLocaleString() + monitor.measure;
+	      	if(Minimeter.monitor.totalVolume <= 0){
+	      		return " " + parseFloat(Minimeter.monitor.usedVolume).toLocaleString() + Minimeter.monitor.measure;
 	      	} else {
-	        	return " " + parseFloat(monitor.usedVolume).toLocaleString() + " / " + parseFloat(monitor.totalVolume).toLocaleString() + monitor.measure ;
+	        	return " " + parseFloat(Minimeter.monitor.usedVolume).toLocaleString() + " / " + parseFloat(Minimeter.monitor.totalVolume).toLocaleString() + Minimeter.monitor.measure ;
 	        }
     		]]>
       </getter>
@@ -134,7 +134,7 @@
 					  this.setBusy(true);
 					}
 					if(monitor.state ==  monitor.STATE_ERROR){
-						this.label = "  " + getString("statusbar.error", "Error");
+						this.label = "  " + Minimeter.getString("statusbar.error", "Error");
 						
 						this.setBusy(false);
 						this.value = 0;
@@ -155,7 +155,7 @@
       <parameter name="newData"/>
       <body>
         <![CDATA[
-        	if( monitor.totalVolume <= 0) newValue = 0;
+        	if( Minimeter.monitor.totalVolume <= 0) newValue = 0;
         	
         	document.getElementById("bar").removeAttribute('collapsed');
         	

@@ -1,5 +1,5 @@
 
-function Tele2(username, password) {
+Minimeter.Tele = function2(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "tele2.png";
@@ -8,9 +8,9 @@ function Tele2(username, password) {
     this.adsllight = false;
 }
 
-Tele2.prototype = new Monitor();
+Tele2Minimeter[""].prototype = new Minimeter.Monitor();
 
-Tele2.prototype.callback = function(step, reply) {
+Tele2Minimeter[""].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -20,7 +20,7 @@ Tele2.prototype.callback = function(step, reply) {
       default:
       case 1:
         var postdata = "username="+this.username+"&password="+this.password;
-        http_post('http://internetselfcare.base.be/index.php', postdata,this, 2);
+        Minimeter.http_post('http://internetselfcare.base.be/index.php', postdata,this, 2);
         break;
       case 2:
         reply = unescape(reply);
@@ -29,7 +29,7 @@ Tele2.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        http_get("http://internetselfcare.base.be/adsl_index.php", this, 3);
+        Minimeter.http_get("http://internetselfcare.base.be/adsl_index.php", this, 3);
         break;
       case 3:
         reply = unescape(reply);
@@ -37,7 +37,7 @@ Tele2.prototype.callback = function(step, reply) {
         
         if (regAdslLight.test(reply))
           this.adsllight = true;
-        http_get("http://internetselfcare.base.be/usage.php", this, 4);
+        Minimeter.http_get("http://internetselfcare.base.be/usage.php", this, 4);
         break;
           
       case 4:
@@ -64,7 +64,7 @@ Tele2.prototype.callback = function(step, reply) {
             else
               this.usedVolume = 0;
             this.totalVolume = (this.adsllight ? 0.244 : 0);
-            this.remainingDays = getInterval("nearestOccurence", dateEnd[1]);
+            this.remainingDays = Minimeter.getInterval("nearestOccurence", dateEnd[1]);
               
             if (this.adsllight && this.usedVolume > this.totalVolume) {
               this.amountToPay = (this.usedVolume - this.totalVolume) * 51,2;

@@ -1,5 +1,5 @@
 
-function Iburst(username, password) {
+Minimeter.Iburst = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "iburst.png"; // does not belong in class
@@ -7,9 +7,9 @@ function Iburst(username, password) {
     this.url = "https://helpdesk.wbs.co.za/cfusion/wbs/crm/usage_new.cfm"
 }
 
-Iburst.prototype = new Monitor();
+Minimeter["Iburst"].prototype = new Minimeter.Monitor();
 
-Iburst.prototype.callback = function(step, reply) {
+Minimeter["Iburst"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -20,11 +20,11 @@ Iburst.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "UserName="+this.username+"&Password="+this.password+"&logmein=true";
-				http_post('https://helpdesk.wbs.co.za/cfusion/wbs/crm/usage_new.cfm', postdata,this, 2);
+				Minimeter.http_post('https://helpdesk.wbs.co.za/cfusion/wbs/crm/usage_new.cfm', postdata,this, 2);
 				break;
 			case 2:
 				postdata = "userid=" + this.username;
-				http_post('http://helpdesk.wbs.co.za/cfusion/wbs/crm/userdata.cfm', postdata, this, 3);
+				Minimeter.http_post('http://helpdesk.wbs.co.za/cfusion/wbs/crm/userdata.cfm', postdata, this, 3);
 				break;	
 			case 3:
 			  reply = decodeURIComponent(reply);
@@ -36,7 +36,7 @@ Iburst.prototype.callback = function(step, reply) {
 			    var volume = reg.exec(reply);
       		this.usedVolume = volume[1];
       		this.totalVolume = volume[2];
-      		this.remainingDays = getInterval("firstDayNextMonth");
+      		this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
       		
       		this.update(true);	
         }

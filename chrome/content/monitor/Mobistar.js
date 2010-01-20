@@ -1,5 +1,5 @@
 
-function Mobistar(username, password) {
+Minimeter.Mobistar = function(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "mobistar.png";
@@ -7,9 +7,9 @@ function Mobistar(username, password) {
     this.url = "http://partners.mobistar.be/conso-adsl-logged/index.cfm?lg=FR";
 }
 
-Mobistar.prototype = new Monitor();
+Minimeter["Mobistar"].prototype = new Minimeter.Monitor();
 
-Mobistar.prototype.callback = function(step, reply) {
+Minimeter["Mobistar"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -19,13 +19,13 @@ Mobistar.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "portlet_login_6%7BactionForm.login%7D="+this.username+"&portlet_login_6%7BactionForm.password%7D="+this.password;
-        http_post('https://www.mobistar.be/www/portal/public/residential?_nfpb=true&portlet_login_6_actionOverride=%2Fbe%2Fmobistar%2Fim%2Fprocess%2Fportlets%2Flogin001%2FprocessLogin&_windowLabel=portlet_login_6&_pageLabel=applicationAuthentication', postdata,this, 2);
+        Minimeter.http_post('https://www.mobistar.be/www/portal/public/residential?_nfpb=true&portlet_login_6_actionOverride=%2Fbe%2Fmobistar%2Fim%2Fprocess%2Fportlets%2Flogin001%2FprocessLogin&_windowLabel=portlet_login_6&_pageLabel=applicationAuthentication', postdata,this, 2);
 				break;
       case 2:
         reply = decodeURIComponent(reply);
         var regLangNotChosen=/images\/languagep.jpg/;
         if (regLangNotChosen.test(reply)) {
-          http_get("http://www.mobistar.be/www/portal/public/residential?_nfpb=true&_pageLabel=guesthome&language=fr_BE&event=languageEvent", this, 1);
+          Minimeter.http_get("http://www.mobistar.be/www/portal/public/residential?_nfpb=true&_pageLabel=guesthome&language=fr_BE&event=languageEvent", this, 1);
           break;
         }
         
@@ -34,7 +34,7 @@ Mobistar.prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        http_get("http://partners.mobistar.be/conso-adsl-logged/index.cfm?lg=FR", this, 3);
+        Minimeter.http_get("http://partners.mobistar.be/conso-adsl-logged/index.cfm?lg=FR", this, 3);
         break;
 			case 3:
 				var regUsedMB=/Vous avez consommé <strong>\s*([0-9.]*) MB/;
@@ -78,7 +78,7 @@ Mobistar.prototype.callback = function(step, reply) {
           
           if(regDateEnd.test(reply)) {
             dateEnd = regDateEnd.exec(reply);
-            this.remainingDays = getInterval("nearestOccurence", dateEnd[2]);
+            this.remainingDays = Minimeter.getInterval("nearestOccurence", dateEnd[2]);
           }
           
           this.update(true);

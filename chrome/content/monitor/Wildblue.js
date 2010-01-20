@@ -1,5 +1,5 @@
 
-function Wildblue(username, password) {
+Minimeter.Wildblue = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "wildblue.png";
@@ -7,9 +7,9 @@ function Wildblue(username, password) {
     this.url = "https://myusage.wildblue.net/UsageGUI/pages/index.xhtml";
 }
 
-Wildblue.prototype = new Monitor();
+Minimeter["Wildblue"].prototype = new Minimeter.Monitor();
 
-Wildblue.prototype.callback = function(step, reply) {
+Minimeter["Wildblue"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -18,7 +18,7 @@ Wildblue.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("https://myusage.wildblue.net/UsageGUI/pages/index.xhtml", this, 2);
+        Minimeter.http_get("https://myusage.wildblue.net/UsageGUI/pages/index.xhtml", this, 2);
         break;
           
       case 2:
@@ -30,7 +30,7 @@ Wildblue.prototype.callback = function(step, reply) {
         }
     
         var postdata = "mainForm%3Ausername="+this.username+"&mainForm%3Apassword="+this.password+"&mainForm%3A_id41=Login&mainForm=mainForm";
-        http_post('https://myusage.wildblue.net/UsageGUI/pages/index.xhtml', postdata,this, 3);
+        Minimeter.http_post('https://myusage.wildblue.net/UsageGUI/pages/index.xhtml', postdata,this, 3);
         break;
         
       case 3:
@@ -70,7 +70,7 @@ Wildblue.prototype.callback = function(step, reply) {
         this.usedVolume = volumeUsed;
         this.totalVolume = volumeTotal;
         
-        var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
+        var gb = " " + Minimeter.getunitPrefix("GB"); // Unit as selected in options and locale
         this.extraMessage = "        Download: "+ volumeUsedDownload + " / " + volumeTotalDownload + gb + " (" + Math.round(volumeUsedDownload / volumeTotalDownload * 100) + " %)" + "\n        Upload: " + volumeUsedUpload + " / " + volumeTotalUpload + gb + " (" + Math.round(volumeUsedUpload / volumeTotalUpload * 100) + " %)" + "\n       Total: " + (volumeUsedDownload*1 + volumeUsedUpload*1) + " / " + (volumeTotalDownload*1 + volumeTotalUpload*1) + gb + " (" + Math.round((volumeUsedDownload*1 + volumeUsedUpload*1) / (volumeTotalDownload*1 + volumeTotalUpload*1) * 100) + " %)";
         
         this.update(true);

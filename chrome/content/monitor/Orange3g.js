@@ -1,4 +1,4 @@
-function Orange3g(username, password) {
+Minimeter.Orange = function3g(username, password) {
     this.username = username;
     this.password = password;
     this.image = "orange3g.png"; // does not belong in class
@@ -6,9 +6,9 @@ function Orange3g(username, password) {
     this.url = "http://r.orange.fr/r/Omoncomptemobile_suiviconso";
 }
 
-Orange3g.prototype = new Monitor();
+Orange3Minimeter["g"].prototype = new Minimeter.Monitor();
 
-Orange3g.prototype.callback = function(step, reply) {
+Orange3Minimeter["g"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Orange3g.prototype.callback = function(step, reply) {
     default:
     case 1:
       var postdata = "credential="+this.username+"&pwd="+this.password;
-      http_post('http://id.orange.fr/auth_user/bin/auth_user.cgi?action=valider&origin=rs', postdata,this, 2);
+      Minimeter.http_post('http://id.orange.fr/auth_user/bin/auth_user.cgi?action=valider&origin=rs', postdata,this, 2);
       break;
       
     case 2:
@@ -30,7 +30,7 @@ Orange3g.prototype.callback = function(step, reply) {
         break;
       }
       this.reportError(step, this.name, encodeURIComponent(reply));
-      //http_get("http://r.orange.fr/r/Omoncomptemobile_suiviconso", this, 3);
+      //Minimeter.http_get("http://r.orange.fr/r/Omoncomptemobile_suiviconso", this, 3);
       break;
       
     case 3:
@@ -38,7 +38,7 @@ Orange3g.prototype.callback = function(step, reply) {
       var regVersionClassique = /href="(servlet\/ecareweb\.servlet\.consommation\.ConsommationHtmlPageServletGoTo[^"]*)"[^"]*<span class="orange2b">[^ ]* retour version classique/;
       if(regVersionClassique.test(reply)) {
         var lienVersionClassique = regVersionClassique.exec(reply);
-        http_get("https://webclients.orange.fr/EcareAsGenerator/"+lienVersionClassique[1], this, 3);
+        Minimeter.http_get("https://webclients.orange.fr/EcareAsGenerator/"+lienVersionClassique[1], this, 3);
         break;
       }
       
@@ -70,7 +70,7 @@ Orange3g.prototype.callback = function(step, reply) {
       
       if(regDateEnd.test(reply)){
         regDateEnd = regDateEnd.exec(reply);
-        this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]*1+1);
+        this.remainingDays = Minimeter.getInterval("nearestOccurence", regDateEnd[1]*1+1);
       }
       this.update(true);
       break;

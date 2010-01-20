@@ -1,5 +1,5 @@
 
-function Sat2way(username, password) {
+Minimeter.Sat = function2way(username, password) {
   this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
   this.password = password;
   this.image = "sat2way.png";
@@ -11,9 +11,9 @@ function Sat2way(username, password) {
   this.useSIPrefixes = true;
 }
 
-Sat2way.prototype = new Monitor();
+Sat2Minimeter["way"].prototype = new Minimeter.Monitor();
 
-Sat2way.prototype.callback = function(step, reply) {
+Sat2Minimeter["way"].prototype.callback = function(step, reply) {
   if(this.aborted()){
     return;
   }
@@ -24,7 +24,7 @@ Sat2way.prototype.callback = function(step, reply) {
     case 1:
       var postdata = "login="+this.username+"&password="+this.password;
       var url = 'http://www.sat2way.fr/fr/user/minimeter' + (this.conn != null ? "?com="+this.conn : "");
-      http_post(url, postdata, this, step+1);
+      Minimeter.http_post(url, postdata, this, step+1);
       break;
         
     case 2:
@@ -54,7 +54,7 @@ Sat2way.prototype.callback = function(step, reply) {
       this.usedVolume  = reg4S[1]/1000;
       this.totalVolume = reg4S[2]/1000;
       
-      var mb = " " + getunitPrefix("MB"); // Unit as selected in locale
+      var mb = " " + Minimeter.getunitPrefix("MB"); // Unit as selected in locale
 
       
       this.extraMessage = 

@@ -1,5 +1,5 @@
 
-function Vodaphonenz(username, password) {
+Minimeter.Vodaphonenz = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "vodaphonenz.png";
@@ -7,9 +7,9 @@ function Vodaphonenz(username, password) {
     this.url = "https://the.vodafone.co.nz/acnts/myaccount-int.pl/usage";
 }
 
-Vodaphonenz.prototype = new Monitor();
+Minimeter["Vodaphonenz"].prototype = new Minimeter.Monitor();
 
-Vodaphonenz.prototype.callback = function(step, reply) {
+Minimeter["Vodaphonenz"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -20,7 +20,7 @@ Vodaphonenz.prototype.callback = function(step, reply) {
       case 1:
         var postdata = "_action=login&_pass=&_user=&username=&realm=%40ihug.co.nz&cmd=login&force_connetion=true&frames=true&selected_tpl=true&no_tcode=true&login="+this.username+"&password="+this.password;
         
-        http_post('https://the.vodafone.co.nz/acnts/myaccounts.pl/login', postdata, this, step+1);
+        Minimeter.http_post('https://the.vodafone.co.nz/acnts/myaccounts.pl/login', postdata, this, step+1);
         break;
           
       case 2:
@@ -37,7 +37,7 @@ Vodaphonenz.prototype.callback = function(step, reply) {
           break;
         }
         
-        http_get("https://the.vodafone.co.nz/acnts/myaccount-int.pl/usage", this, step+1);
+        Minimeter.http_get("https://the.vodafone.co.nz/acnts/myaccount-int.pl/usage", this, step+1);
         break;
         
       case 3:
@@ -53,7 +53,7 @@ Vodaphonenz.prototype.callback = function(step, reply) {
         this.totalVolume = volumeusedtotal[2]*1;
         
         var dateEnd = regDateEnd.exec(reply);
-        this.remainingDays = getInterval("nearestOccurence", dateEnd[1]);
+        this.remainingDays = Minimeter.getInterval("nearestOccurence", dateEnd[1]);
         
         this.update(true);
     }

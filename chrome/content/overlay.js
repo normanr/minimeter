@@ -1,342 +1,323 @@
-
-var monitor = null;
-var minimeterprefs = null;
-var toolbarMeter = null;
-var statusbarMeter = null;
-var singleClick = true;
-var Minimeter_OriginalCustomizeDone = null;
-
-function initialize(){
-
-
-  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-                        .getService(Components.interfaces.nsIPrefService);
-  minimeterprefs = prefService.getBranch("extensions.minimeter.");
-
-  if (monitor == null)
-    setTimeout(Minimeter_DelayedStartup, 10); // Needs to happen after Firefox's delayedStartup()
-
-  checknow = !minimeterprefs.getBoolPref('click_check');
-
-  loadMonitors();
-
-  loadMonitor();
-
-  configureMonitors();
+var Minimeter = {
+  monitor: null,
+  prefs: Components.classes["@mozilla.org/preferences-service;1"]
+                          .getService(Components.interfaces.nsIPrefService).getBranch("extensions.minimeter."),
+  toolbarMeter: null,
+  statusbarMeter: null,
+  singleClick: true,
+  OriginalCustomizeDone: null,
   
- 
- 
-  if(checknow && canLogin())
-    monitor.checkCache();
-  else
-    statusbarMeter.icon = monitor.image;
-    
-    myPrefObserver.register();
-
-
-}
-
-function loadMonitors(){
-  var scriptinc = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService().QueryInterface(Components.interfaces.mozIJSSubScriptLoader);
-  var prefExt = Components.classes["@mozilla.org/preferences-service;1"]
-                        .getService(Components.interfaces.nsIPrefService).getBranch("extensions.");
-
-  var provider = minimeterprefs.getCharPref('provider');
-  provider = provider.toLowerCase();
-  if (provider == "chellobe") {
-    provider = "telenet";
-    minimeterprefs.setCharPref('provider', provider);
-  }
-
-  prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
-"http://extensions.geckozone.org/updates/Minimeter-"+provider+".rdf");
-  provider = provider[0].toUpperCase() + provider.substr(1);
-  scriptinc.loadSubScript("chrome://minimeter/content/monitor/"+provider+".js");
-}
-
-
-function configureMonitors(){
-	
-  toolbarMeter = document.getElementById("toolbarMeter");
-  if(toolbarMeter != null){
-    showtext = minimeterprefs.getBoolPref('showtext');
-    showmeter = minimeterprefs.getBoolPref('showmeter');
-    showicon = minimeterprefs.getBoolPref('showicon');
-    toolbarMeter.showProgressmeter = showmeter;
-    toolbarMeter.showText = showtext;
-    toolbarMeter.showIcon = showicon;
-    monitor.addListener(toolbarMeter);	
-  }
+  initialize: function(){
+    if (Minimeter.monitor == null)
+      setTimeout("Minimeter.DelayedStartup()", 10); // Needs to happen after Firefox's delayedStartup()
   
-  statusbarMeter = document.getElementById("statusbarMeter");
-  if(statusbarMeter != null){
-    showtext = minimeterprefs.getBoolPref('showtext');
-    showmeter = minimeterprefs.getBoolPref('showmeter');
-    showicon = minimeterprefs.getBoolPref('showicon');
-    useIEC = minimeterprefs.getBoolPref('useSI');
-    
-    statusbarMeter.showProgressmeter = showmeter;
-    statusbarMeter.showText = showtext;
-    statusbarMeter.showIcon = showicon;
-    monitor.addListener(statusbarMeter);
-    if (useIEC && !monitor.useSIPrefixes) {
-      monitor.measure = " " + getString("unit.GiB", "GiB");
-      monitor.measureMB = " " + getString("unit.MiB", "MiB");
-    }
-    else {
-      monitor.measure = " " + getString("unit.GB", "GB");
-      monitor.measureMB = " " + getString("unit.MB", "MB");
-    }
-    monitor.remaining = getString("info.remaining", "remaining");
-    monitor.remainings = getString("info.remainings", "remaining");
-  }
-}
-
-// three functions from Googlebar Lite by Jonah Bishop
-// handle the absence of customize toolbar event by using callback function
-function Minimeter_ToolboxCustomizeDone(somethingChanged)
-{
-  checkNow();
-	this.Minimeter_OriginalCustomizeDone(somethingChanged);
-}
-
-function Minimeter_BuildFunction(obj, method)
-{
-	return function()
-	{
-		return method.apply(obj, arguments);
-	}
-}
-
-function Minimeter_DelayedStartup()
-{
-  var navtoolbox = document.getElementById("navigator-toolbox");
-	Minimeter_OriginalCustomizeDone = navtoolbox.customizeDone;
-	navtoolbox.customizeDone = Minimeter_BuildFunction(this, Minimeter_ToolboxCustomizeDone);
-}
-
-
-function loadMonitor(){
-
-  provider = minimeterprefs.getCharPref('provider');
-
-  var credentials = new Credentials("chrome://minimeter/");
-  var user = credentials.load();	
+    var checknow = !Minimeter.prefs.getBoolPref('click_check');
   
-  if(monitor != null) {
-    monitor.abort();
-  }
+    Minimeter.loadMonitors();
+    Minimeter.loadMonitor();
+    Minimeter.configureMonitors();
+   
+    if(checknow && Minimeter.canLogin())
+      Minimeter.monitor.checkCache();
+    else
+      Minimeter.statusbarMeter.icon = Minimeter.monitor.image;
       
-  var providerClass = provider[0].toUpperCase() + provider.substr(1).toLowerCase();
-  eval("monitor = new " + providerClass + "(user.username, user.password)");
-  //alert("loading: " + providerClass);
-  
-  document.getElementById("showPage").setAttribute("disabled", (monitor.url == null));
-}
-
-
-function fillTooltip(tooltip){
-
-  
-  var box = document.getElementById("errorBox");
-  var ebox = document.getElementById("extraBox");
-  var rbox = document.getElementById("rateBox");
-  var remainingDaysBox = document.getElementById("remainingDaysBox");
-  var amountToPayBox = document.getElementById("amountToPayBox");
-  var remainingAverageBox = document.getElementById("remainingAverageBox");
-  var error = document.getElementById("errorMessage");
-  var message = document.getElementById("message");
-  var remainingDays = document.getElementById("remainingDays");
-  var amountToPay = document.getElementById("amountToPay");
-  var remainingAverage = document.getElementById("remainingAverage");
-  var rate = document.getElementById("rate");
-  var extra = document.getElementById("extra");
-  var mtIcon = document.getElementById("mtIcon");
-  
-  var total = "";
-  remainingDaysBox.collapsed = true;
-  amountToPayBox.collapsed = true;
-  remainingAverageBox.collapsed = true;
-  if(monitor.state == monitor.STATE_DONE && monitor.usedVolume != null){
-    total = " : " + statusbarMeter.percentageLabel;
-    //rate.value = monitor.usedVolume + " / " + monitor.totalVolume + " GB" ;
-    rate.value = statusbarMeter.textLabel;
-    if (minimeterprefs.getBoolPref('showRemainingDays') && monitor.remainingDays != null){
-      if (monitor.remainingDays > 1)
-        remainingDays.value = getString("info.remainingDays", "%d days remaining before reset").replace ("%d", monitor.remainingDays);
-      else
-        if (monitor.remainingDays == 1)
-          remainingDays.value = getString("info.remainingOneDay", "1 day remaining before reset");
-        else
-          if (monitor.remainingDays < 1)
-            remainingDays.value = getString("info.remainingLessOneDay", "Less than one day before reset");
-      remainingDaysBox.collapsed = false;
-    }
-    if (minimeterprefs.getBoolPref('showAmountToPay') && monitor.amountToPay != '') {
-      amountToPay.value = monitor.amountToPay.replace(".",",");
-      amountToPay.value = amountToPay.value.replace ("EUR", "€");
-      amountToPay.value = amountToPay.value.replace ("CAD", "$");
-      amountToPay.value = amountToPay.value + " " + getString("info.amountToPay", "extra");
-      amountToPayBox.collapsed = false;
-    }
-    rbox.collapsed = false;
-    if (minimeterprefs.getBoolPref('showRemainingAverage') && monitor.remainingAverage != '') {
-      remainingAverage.value = monitor.remainingAverage;
-      remainingAverageBox.collapsed = false;
-    }
-  } else {
-    rbox.collapsed = true;
-  }
-  
-  showtext = minimeterprefs.getBoolPref('showtext');
-  if(showtext){
-    rbox.collapsed = true;
-  }
-  
-  box.collapsed = !(monitor.state == monitor.STATE_ERROR);
-  error.value = monitor.errorMessage;
-  
-  
-  mtIcon.setAttribute("src", "chrome://minimeter/content/res/"+monitor.image);
-  message.value = monitor.name + total;
-
-  if (monitor.extraMessage != null)
-    setMultilineDescription(extra, monitor.extraMessage);
-  ebox.collapsed = (monitor.extraMessage == '');
-  if(!canLogin()){
-    box.collapsed = false;
-    error.value = getString("warning.fillInCredentials", "Fill in your credentials: open Minimeter preferences");
-  }
-
-}
-
-
-/* Helper functions */
-
-function setMultilineDescription(element, value){
-	var lines = value.split('\n');
-
-	while(element.firstChild != null){
-	   element.removeChild(element.firstChild);
-	}
-	
-	for(var i = 0; i < lines.length; i++){     
-	   var descriptionNode = document.createElement("description");    
-	   var linetext = document.createTextNode(lines[i]);
-	   descriptionNode.appendChild(linetext);
-	   element.appendChild(descriptionNode);
-	}
-}
-
-function canLogin(){
-  return monitor.username != "";
-}
-
-
-function checkNow(){
-  try{
-      loadMonitors();
-      loadMonitor();
-			configureMonitors();
-      if(canLogin()){
-          monitor.check(true); 
-      } else {
-         loadPrefWindow();
-      }    
-  } catch(e){
-    consoleDump(e);
-  }
-}
-
-
-
-function clickIcon(event){
-  if(event.button == 0){
-    singleClick = true;
-      setTimeout("if (singleClick) { checkNow(); }", 400);
-  }
-}
-function loadPrefWindow(){
-  
-	var o = {	check : function(){	window.setTimeout( function(){checkNow();}, 0 );	}	};
-	
-  window.openDialog("chrome://minimeter/content/settings.xul", 
-                      "_blank", "chrome,resizable=no,dependent=yes", o);
-
-}    
-
-function loadPage(){
-  singleClick = false;
-  if (monitor.url != null) {
-		var prefBrows = Components.classes["@mozilla.org/preferences-service;1"]
-													.getService(Components.interfaces.nsIPrefService).getBranch("browser.");
-    openUILinkIn(monitor.url, prefBrows.getIntPref("link.open_newwindow") == 3 ? "tab" : "window");
-  }
-}
-
-function unloadObserver()
-{
-  myPrefObserver.unregister();
-}
-
-var myPrefObserver =
-{
-  register: function()
-  {
-    var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-                                .getService(Components.interfaces.nsIPrefService);
-    this._branch = prefService.getBranch("extensions.minimeter.");
-    this._branch.QueryInterface(Components.interfaces.nsIPrefBranchInternal); // nsIPrefBranch2 since gecko 1.8
-    this._branch.addObserver("", this, false);
+    Minimeter.myPrefObserver.register();
   },
 
-  unregister: function()
-  {
-    //if(!this._branch) return;
-    this._branch.removeObserver("", this);
+  loadMonitors: function(){
+    var scriptinc = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService().QueryInterface(Components.interfaces.mozIJSSubScriptLoader);
+    var prefExt = Components.classes["@mozilla.org/preferences-service;1"]
+                          .getService(Components.interfaces.nsIPrefService).getBranch("extensions.");
+  
+    var provider = this.prefs.getCharPref('provider');
+    provider = provider.toLowerCase();
+    if (provider == "chellobe") {
+      provider = "telenet";
+      this.prefs.setCharPref('provider', provider);
+    }
+  
+    prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
+  "http://extensions.geckozone.org/updates/Minimeter-"+provider+".rdf");
+    provider = provider[0].toUpperCase() + provider.substr(1);
+    scriptinc.loadSubScript("chrome://minimeter/content/monitor/"+provider+".js");
   },
 
-  observe: function(aSubject, aTopic, aData)
-  {
-    if(aTopic != "nsPref:changed") return;
-    try {
-      switch (aData) {
-        case "error":
-          errorpref = minimeterprefs.getCharPref('error');
-          if(errorpref == "isit") {
-            if (monitor.state == monitor.STATE_ERROR || monitor.state == monitor.STATE_BUSY)
-              minimeterprefs.setCharPref("error", monitor.error);
-          }
-          else
-            if (errorpref != "no" && errorpref != "checking") {
-              monitor.error = errorpref;
-              monitor.errorMessage = getString("error."+errorpref, "incomplete translation");
-              monitor.state = monitor.STATE_ERROR;
-              monitor.notify();
-            }
-          break;
-        case "provider":
-          try{
-            loadMonitors();
-            loadMonitor();
-            configureMonitors();
-          } catch(ex){consoleDump(ex);}
-          //monitor.image = minimeterprefs.getCharPref('provider')+".png";
-          //document.getElementById("statusbarMeter").icon = monitor.image;
-          break;
-        case "cache":
-          if(minimeterprefs.getCharPref('error') == "no")
-            monitor.loadCache(true);
-          break;
-        case "errorExtraMessage":
-          var errorExtraMessage = minimeterprefs.getCharPref('errorExtraMessage');
-          if (errorExtraMessage != '')
-            monitor.extraMessage = getString("error."+errorExtraMessage, "incomplete translation");
-          break;
-        case "url":
-          monitor.url = minimeterprefs.getCharPref('url');
-          break;
+  configureMonitors: function(){
+    var showtext;
+    var showmeter;
+    var showicon;
+    var useIEC;
+    this.toolbarMeter = document.getElementById("toolbarMeter");
+    if(this.toolbarMeter != null){
+      showtext = this.prefs.getBoolPref('showtext');
+      showmeter = this.prefs.getBoolPref('showmeter');
+      showicon = this.prefs.getBoolPref('showicon');
+      this.toolbarMeter.showProgressmeter = showmeter;
+      this.toolbarMeter.showText = showtext;
+      this.toolbarMeter.showIcon = showicon;
+      this.monitor.addListener(this.toolbarMeter);	
+    }
+    
+    this.statusbarMeter = document.getElementById("statusbarMeter");
+    if(this.statusbarMeter != null){
+      showtext = this.prefs.getBoolPref('showtext');
+      showmeter = this.prefs.getBoolPref('showmeter');
+      showicon = this.prefs.getBoolPref('showicon');
+      useIEC = this.prefs.getBoolPref('useSI');
+      
+      this.statusbarMeter.showProgressmeter = showmeter;
+      this.statusbarMeter.showText = showtext;
+      this.statusbarMeter.showIcon = showicon;
+      this.monitor.addListener(this.statusbarMeter);
+      if (useIEC && !this.monitor.useSIPrefixes) {
+        this.monitor.measure = " " + Minimeter.getString("unit.GiB", "GiB");
+        this.monitor.measureMB = " " + Minimeter.getString("unit.MiB", "MiB");
       }
-    }catch(ex){consoleDump(ex);}
+      else {
+        this.monitor.measure = " " + Minimeter.getString("unit.GB", "GB");
+        this.monitor.measureMB = " " + Minimeter.getString("unit.MB", "MB");
+      }
+      this.monitor.remaining = Minimeter.getString("info.remaining", "remaining");
+      this.monitor.remainings = Minimeter.getString("info.remainings", "remaining");
+    }
+  },
+
+  // three functions from Googlebar Lite by Jonah Bishop
+  // handle the absence of customize toolbar event by using callback function
+  ToolboxCustomizeDone: function(somethingChanged){
+    this.checkNow();
+    this.OriginalCustomizeDone(somethingChanged);
+  },
+  
+  BuildFunction: function(obj, method){
+    return function()
+    {
+      return method.apply(obj, arguments);
+    }
+  },
+  
+  DelayedStartup: function(){
+    var navtoolbox = document.getElementById("navigator-toolbox");
+    this.OriginalCustomizeDone = navtoolbox.customizeDone;
+    navtoolbox.customizeDone = this.BuildFunction(this, this.ToolboxCustomizeDone);
+  },
+  
+  loadMonitor: function(){
+    var provider = this.prefs.getCharPref('provider');
+  
+    var credentials = new Minimeter.Credentials("chrome://minimeter/");
+    var user = credentials.load();	
+    
+    if(this.monitor != null) {
+      this.monitor.abort();
+    }
+        
+    var providerClass = provider[0].toUpperCase() + provider.substr(1).toLowerCase();
+    //eval("monitor = new " + providerClass + "(user.username, user.password)");
+    this.monitor = new Minimeter[providerClass](user.username, user.password);
+    //alert("loading: " + providerClass);
+    
+    document.getElementById("showPage").setAttribute("disabled", (this.monitor.url == null));
+  },
+
+  fillTooltip: function(tooltip){
+    var box = document.getElementById("errorBox");
+    var ebox = document.getElementById("extraBox");
+    var rbox = document.getElementById("rateBox");
+    var remainingDaysBox = document.getElementById("remainingDaysBox");
+    var amountToPayBox = document.getElementById("amountToPayBox");
+    var remainingAverageBox = document.getElementById("remainingAverageBox");
+    var error = document.getElementById("errorMessage");
+    var message = document.getElementById("message");
+    var remainingDays = document.getElementById("remainingDays");
+    var amountToPay = document.getElementById("amountToPay");
+    var remainingAverage = document.getElementById("remainingAverage");
+    var rate = document.getElementById("rate");
+    var extra = document.getElementById("extra");
+    var mtIcon = document.getElementById("mtIcon");
+    
+    var total = "";
+    remainingDaysBox.collapsed = true;
+    amountToPayBox.collapsed = true;
+    remainingAverageBox.collapsed = true;
+    if(this.monitor.state == this.monitor.STATE_DONE && this.monitor.usedVolume != null){
+      total = " : " + this.statusbarMeter.percentageLabel;
+      //rate.value = this.monitor.usedVolume + " / " + this.monitor.totalVolume + " GB" ;
+      rate.value = this.statusbarMeter.textLabel;
+      if (this.prefs.getBoolPref('showRemainingDays') && this.monitor.remainingDays != null){
+        if (this.monitor.remainingDays > 1)
+          remainingDays.value = Minimeter.getString("info.remainingDays", "%d days remaining before reset").replace ("%d", this.monitor.remainingDays);
+        else
+          if (this.monitor.remainingDays == 1)
+            remainingDays.value = Minimeter.getString("info.remainingOneDay", "1 day remaining before reset");
+          else
+            if (this.monitor.remainingDays < 1)
+              remainingDays.value = Minimeter.getString("info.remainingLessOneDay", "Less than one day before reset");
+        remainingDaysBox.collapsed = false;
+      }
+      if (this.prefs.getBoolPref('showAmountToPay') && this.monitor.amountToPay != '') {
+        amountToPay.value = this.monitor.amountToPay.replace(".",",");
+        amountToPay.value = amountToPay.value.replace ("EUR", "€");
+        amountToPay.value = amountToPay.value.replace ("CAD", "$");
+        amountToPay.value = amountToPay.value + " " + Minimeter.getString("info.amountToPay", "extra");
+        amountToPayBox.collapsed = false;
+      }
+      rbox.collapsed = false;
+      if (this.prefs.getBoolPref('showRemainingAverage') && this.monitor.remainingAverage != '') {
+        remainingAverage.value = this.monitor.remainingAverage;
+        remainingAverageBox.collapsed = false;
+      }
+    } else {
+      rbox.collapsed = true;
+    }
+    
+    var showtext = this.prefs.getBoolPref('showtext');
+    if(showtext){
+      rbox.collapsed = true;
+    }
+    
+    box.collapsed = !(this.monitor.state == this.monitor.STATE_ERROR);
+    error.value = this.monitor.errorMessage;
+    
+    mtIcon.setAttribute("src", "chrome://minimeter/content/res/"+this.monitor.image);
+    message.value = this.monitor.name + total;
+  
+    if (this.monitor.extraMessage != null)
+      this.setMultilineDescription(extra, this.monitor.extraMessage);
+    ebox.collapsed = (this.monitor.extraMessage == '');
+    if(!this.canLogin()){
+      box.collapsed = false;
+      error.value = Minimeter.getString("warning.fillInCredentials", "Fill in your credentials: open Minimeter preferences");
+    }
+  
+  },
+
+  /* Helper functions */
+  
+  setMultilineDescription: function(element, value){
+    var lines = value.split('\n');
+  
+    while(element.firstChild != null){
+       element.removeChild(element.firstChild);
+    }
+    
+    for(var i = 0; i < lines.length; i++){     
+       var descriptionNode = document.createElement("description");    
+       var linetext = document.createTextNode(lines[i]);
+       descriptionNode.appendChild(linetext);
+       element.appendChild(descriptionNode);
+    }
+  },
+
+  canLogin: function(){
+    return this.monitor.username != "";
+  },
+
+  checkNow: function(){
+    try{
+        this.loadMonitors();
+        this.loadMonitor();
+        this.configureMonitors();
+        if(this.canLogin()){
+            this.monitor.check(true); 
+        } else {
+           this.loadPrefWindow();
+        }    
+    } catch(e){
+      Minimeter.consoleDump(e);
+    }
+  },
+
+  clickIcon: function(event){
+    if(event.button == 0){
+      this.singleClick = true;
+        setTimeout("if (Minimeter.singleClick) { Minimeter.checkNow(); }", 400);
+    }
+  },
+
+  loadPrefWindow: function(){
+    var o = {	check : function(){	window.setTimeout( function(){Minimeter.checkNow();}, 0 );	}	};
+    
+    window.openDialog("chrome://minimeter/content/settings.xul", 
+                        "_blank", "chrome,resizable=no,dependent=yes", o);
+  },
+
+  loadPage: function(){
+    this.singleClick = false;
+    if (this.monitor.url != null) {
+      var prefBrows = Components.classes["@mozilla.org/preferences-service;1"]
+                            .getService(Components.interfaces.nsIPrefService).getBranch("browser.");
+      openUILinkIn(this.monitor.url, prefBrows.getIntPref("link.open_newwindow") == 3 ? "tab" : "window");
+    }
+  },
+
+  unloadObserver: function(){
+    Minimeter.myPrefObserver.unregister();
+  },
+
+
+  myPrefObserver: {
+    register: function()
+    {
+      var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+                                  .getService(Components.interfaces.nsIPrefService);
+      Minimeter._branch = prefService.getBranch("extensions.minimeter.");
+      Minimeter._branch.QueryInterface(Components.interfaces.nsIPrefBranchInternal); // nsIPrefBranch2 since gecko 1.8
+      Minimeter._branch.addObserver("", this, false);
+    },
+  
+    unregister: function()
+    {
+      //if(!this._branch) return;
+      Minimeter._branch.removeObserver("", this);
+    },
+  
+    observe: function(aSubject, aTopic, aData)
+    {
+      if(aTopic != "nsPref:changed") return;
+      try {
+        switch (aData) {
+          case "error":
+            var errorpref = Minimeter.prefs.getCharPref('error');
+            if(errorpref == "isit") {
+              if (Minimeter.monitor.state == Minimeter.monitor.STATE_ERROR || Minimeter.monitor.state == Minimeter.monitor.STATE_BUSY)
+                Minimeter.prefs.setCharPref("error", Minimeter.monitor.error);
+            }
+            else
+              if (errorpref != "no" && errorpref != "checking") {
+                Minimeter.monitor.error = errorpref;
+                Minimeter.monitor.errorMessage = Minimeter.getString("error."+errorpref, "incomplete translation");
+                Minimeter.monitor.state = Minimeter.monitor.STATE_ERROR;
+                Minimeter.monitor.notify();
+              }
+            break;
+          case "provider":
+            try{
+              Minimeter.loadMonitors();
+              Minimeter.loadMonitor();
+              Minimeter.configureMonitors();
+            } catch(ex){Minimeter.consoleDump(ex);}
+            //Minimeter.monitor.image = Minimeter.prefs.getCharPref('provider')+".png";
+            //document.getElementById("statusbarMeter").icon = Minimeter.monitor.image;
+            break;
+          case "cache":
+            if(Minimeter.prefs.getCharPref('error') == "no")
+              Minimeter.monitor.loadCache(true);
+            break;
+          case "errorExtraMessage":
+            var errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
+            if (errorExtraMessage != '')
+              Minimeter.monitor.extraMessage = Minimeter.getString("error."+errorExtraMessage, "incomplete translation");
+            break;
+          case "url":
+            Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
+            break;
+        }
+      }catch(ex){Minimeter.consoleDump(ex);}
+    }
   }
-}
+
+
+};
+

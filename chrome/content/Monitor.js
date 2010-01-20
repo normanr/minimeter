@@ -1,6 +1,6 @@
-function Monitor(){
+Minimeter.Monitor = function(){
 
-	this.listeners = new JArray();
+	this.listeners = new Minimeter.JArray();
   this.state = this.STATE_DONE;	
   this.errorMessage = '';
 	this.extraMessage = '';
@@ -15,19 +15,19 @@ function Monitor(){
 
 }
 
-Monitor.prototype.STATE_BUSY = 2;
-Monitor.prototype.STATE_ERROR = 1;
-Monitor.prototype.STATE_DONE = 0;
-Monitor.prototype.STATE_ABORT = 3;
+Minimeter.Monitor.prototype.STATE_BUSY = 2;
+Minimeter.Monitor.prototype.STATE_ERROR = 1;
+Minimeter.Monitor.prototype.STATE_DONE = 0;
+Minimeter.Monitor.prototype.STATE_ABORT = 3;
 
-Monitor.prototype.check = function(silent) { // override default action
+Minimeter.Monitor.prototype.check = function(silent) { // override default action
   this.extraMessage = '';
-  minimeterprefs.setCharPref("errorExtraMessage", '');
-  minimeterprefs.setCharPref("url", '');
+  Minimeter.prefs.setCharPref("errorExtraMessage", '');
+  Minimeter.prefs.setCharPref("url", '');
   if(silent != "silent")
     this.state = this.STATE_BUSY;
 	this.error = "checking";
-  minimeterprefs.setCharPref("error", "checking");
+  Minimeter.prefs.setCharPref("error", "checking");
   this.notify();
   this.newData = true;
   this.trialNumber = 1;
@@ -35,25 +35,25 @@ Monitor.prototype.check = function(silent) { // override default action
 };
 
 
-Monitor.prototype.abort = function(){
+Minimeter.Monitor.prototype.abort = function(){
     this.state = this.STATE_ABORT;
 };
 
-Monitor.prototype.getCapacity = function(){
+Minimeter.Monitor.prototype.getCapacity = function(){
 	var capacity;
   try {
-    capacity = minimeterprefs.getIntPref('capacity');
-    minimeterprefs.setCharPref('capacitychar',capacity);
-    minimeterprefs.clearUserPref('capacity');
+    capacity = Minimeter.prefs.getIntPref('capacity');
+    Minimeter.prefs.setCharPref('capacitychar',capacity);
+    Minimeter.prefs.clearUserPref('capacity');
   }
   catch(e) {}
   
-  capacity = minimeterprefs.getCharPref('capacitychar');
+  capacity = Minimeter.prefs.getCharPref('capacitychar');
   
 	return capacity;
 };
 
-Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
+Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   if (this.trialNumber < 2) {
     this.tryAgain(1);
     return;
@@ -70,7 +70,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
 
   if (this.error == "connection" || this.error == "server") {
     this.setErrorMessageAndPref(this.error, null, true);
-    setTimeout("monitor.check('silent');", 60000);
+    setTimeout("Minimeter.monitor.check('silent');", 60000);
   }
   else {
     if (typeof(reply) == "undefined") { // 1st call of reportError
@@ -83,16 +83,16 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
         this.setErrorMessageAndPref("unknown", null, false);
 				this.errorPing("failed");
 				if (step !== null) {
-					var dumpMessage = getString("error.unknownErrorDump", "Undefined error on step n°%step in the module %monitor").replace("%step", step);
+					var dumpMessage = Minimeter.getString("error.unknownErrorDump", "Undefined error on step n°%step in the module %monitor").replace("%step", step);
 					dumpMessage = dumpMessage.replace("%monitor", monitor);
-					consoleDump(dumpMessage);
+					Minimeter.consoleDump(dumpMessage);
 				}
 				var extVersion = this.getExtVersion();
 				var module = this.image.substring(0,this.image.indexOf("."));
-				http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&extversion="+ extVersion +"&status=check", "reportError");
+				Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&extversion="+ extVersion +"&status=check", "reportError");
       }
     }
-    else { // called from http_post
+    else { // called from Minimeter.http_post
       reply = decodeURIComponent(reply);
       var regoldversion = /oldversion/;
       if (regoldversion.test(reply)) {
@@ -104,14 +104,14 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
           this.url = "http://extensions.geckozone.org/Minimeter";
         else
           this.url = "http://extensions.geckozone.org/Minimeter-en";
-        minimeterprefs.setCharPref("url", this.url);
+        Minimeter.prefs.setCharPref("url", this.url);
       }
       else {
-        var sendDebug = minimeterprefs.getBoolPref('sendDebug');
-        this.errorMessage = getString("error.unknown", "Module error");
+        var sendDebug = Minimeter.prefs.getBoolPref('sendDebug');
+        this.errorMessage = Minimeter.getString("error.unknown", "Module error");
         if (!sendDebug) {
-          this.extraMessage = getString("error.extraDebug", "You can make it possible to correct the module\nby enabling the corresponding option in Minimeter settings.");
-          minimeterprefs.setCharPref("errorExtraMessage", "extraDebug");
+          this.extraMessage = Minimeter.getString("error.extraDebug", "You can make it possible to correct the module\nby enabling the corresponding option in Minimeter settings.");
+          Minimeter.prefs.setCharPref("errorExtraMessage", "extraDebug");
         }
         
         var regTestDebug = /debug/;
@@ -130,7 +130,7 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
             }
             if (!this.isVersionLowerThan(extVersion, lastExtVersion)) {
             
-              http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
+              Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
             }
 
           }
@@ -142,14 +142,14 @@ Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   this.update(false);
 };
 
-Monitor.prototype.setFlatRateWithoutInfos = function() {
+Minimeter.Monitor.prototype.setFlatRateWithoutInfos = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
-  this.extraMessage = getString("error.extraFlatRate", "Quota is not available for this flat rate connection.");
-  minimeterprefs.setCharPref("errorExtraMessage", "extraFlatRate");
+  this.extraMessage = Minimeter.getString("error.extraFlatRate", "Quota is not available for this flat rate connection.");
+  Minimeter.prefs.setCharPref("errorExtraMessage", "extraFlatRate");
 };
 
-Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
+Minimeter.Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
   var vc =
      Components.classes["@mozilla.org/xpcom/version-comparator;1"].
      getService(Components.interfaces.nsIVersionComparator);
@@ -158,31 +158,31 @@ Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
 
 
 
-Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
+Minimeter.Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
   this.error = error;
-  minimeterprefs.setCharPref("error", error);
+  Minimeter.prefs.setCharPref("error", error);
   if (setMessage === true)
-    this.errorMessage = getString("error."+error, "incomplete translation");
+    this.errorMessage = Minimeter.getString("error."+error, "incomplete translation");
   
   if (extraError !== null) {
-    minimeterprefs.setCharPref("errorExtraMessage", extraError);
-    this.extraMessage = getString("error."+extraError, "incomplete translation");
+    Minimeter.prefs.setCharPref("errorExtraMessage", extraError);
+    this.extraMessage = Minimeter.getString("error."+extraError, "incomplete translation");
   }
 };
 
-Monitor.prototype.noConnectionLinked = function() {
+Minimeter.Monitor.prototype.noConnectionLinked = function() {
   this.setErrorMessageAndPref("noConnectionLinked", "noConnectionLinkedExtra", true);
 
 	this.update(false);
 };
 
-Monitor.prototype.userActionRequired = function() {
+Minimeter.Monitor.prototype.userActionRequired = function() {
   this.setErrorMessageAndPref("userActionRequired", "userActionRequiredExtra", true);
 
 	this.update(false);
 };
 
-Monitor.prototype.badLoginOrPass = function(provider) {
+Minimeter.Monitor.prototype.badLoginOrPass = function(provider) {
   if(provider=="belgacom")
     this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassBg", true);
   else if (provider=="edpnet")
@@ -193,7 +193,7 @@ Monitor.prototype.badLoginOrPass = function(provider) {
 	this.update(false);
 };
 
-Monitor.prototype.getExtVersion = function() {
+Minimeter.Monitor.prototype.getExtVersion = function() {
   var nsIUpdateItem = Components.interfaces.nsIUpdateItem;
   var itemType = nsIUpdateItem.TYPE_EXTENSION;
   var liExtensionManager = Components.classes["@mozilla.org/extensions/manager;1"]
@@ -210,11 +210,11 @@ Monitor.prototype.getExtVersion = function() {
   return extVersion;
 };
 
-Monitor.prototype.cleanPage = function(pageContent) {
+Minimeter.Monitor.prototype.cleanPage = function(pageContent) {
   pageContent = decodeURIComponent(pageContent);
   var regUsername = new RegExp("" + this.username + "", "gi");
   var regPassword = new RegExp("" + this.password + "", "gi");
-  var textToReplace = minimeterprefs.getCharPref('textToReplace');
+  var textToReplace = Minimeter.prefs.getCharPref('textToReplace');
 
   pageContent = pageContent.replace(regUsername,"monlogin");
   if(this.password != '' && this.password != ' ')
@@ -233,21 +233,21 @@ Monitor.prototype.cleanPage = function(pageContent) {
   this.pageContent = encodeURIComponent(pageContent);
 };
 
-Monitor.prototype.errorPing = function(status) {
+Minimeter.Monitor.prototype.errorPing = function(status) {
   var date = new Date().getDate();
-  var allowPing = minimeterprefs.getBoolPref('allowPing');
-  var lastPing = minimeterprefs.getIntPref('lastPing');
+  var allowPing = Minimeter.prefs.getBoolPref('allowPing');
+  var lastPing = Minimeter.prefs.getIntPref('lastPing');
 
   if (allowPing && date != lastPing) {
 		var extVersion = this.getExtVersion();
-    minimeterprefs.setIntPref('lastPing', date);
+    Minimeter.prefs.setIntPref('lastPing', date);
     var module = this.image.substring(0,this.image.indexOf("."));
     
-    http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&version="+extVersion+"&status="+status, "errorPing");
+    Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&version="+extVersion+"&status="+status, "errorPing");
   }
 };
 
-Monitor.prototype.tryAgain = function(step) {
+Minimeter.Monitor.prototype.tryAgain = function(step) {
   this.trialNumber++;
   this.callback(step);
 };
@@ -255,7 +255,7 @@ Monitor.prototype.tryAgain = function(step) {
 /*
  * Is called at the end of the transaction
  */ 
-Monitor.prototype.update = function(success) {
+Minimeter.Monitor.prototype.update = function(success) {
 	
   if(this.state == this.STATE_ABORT){
     return;
@@ -266,11 +266,11 @@ Monitor.prototype.update = function(success) {
     this.totalVolume = Math.round(this.totalVolume * 1000)/1000;
     this.state = this.STATE_DONE;
     if(this.remainingDays != null && (this.totalVolume - this.usedVolume) > 0) {
-      var remainingGB = Math.floor((monitor.totalVolume - monitor.usedVolume) / monitor.remainingDays * 1000) /1000;
+      var remainingGB = Math.floor((Minimeter.monitor.totalVolume - Minimeter.monitor.usedVolume) / Minimeter.monitor.remainingDays * 1000) /1000;
       var remainingMB = Math.floor((remainingGB - Math.floor(remainingGB)) * (this.useSIPrefixes ? 1000 : 1024));
-      monitor.remainingAverage = (remainingGB>=1 ? Math.floor(remainingGB) + monitor.measure + " " : "") + remainingMB + monitor.measureMB + " " + getString("info.remainingAverage", "per remaining day");
+      Minimeter.monitor.remainingAverage = (remainingGB>=1 ? Math.floor(remainingGB) + Minimeter.monitor.measure + " " : "") + remainingMB + Minimeter.monitor.measureMB + " " + Minimeter.getString("info.remainingAverage", "per remaining day");
     }
-    minimeterprefs.setCharPref("error", "no");
+    Minimeter.prefs.setCharPref("error", "no");
     this.storeCache();
     this.errorPing("success");
   }
@@ -283,52 +283,52 @@ Monitor.prototype.update = function(success) {
 
 };
 
-Monitor.prototype.aborted = function(){
+Minimeter.Monitor.prototype.aborted = function(){
   return (this.state == this.STATE_ABORT);
 };
 
  
 
 
-Monitor.prototype.addListener = function(listener){
+Minimeter.Monitor.prototype.addListener = function(listener){
   if(!this.listeners.contains(listener)){
       this.listeners.push(listener);
   }
 };
 
-Monitor.prototype.removeListener = function(listener){
+Minimeter.Monitor.prototype.removeListener = function(listener){
   this.listeners.remove(listener);
 };
-Monitor.prototype.removeAllListeners = function(listener){
-  this.listeners = new JArray();
+Minimeter.Monitor.prototype.removeAllListeners = function(listener){
+  this.listeners = new Minimeter.JArray();
 };
 
-Monitor.prototype.notify = function(){
-  for(i=0;i<this.listeners.length;i++){
+Minimeter.Monitor.prototype.notify = function(){
+  for(var i=0;i<this.listeners.length;i++){
       this.listeners[i].update(this);
   }
 };
 
-Monitor.prototype.checkCache = function(calledByTimeout){
-  updateTimeout = minimeterprefs.getIntPref('updateTimeout');
+Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
+  var updateTimeout = Minimeter.prefs.getIntPref('updateTimeout');
   if (updateTimeout < 60) {
     if (updateTimeout == 0)
       updateTimeout = 1;
 		updateTimeout = updateTimeout * 3600;
-		minimeterprefs.setIntPref('updateTimeout', updateTimeout);
+		Minimeter.prefs.setIntPref('updateTimeout', updateTimeout);
   }
   else
     if (updateTimeout < 300)
-      minimeterprefs.setIntPref('updateTimeout', 300);
+      Minimeter.prefs.setIntPref('updateTimeout', 300);
   if (this.name == "Telenet" && updateTimeout < 1800)
-    minimeterprefs.setIntPref('updateTimeout', 1800);
+    Minimeter.prefs.setIntPref('updateTimeout', 1800);
     
   updateTimeout = updateTimeout * 1000;
-  var errorpref = minimeterprefs.getCharPref('error');
+  var errorpref = Minimeter.prefs.getCharPref('error');
   if(errorpref != "no") {
     if(calledByTimeout != "error" && errorpref !="badLoginOrPass") {
-      minimeterprefs.setCharPref('error','isit');
-      setTimeout("monitor.checkCache('error');", 100);
+      Minimeter.prefs.setCharPref('error','isit');
+      setTimeout("Minimeter.monitor.checkCache('error');", 100);
     }
     else {
       if (errorpref != "isit") {
@@ -337,22 +337,22 @@ Monitor.prototype.checkCache = function(calledByTimeout){
         else {
           this.state = this.STATE_ERROR;
           this.error = errorpref;
-          this.errorMessage = getString("error."+this.error, "incomplete translation");
-          errorExtraMessage = minimeterprefs.getCharPref('errorExtraMessage');
+          this.errorMessage = Minimeter.getString("error."+this.error, "incomplete translation");
+          errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
           if (errorExtraMessage != '')
-            this.extraMessage = getString("error."+errorExtraMessage, "incomplete translation");
+            this.extraMessage = Minimeter.getString("error."+errorExtraMessage, "incomplete translation");
         }
         this.notify();
       }
       else {
         this.check();
-        setTimeout("monitor.checkCache(true);", updateTimeout);
+        setTimeout("Minimeter.monitor.checkCache(true);", updateTimeout);
       }
     }
   }
   else {
-    provider = minimeterprefs.getCharPref('provider');
-    cache = minimeterprefs.getCharPref('cache');
+    var provider = Minimeter.prefs.getCharPref('provider');
+    var cache = Minimeter.prefs.getCharPref('cache');
     var now = new Date().getTime();
     
     cache = cache.split(";");
@@ -365,29 +365,29 @@ Monitor.prototype.checkCache = function(calledByTimeout){
         now -= (updateTimeout);
         if(cache[1] > (now + 4000) && cache[1] < (now + 4000 + updateTimeout)) {
           cache[6] = false;
-          minimeterprefs.setCharPref('cache', cache.join(";"));
+          Minimeter.prefs.setCharPref('cache', cache.join(";"));
           this.loadCache();
-          //consoleDump(now-cache[1]);
+          //Minimeter.consoleDump(now-cache[1]);
           if(!calledByTimeout)
-            setTimeout("monitor.checkCache(true);", updateTimeout);
+            setTimeout("Minimeter.monitor.checkCache(true);", updateTimeout);
           //this.check();
         }
         else {
           this.check();
-          setTimeout("monitor.checkCache(true);", updateTimeout);
-          //consoleDump("ok " + (now-cache[1]));
+          setTimeout("Minimeter.monitor.checkCache(true);", updateTimeout);
+          //Minimeter.consoleDump("ok " + (now-cache[1]));
         }
       }
     }
     else {
       this.check();
-      setTimeout("monitor.checkCache(true);", updateTimeout);
+      setTimeout("Minimeter.monitor.checkCache(true);", updateTimeout);
     }
   }
 };
 
-Monitor.prototype.loadCache = function(isNotNewWindow){
-  var cache = minimeterprefs.getCharPref('cache');
+Minimeter.Monitor.prototype.loadCache = function(isNotNewWindow){
+  var cache = Minimeter.prefs.getCharPref('cache');
   cache = cache.split(";");
   this.state = this.STATE_DONE;
   this.usedVolume = cache[2]*1;
@@ -411,8 +411,8 @@ Monitor.prototype.loadCache = function(isNotNewWindow){
   this.notify();
 };
 
-Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
-  cache = minimeterprefs.getCharPref('cache');
+Minimeter.Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
+  var cache = Minimeter.prefs.getCharPref('cache');
   
   cache = cache.split(";");
   if(!checkCacheNewData)
@@ -424,12 +424,12 @@ Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
     this.newData = (cache[6] == "true");
 };
 
-Monitor.prototype.storeCache = function(){
-  provider = minimeterprefs.getCharPref('provider');
+Minimeter.Monitor.prototype.storeCache = function(){
+  var provider = Minimeter.prefs.getCharPref('provider');
   
   this.checkIfDataIsNew(false);
   
-  cache = new Array();
+  var cache = new Array();
   
   cache[0] = provider;
   cache[1] = new Date().getTime();
@@ -441,10 +441,10 @@ Monitor.prototype.storeCache = function(){
   cache[7] = this.amountToPay;
   cache[8] = this.remainingAverage;
   
-  minimeterprefs.setCharPref('cache', cache.join(";"));
+  Minimeter.prefs.setCharPref('cache', cache.join(";"));
 };
 
-Monitor.prototype.clearCache = function(){
-  minimeterprefs.setCharPref('cache', '');
+Minimeter.Monitor.prototype.clearCache = function(){
+  Minimeter.prefs.setCharPref('cache', '');
 };
 

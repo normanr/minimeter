@@ -1,5 +1,5 @@
 
-function Clearwire(username, password) {
+Minimeter.Clearwire = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "clearwire.png";
@@ -7,9 +7,9 @@ function Clearwire(username, password) {
     this.url = "https://myaccount-be.clearwire.eu/";
 }
 
-Clearwire.prototype = new Monitor();
+Minimeter["Clearwire"].prototype = new Minimeter.Monitor();
 
-Clearwire.prototype.callback = function(step, reply) {
+Minimeter["Clearwire"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -19,7 +19,7 @@ Clearwire.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "sLog="+this.username+"&sPass="+this.password+"&iAction=4100";
-        http_post('https://myaccount-be.clearwire.eu/lib/sSetProcess.php', postdata,this, 2);
+        Minimeter.http_post('https://myaccount-be.clearwire.eu/lib/sSetProcess.php', postdata,this, 2);
 				break;
 			case 2:
 				var regused=/([0-9]*) MB<br><br>/;
@@ -40,7 +40,7 @@ Clearwire.prototype.callback = function(step, reply) {
             var dateend = regDateEnd.exec(reply);
             this.usedVolume = Math.round(volumeused[1]*1000/1024)/1000;
             this.totalVolume = volumetotal[1];
-            this.remainingDays = getInterval("nearestOccurence", dateend[1]);
+            this.remainingDays = Minimeter.getInterval("nearestOccurence", dateend[1]);
             this.update(true);
 				}
 		}	

@@ -1,4 +1,4 @@
-function Dommel(username, password) {
+Minimeter.Dommel = function(username, password) {
   this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
   this.password = password;
   this.image = "dommel.png";
@@ -9,15 +9,15 @@ function Dommel(username, password) {
     this.servid = username.substr(username.indexOf(",")+1);
 }
 
-Dommel.prototype = new Monitor();
+Minimeter["Dommel"].prototype = new Minimeter.Monitor();
 
-Dommel.prototype.check = function() {
+Minimeter["Dommel"].prototype.check = function() {
   this.state = this.STATE_BUSY;
   this.notify();
   this.callback(1);
 }
 
-Dommel.prototype.callback = function(step, reply) {
+Minimeter["Dommel"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -28,7 +28,7 @@ Dommel.prototype.callback = function(step, reply) {
     default:
     case 1:
       var postdata = "op=login&username="+this.username+"&password="+this.password+"&new_language=english";
-      http_post('https://crm.schedom-europe.net/index.php', postdata,this, 2);
+      Minimeter.http_post('https://crm.schedom-europe.net/index.php', postdata,this, 2);
       break;
     case 2:
       reply = decodeURIComponent(reply);
@@ -37,7 +37,7 @@ Dommel.prototype.callback = function(step, reply) {
         this.badLoginOrPass();
         break;
       }
-      http_get('https://crm.schedom-europe.net/user.php?op=view&tile=mypackages', this, 3);
+      Minimeter.http_get('https://crm.schedom-europe.net/user.php?op=view&tile=mypackages', this, 3);
       break;
     case 3:
       reply = decodeURIComponent(reply);
@@ -58,7 +58,7 @@ Dommel.prototype.callback = function(step, reply) {
         }
         
         var client_idValue = client_id.exec(reply);
-        http_get("https://crm.schedom-europe.net/include/scripts/linked/dslinfo/dslinfo.php?servid="+servidValue+"&password="+this.password+"&client_id="+client_idValue[1], this, 4);
+        Minimeter.http_get("https://crm.schedom-europe.net/include/scripts/linked/dslinfo/dslinfo.php?servid="+servidValue+"&password="+this.password+"&client_id="+client_idValue[1], this, 4);
       }
       break;
     case 4:
@@ -82,7 +82,7 @@ Dommel.prototype.callback = function(step, reply) {
           // Grab connection type (broadband|mediumband)
           var connection_typeValue = reg_connection_type.exec(reply);
           
-          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
+          var gb = " " + Minimeter.getunitPrefix("GB"); // Unit as selected in options and locale
       
           // Grab remaining days before reset
           if( !reg_remainingDays.test(reply) ) {
@@ -120,7 +120,7 @@ Dommel.prototype.callback = function(step, reply) {
             if (typeof(real_traffic) != 'undefined')
               this.extraMessage += "\nTotal Traffic: " + real_traffic.toFixed(2) + gb + " (Upload: " + real_upload.toFixed(2) + gb + ")";
             this.extraMessage += "\nConnection type : " + connection_typeValue[1];
-            http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
+            Minimeter.http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
           }
           // Grab info in mediumband
           else if( connection_typeValue[1] == "mediumband") {
@@ -131,7 +131,7 @@ Dommel.prototype.callback = function(step, reply) {
             if (typeof(real_traffic) != 'undefined')
               this.extraMessage += " (Real: " + real_traffic.toFixed(2) + gb + ")";
             this.extraMessage += "\nConnection type : " + connection_typeValue[1];
-            http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
+            Minimeter.http_get('https://crm.schedom-europe.net/index.php?op=logout', this, 5);
           } else {
             this.reportError(step, this.name, encodeURIComponent(reply));
           }

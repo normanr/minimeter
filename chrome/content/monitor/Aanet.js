@@ -1,14 +1,14 @@
-function Aanet(username, password) {
-    this.username = username;
-    this.password = password;
-    this.image = "aanet.png"; // does not belong in class
-    this.name = "aaNet";
-    this.url = "https://www.aanet.com.au/usage.html";
+Minimeter.Aanet = function (username, password) {
+  this.username = username;
+  this.password = password;
+  this.image = "aanet.png"; // does not belong in class
+  this.name = "aaNet";
+  this.url = "https://www.aanet.com.au/usage.html";
 }
 
-Aanet.prototype = new Monitor();
+Minimeter["Aanet"].prototype = new Minimeter.Monitor();
 
-Aanet.prototype.callback = function(step, reply) {
+Minimeter["Aanet"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Aanet.prototype.callback = function(step, reply) {
     default:
     case 1:
       var postdata = "servicenumber="+this.username+"&password="+this.password;
-      http_post('https://www.aanet.com.au/members', postdata,this, 2);
+      Minimeter.http_post('https://www.aanet.com.au/members', postdata,this, 2);
       break;
         
     case 2:
@@ -29,7 +29,7 @@ Aanet.prototype.callback = function(step, reply) {
         this.badLoginOrPass();
         break;
       }
-      http_get("https://www.aanet.com.au/usage.html", this, 3);
+      Minimeter.http_get("https://www.aanet.com.au/usage.html", this, 3);
       break;
         
     case 3:
@@ -65,7 +65,7 @@ Aanet.prototype.callback = function(step, reply) {
       
       if( regDateEnd.test(reply) ){
         regDateEnd = regDateEnd.exec(reply);
-        this.remainingDays = getInterval("nearestOccurence", dateend[1]);
+        this.remainingDays = Minimeter.getInterval("nearestOccurence", dateend[1]);
       }
       this.update(true);
   }

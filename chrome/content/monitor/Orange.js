@@ -1,4 +1,4 @@
-function Orange(username, password) {
+Minimeter.Orange = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "orange.png"; // does not belong in class
@@ -6,9 +6,9 @@ function Orange(username, password) {
     this.url = "http://compte.orange.fr/moninternet/compte/bin/compte.cgi";
 }
 
-Orange.prototype = new Monitor();
+Minimeter["Orange"].prototype = new Minimeter.Monitor();
 
-Orange.prototype.callback = function(step, reply) {
+Minimeter["Orange"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -18,7 +18,7 @@ Orange.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get('http://compte.orange.fr/moninternet/compte/bin/compte.cgi', this, 2);
+        Minimeter.http_get('http://compte.orange.fr/moninternet/compte/bin/compte.cgi', this, 2);
         break;
       case 2:
         reply = decodeURIComponent(reply);
@@ -72,12 +72,12 @@ Orange.prototype.callback = function(step, reply) {
             this.totalVolume = 0;
           }
         }
-        this.remainingDays = getInterval("firstDayNextMonth");
+        this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
         this.update(true);
         break;
       case 3: // if loginless method doesn't work
         var postdata = "credential="+this.username+"&user_enroll_new=&pwd="+this.password;
-        http_post('http://id.orange.fr/auth_user/bin/auth_user.cgi?action=valider&origin=rs', postdata,this, 2);
+        Minimeter.http_post('http://id.orange.fr/auth_user/bin/auth_user.cgi?action=valider&origin=rs', postdata,this, 2);
         break;
     }
 }

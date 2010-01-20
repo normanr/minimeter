@@ -1,14 +1,14 @@
 
-function Bt(username, password) {
+Minimeter.Bt = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "bt.png";
     this.name = "British Telecom";
 }
 
-Bt.prototype = new Monitor();
+Minimeter["Bt"].prototype = new Minimeter.Monitor();
 
-Bt.prototype.callback = function(step, reply) {
+Minimeter["Bt"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -19,10 +19,10 @@ Bt.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "username="+this.username+"&password="+this.Password;
-				http_post('http://www.bt.com/btbroadband/ns_usage_monitor.jsp', postdata,this, 1);
+				Minimeter.http_post('http://www.bt.com/btbroadband/ns_usage_monitor.jsp', postdata,this, 1);
 				break;
 			case 2:
-				http_get('http://www.bt.com/btbroadband/usage/',this, 3);
+				Minimeter.http_get('http://www.bt.com/btbroadband/usage/',this, 3);
 				break;
 			case 3:
 			  reply = decodeURIComponent(reply);

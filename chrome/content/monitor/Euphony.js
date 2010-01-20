@@ -1,5 +1,5 @@
 
-function Euphony(username, password) {
+Minimeter.Euphony = function(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "euphony.png";
@@ -7,9 +7,9 @@ function Euphony(username, password) {
     this.url = "http://my.euphonynet.be/index.php";
 }
 
-Euphony.prototype = new Monitor();
+Minimeter["Euphony"].prototype = new Minimeter.Monitor();
 
-Euphony.prototype.callback = function(step, reply) {
+Minimeter["Euphony"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -19,7 +19,7 @@ Euphony.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "username="+this.username+"&password="+this.password;
-        http_post('http://my.euphonynet.be/index.php', postdata,this, 2);
+        Minimeter.http_post('http://my.euphonynet.be/index.php', postdata,this, 2);
 				break;
 			case 2:
 				var regUsedAllowed=/<b>([0-9.]*) GB<\/b> [a-z ]* <b>([0-9.]*) GB<\/b>/;
@@ -53,7 +53,7 @@ Euphony.prototype.callback = function(step, reply) {
 						pricePerGB = 3;
 					this.amountToPay = Math.ceil(this.usedVolume - this.totalVolume) * pricePerGB  + " EUR";
         }
-				this.remainingDays = getInterval("firstDayNextMonth");
+				this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
 				this.update(true);
 		}	
 }

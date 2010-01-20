@@ -1,5 +1,5 @@
 
-function Internetexpres(username, password) {
+Minimeter.Internetexpres = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "internetexpres.png";
@@ -8,9 +8,9 @@ function Internetexpres(username, password) {
     //this.url = "http://localhost/o2/index.htm"
 }
 
-Internetexpres.prototype = new Monitor();
+Minimeter["Internetexpres"].prototype = new Minimeter.Monitor();
 
-Internetexpres.prototype.callback = function(step, reply) {
+Minimeter["Internetexpres"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -19,7 +19,7 @@ Internetexpres.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-        http_get('https://konto.o2shop.cz/Pages/login.aspx', this, 2);
+        Minimeter.http_get('https://konto.o2shop.cz/Pages/login.aspx', this, 2);
 				break;
 			case 2:
         reply = decodeURIComponent(reply);
@@ -32,7 +32,7 @@ Internetexpres.prototype.callback = function(step, reply) {
         var viewstate = regViewstate.exec(reply);
         var eventValidation = regEventValidation.exec(reply);
 			  var postdata = "__EVENTVALIDATION="+encodeURIComponent(eventValidation[1])+"&__EVENTTARGET=ctl00$BodyContentHolder$LinkButtonLogin&__VIEWSTATE="+ encodeURIComponent(viewstate[1]) +"&ctl00$BodyContentHolder$TextBoxUid="+this.username+"&ctl00$BodyContentHolder$TextBoxPwd="+this.password;
-			  http_post('https://konto.o2shop.cz/Pages/login.aspx?ReturnUrl=%2findex.aspx', postdata,this, 3);
+			  Minimeter.http_post('https://konto.o2shop.cz/Pages/login.aspx?ReturnUrl=%2findex.aspx', postdata,this, 3);
 				break;
 			case 3:
         reply = decodeURIComponent(reply);

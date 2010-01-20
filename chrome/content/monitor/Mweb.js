@@ -1,5 +1,5 @@
 
-function Mweb(username, password) {
+Minimeter.Mweb = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "mweb.png"; // does not belong in class
@@ -8,9 +8,9 @@ function Mweb(username, password) {
 }
 
 // same as Saix
-Mweb.prototype = new Monitor();
+Minimeter["Mweb"].prototype = new Minimeter.Monitor();
 
-Mweb.prototype.callback = function(step, reply) {
+Minimeter["Mweb"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -20,7 +20,7 @@ Mweb.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				http_auth(this.url, this.username, this.password,this, 2);
+				Minimeter.http_auth(this.url, this.username, this.password,this, 2);
 				break;
 
 			case 2:
@@ -38,12 +38,12 @@ Mweb.prototype.callback = function(step, reply) {
 			    var down = (volume[4].replace(/ /g, "")/1073741824).toFixed(2);
 			    var both = (volume[5].replace(/ /g, "")/1073741824).toFixed(2);
 			    
-          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
+          var gb = " " + Minimeter.getunitPrefix("GB"); // Unit as selected in options and locale
 			    
 			    this.extraMessage = "Connected: " + sessions + " sessions, " + hours + " hours\nUp: " + up + gb + ", Down: " + down + gb;
 			    this.usedVolume = both;
 			    this.totalVolume = this.getCapacity();
-			    this.remainingDays = getInterval("firstDayNextMonth");
+			    this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
 
 			    this.update(true);	
 			  }

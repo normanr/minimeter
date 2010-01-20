@@ -1,5 +1,5 @@
 
-function Comcast(username, password) {
+Minimeter.Comcast = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "comcast.png";
@@ -7,9 +7,9 @@ function Comcast(username, password) {
     this.url = "https://customer.comcast.com/Secure/Users.aspx";
 }
 
-Comcast.prototype = new Monitor();
+Minimeter["Comcast"].prototype = new Minimeter.Monitor();
 
-Comcast.prototype.callback = function(step, reply) {
+Minimeter["Comcast"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -20,7 +20,7 @@ Comcast.prototype.callback = function(step, reply) {
       case 1:
         var postdata = "user="+this.username+"&passwd="+this.password+"&forceAuthn=true&s=ccentral-cima&r=comcast.net&continue=https%3A%2F%2Fcustomer.comcast.com%2FSecure%2FHome.aspx&lang=en"+"_ToolkitScriptManager1_HiddenField=&__EVENTTARGET=";
         
-        http_post('https://login.comcast.net/login', postdata, this, step+1);
+        Minimeter.http_post('https://login.comcast.net/login', postdata, this, step+1);
         break;
           
       case 2:
@@ -41,7 +41,7 @@ Comcast.prototype.callback = function(step, reply) {
         
         var postdata = "cima.ticket="+cimaticket[1];
         
-        http_post("https://customer.comcast.com/Secure/Home.aspx", postdata, this, step+1);
+        Minimeter.http_post("https://customer.comcast.com/Secure/Home.aspx", postdata, this, step+1);
         break;
         
       case 3:
@@ -53,7 +53,7 @@ Comcast.prototype.callback = function(step, reply) {
           break;
         }
         
-        http_get("https://customer.comcast.com/Secure/Preload.aspx?backTo=%2fSecure%2fHome.aspx", this, step+1);
+        Minimeter.http_get("https://customer.comcast.com/Secure/Preload.aspx?backTo=%2fSecure%2fHome.aspx", this, step+1);
         break;
         
       case 4:
@@ -65,7 +65,7 @@ Comcast.prototype.callback = function(step, reply) {
           break;
         }
         
-        http_get("https://customer.comcast.com/Secure/DeviceListAjaxResponse.aspx", this, step+1);
+        Minimeter.http_get("https://customer.comcast.com/Secure/DeviceListAjaxResponse.aspx", this, step+1);
         break;
         
       case 5:
@@ -78,7 +78,7 @@ Comcast.prototype.callback = function(step, reply) {
         var volumeusedtotal = regusedtotal.exec(reply);
         this.usedVolume = volumeusedtotal[1]*1;
         this.totalVolume = volumeusedtotal[2]*1;
-        this.remainingDays = getInterval("firstDayNextMonth");
+        this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
           
         this.update(true);
     }

@@ -1,4 +1,4 @@
-function Happymany(username, password) {
+Minimeter.Happymany = function(username, password) {
     this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "happymany.png"; // does not belong in class
@@ -9,9 +9,9 @@ function Happymany(username, password) {
       this.contrat = username.substr(username.indexOf(",")+1);
 }
 
-Happymany.prototype = new Monitor();
+Minimeter["Happymany"].prototype = new Minimeter.Monitor();
 
-Happymany.prototype.callback = function(step, reply) {
+Minimeter["Happymany"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -23,7 +23,7 @@ Happymany.prototype.callback = function(step, reply) {
        case 1:
          this.extraMessage = '';
          var postdata = "USERNAME="+this.username+"&PASSWORD="+this.password+"&submit1=Continuer";
-         http_post('https://secure.happymany.be/scripts/Login_action_new.asp', postdata,this, 2);
+         Minimeter.http_post('https://secure.happymany.be/scripts/Login_action_new.asp', postdata,this, 2);
          break;
        case 2:
          reply = decodeURIComponent(reply);
@@ -40,7 +40,7 @@ Happymany.prototype.callback = function(step, reply) {
            }
            else {
              var adrQuota = regAdrQuota.exec(reply);
-             http_get("https://secure.happymany.be/Report/"+adrQuota[1]+"&Report=TrafficVodslReportForm.aspx", this, 3);
+             Minimeter.http_get("https://secure.happymany.be/Report/"+adrQuota[1]+"&Report=TrafficVodslReportForm.aspx", this, 3);
            }
          }
          break;
@@ -81,7 +81,7 @@ Happymany.prototype.callback = function(step, reply) {
              this.amountToPay = amountToPay + " EUR";
            }
              
-           this.remainingDays = getInterval("firstDayNextMonth");
+           this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
            
            this.update(true);
             }

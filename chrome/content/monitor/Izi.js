@@ -1,5 +1,5 @@
 
-function Izi(username, password) {
+Minimeter.Izi = function(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "izi.png";
@@ -7,9 +7,9 @@ function Izi(username, password) {
     this.url = "https://www.izi.re/moniZi/consommation.php#menu";
 }
 
-Izi.prototype = new Monitor();
+Minimeter["Izi"].prototype = new Minimeter.Monitor();
 
-Izi.prototype.callback = function(step, reply) {
+Minimeter["Izi"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -19,7 +19,7 @@ Izi.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "login="+this.username+"&password="+this.password;
-        http_post('https://www.izi.re/moniZi/login.php', postdata,this, 2);
+        Minimeter.http_post('https://www.izi.re/moniZi/login.php', postdata,this, 2);
 				break;
       case 2:
          reply = decodeURIComponent(reply);
@@ -28,7 +28,7 @@ Izi.prototype.callback = function(step, reply) {
            this.badLoginOrPass();
            break;
          }
-         http_get("https://www.izi.re/moniZi/consommation.php", this, 3);
+         Minimeter.http_get("https://www.izi.re/moniZi/consommation.php", this, 3);
          break;
 			case 3:
         reply = decodeURIComponent(reply);
@@ -56,7 +56,7 @@ Izi.prototype.callback = function(step, reply) {
         this.usedVolume = volumeused[1];
         if (regDateEnd.test(reply)){
           regDateEnd = regDateEnd.exec(reply);
-          this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
+          this.remainingDays = Minimeter.getInterval("nearestOccurence", regDateEnd[1]);
         }
         if (this.totalVolume != 0 && this.usedVolume > this.totalVolume) {
           this.amountToPay = Math.ceil(this.usedVolume - this.totalVolume)*3;

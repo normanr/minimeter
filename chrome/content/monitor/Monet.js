@@ -1,5 +1,5 @@
 
-function Monet(username, password) {
+Minimeter.Monet = function(username, password) {
     this.username = 'none';
     this.password = 'none';
     this.image = "monet.png";
@@ -19,9 +19,9 @@ function Monet(username, password) {
     };
 }
 
-Monet.prototype = new Monitor();
+Minimeter["Monet"].prototype = new Minimeter.Monitor();
 
-Monet.prototype.callback = function(step, reply) {
+Minimeter["Monet"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -31,7 +31,7 @@ Monet.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-				http_get(this.url,this, 2);
+				Minimeter.http_get(this.url,this, 2);
 				break;
 			case 2:
 			  reply = decodeURIComponent(reply);
@@ -54,7 +54,7 @@ Monet.prototype.callback = function(step, reply) {
           var p = regPlan.exec(reply);
 
           this.totalVolume = this.package[p[1]];
-          this.remainingDays = getInterval("firstDayNextMonth");
+          this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
           this.update(true);	
 	  }
 }

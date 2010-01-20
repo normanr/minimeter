@@ -1,4 +1,4 @@
-function Destiny(username, password) {
+Minimeter.Destiny = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "destiny.png";
@@ -6,9 +6,9 @@ function Destiny(username, password) {
     this.url = "http://volume.destiny.be/";
 }
 
-Destiny.prototype = new Monitor();
+Minimeter["Destiny"].prototype = new Minimeter.Monitor();
 
-Destiny.prototype.callback = function(step, reply) {
+Minimeter["Destiny"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Destiny.prototype.callback = function(step, reply) {
       default:
       case 1:
         var postdata = "username="+this.username+"&password="+this.password+"&login=1&contacteer=Check+Volume";
-        http_post(this.url, postdata,this, 2);
+        Minimeter.http_post(this.url, postdata,this, 2);
         break;
           
       case 2:
@@ -59,9 +59,9 @@ Destiny.prototype.callback = function(step, reply) {
           this.usedVolume = volumeTotal;
           this.totalVolume = this.getCapacity();;
           
-          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
+          var gb = " " + Minimeter.getunitPrefix("GB"); // Unit as selected in options and locale
           this.extraMessage = "       Download: "+ volumeDownload  + gb + "\n       Upload: " + volumeUpload  + gb;
-          this.remainingDays = getInterval("firstDayNextMonth");
+          this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
           this.update(true);
         }
     }

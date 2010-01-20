@@ -1,5 +1,5 @@
 
-function Internode(username, password) {
+Minimeter.Internode = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "internode.png";
@@ -7,9 +7,9 @@ function Internode(username, password) {
     this.url = "https://customer-webtools-api.internode.on.net/cgi-bin/padsl-usage"
 }
 
-Internode.prototype = new Monitor();
+Minimeter["Internode"].prototype = new Minimeter.Monitor();
 
-Internode.prototype.callback = function(step, reply) {
+Minimeter["Internode"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -20,7 +20,7 @@ Internode.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "username="+this.username+"&password="+this.password;
-				http_post('https://customer-webtools-api.internode.on.net/cgi-bin/padsl-usage', postdata,this, 2);
+				Minimeter.http_post('https://customer-webtools-api.internode.on.net/cgi-bin/padsl-usage', postdata,this, 2);
 				break;
 			case 2:
 			  reply = decodeURIComponent(reply);
@@ -42,7 +42,7 @@ Internode.prototype.callback = function(step, reply) {
           var dateEnd = regDateEnd.exec(reply);
           dateEnd = new Date(dateEnd[3], dateEnd[2], dateEnd[1]);
           dateEnd.setTime(86400000 + dateEnd.getTime());
-          this.remainingDays = getInterval("nearestOccurence", dateEnd.getDate());
+          this.remainingDays = Minimeter.getInterval("nearestOccurence", dateEnd.getDate());
       		this.update(true);	
         }
 		}	

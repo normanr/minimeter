@@ -1,4 +1,4 @@
-function Coditel(username, password) {
+Minimeter.Coditel = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "coditel.png"; // does not belong in class
@@ -6,9 +6,9 @@ function Coditel(username, password) {
     this.url = "http://www.numericable.be/conso.html";
 }
 
-Coditel.prototype = new Monitor();
+Minimeter["Coditel"].prototype = new Minimeter.Monitor();
 
-Coditel.prototype.callback = function(step, reply) {
+Minimeter["Coditel"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Coditel.prototype.callback = function(step, reply) {
       default:
       case 1:
         var postdata = "mac="+this.username;
-        http_post("http://www.numericable.be/conso.html", postdata, this, 2);
+        Minimeter.http_post("http://www.numericable.be/conso.html", postdata, this, 2);
         break;
           
       case 2:
@@ -58,7 +58,7 @@ Coditel.prototype.callback = function(step, reply) {
               break;
             }
   
-            this.remainingDays = getInterval("firstDayNextMonth");
+            this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
             if (this.usedVolume > this.totalVolume && this.totalVolume != 0) {
               if (this.totalVolume == 3) // 2€ / Gio
                 this.amountToPay = Math.ceil(this.usedVolume - this.totalVolume)*2 + " EUR";

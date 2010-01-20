@@ -1,5 +1,5 @@
 
-function Internetsolutions(username, password) {
+Minimeter.Internetsolutions = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "internetsolutions.png"; // does not belong in class
@@ -7,9 +7,9 @@ function Internetsolutions(username, password) {
     this.url = "http://users.isdsl.net/";
 }
 
-Internetsolutions.prototype = new Monitor();
+Minimeter["Internetsolutions"].prototype = new Minimeter.Monitor();
 
-Internetsolutions.prototype.callback = function(step, reply) {
+Minimeter["Internetsolutions"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -20,7 +20,7 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 			  var postdata = "username="+this.username+"&password="+this.password;
-			  http_post(this.url + '?action=login', postdata,this, 2);
+			  Minimeter.http_post(this.url + '?action=login', postdata,this, 2);
 			  break;
 
 			case 2:
@@ -35,7 +35,7 @@ Internetsolutions.prototype.callback = function(step, reply) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
-			  http_get(this.url + 'history.php', this, 3);
+			  Minimeter.http_get(this.url + 'history.php', this, 3);
 			  break;
 
 			case 3:
@@ -51,12 +51,12 @@ Internetsolutions.prototype.callback = function(step, reply) {
 			    var down = (volume[3]/1024).toFixed(2);
 			    var both = (volume[4]/1024).toFixed(2);
 			    
-          var gb = " " + getunitPrefix("GB"); // Unit as selected in options and locale
+          var gb = " " + Minimeter.getunitPrefix("GB"); // Unit as selected in options and locale
 			    
 			    this.extraMessage = "Connected: " + hours + " hours\nUp: " + up + gb + ", Down: " + down + gb;
 			    this.usedVolume = both;
 			    this.totalVolume = this.getCapacity();
-			    this.remainingDays = getInterval("firstDayNextMonth");
+			    this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
 
 			    this.update(true);	
 			  }

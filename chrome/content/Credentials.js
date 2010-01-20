@@ -1,8 +1,14 @@
-function Credentials(url){
+if (typeof Minimeter == "undefined")
+  var Minimeter =  {
+    prefs: Components.classes["@mozilla.org/preferences-service;1"]
+                          .getService(Components.interfaces.nsIPrefService).getBranch("extensions.minimeter."),
+};
+
+Minimeter.Credentials = function (url){
   this.url = url;
 }
 
-Credentials.prototype.store = function(username, password) {
+Minimeter.Credentials.prototype.store = function(username, password) {
   
     var CC_passwordManager = Components.classes["@mozilla.org/passwordmanager;1"];
     var CC_loginManager = Components.classes["@mozilla.org/login-manager;1"];
@@ -46,7 +52,7 @@ Credentials.prototype.store = function(username, password) {
     }
 }
 
-Credentials.prototype.load = function() {
+Minimeter.Credentials.prototype.load = function() {
 
     var CC_passwordManager = Components.classes["@mozilla.org/passwordmanager;1"];
     var CC_loginManager = Components.classes["@mozilla.org/login-manager;1"];

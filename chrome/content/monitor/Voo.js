@@ -1,5 +1,5 @@
 
-function Voo(username, password) {
+Minimeter.Voo = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "voo.png";
@@ -10,9 +10,9 @@ function Voo(username, password) {
 
 // corriger aussi Tvcablenet
 
-Voo.prototype = new Monitor();
+Minimeter["Voo"].prototype = new Minimeter.Monitor();
 
-Voo.prototype.callback = function(step, reply) {
+Minimeter["Voo"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -22,7 +22,7 @@ Voo.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "login="+this.username+"&PASSE="+this.password+"&Remplacer=Valider";
-        http_post(this.urlstart+ '/acces/Acces-Actuel.asp', postdata,this, 2);
+        Minimeter.http_post(this.urlstart+ '/acces/Acces-Actuel.asp', postdata,this, 2);
 				break;
 			case 2:
         reply = decodeURIComponent(reply);
@@ -40,7 +40,7 @@ Voo.prototype.callback = function(step, reply) {
           this.reportError(step, this.name, encodeURIComponent(reply));
         }
         else {
-        http_get(this.urlstart+ '/acces/Acces-ConsoMenu.asp',this, 3);
+        Minimeter.http_get(this.urlstart+ '/acces/Acces-ConsoMenu.asp',this, 3);
         }
 				break;
 			case 3:
@@ -55,7 +55,7 @@ Voo.prototype.callback = function(step, reply) {
 				else {
           var NumEquip = regNum.exec(reply);
           
-          http_get(this.urlstart+ "/acces/Acces-ConsoGiga.asp?eq_no="+NumEquip[1], this, 4);
+          Minimeter.http_get(this.urlstart+ "/acces/Acces-ConsoGiga.asp?eq_no="+NumEquip[1], this, 4);
 				}
 				break;
       case 4:
@@ -76,7 +76,7 @@ Voo.prototype.callback = function(step, reply) {
 						if(volumeUsedTot[4] != 0)
 							this.amountToPay = volumeUsedTot[4] + " EUR";
 								
-					this.remainingDays = getInterval("firstDayNextMonth");
+					this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
 					this.update(true);
 				}
 		}	

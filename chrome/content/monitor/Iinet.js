@@ -1,4 +1,4 @@
-function Iinet(username, password) {
+Minimeter.Iinet = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "iinet.png";
@@ -7,9 +7,9 @@ function Iinet(username, password) {
     this.useSIPrefixes = true;
 }
 
-Iinet.prototype = new Monitor();
+Minimeter["Iinet"].prototype = new Minimeter.Monitor();
 
-Iinet.prototype.callback = function(step, reply) {
+Minimeter["Iinet"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Iinet.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("https://toolbox.iinet.net.au/cgi-bin/basicauth.cgi?username="+this.username+"&password="+this.password+"&action=login&_=", this, 2);
+        Minimeter.http_get("https://toolbox.iinet.net.au/cgi-bin/basicauth.cgi?username="+this.username+"&password="+this.password+"&action=login&_=", this, 2);
         break;
         
       case 2:
@@ -36,7 +36,7 @@ Iinet.prototype.callback = function(step, reply) {
           break;
         }
         var postdata = "username="+this.username+"&password="+this.password+"&action=login";
-        http_post(this.url, postdata, this, 3);
+        Minimeter.http_post(this.url, postdata, this, 3);
         break;
         
       case 3:
@@ -88,11 +88,11 @@ Iinet.prototype.callback = function(step, reply) {
           this.usedVolume = volumeUsed/1000;
           this.totalVolume = volumeTot/1000;
           
-          var mb = " " + getunitPrefix("MB"); // Unit as selected in locale
+          var mb = " " + Minimeter.getunitPrefix("MB"); // Unit as selected in locale
           
           this.extraMessage = "        Offpeak: "+ volumeUsedOffpeak + " / " + volumeTotOffpeak + mb + "\n        Peak: "+ volumeUsedPeak + " / " + volumeTotPeak + mb;
           
-          this.remainingDays = getInterval("nearestOccurence", remainingDays[1]);
+          this.remainingDays = Minimeter.getInterval("nearestOccurence", remainingDays[1]);
           this.update(true);
         }
     }

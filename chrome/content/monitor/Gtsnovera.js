@@ -3,7 +3,7 @@
 // which contains list of purchased credit to:
 //        michal .dot. matyska .@at@. seznam .dot. cz
 
-function Gtsnovera(username, password) {
+Minimeter.Gtsnovera = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "gtsnovera.png";
@@ -11,9 +11,9 @@ function Gtsnovera(username, password) {
     this.url = "https://uzivatel.gtsnovera.cz/cgi-bin/netflow_graphs.pl";
 }
 
-Gtsnovera.prototype = new Monitor();
+Minimeter["Gtsnovera"].prototype = new Minimeter.Monitor();
 
-Gtsnovera.prototype.callback = function(step, reply) {
+Minimeter["Gtsnovera"].prototype.callback = function(step, reply) {
 	if(this.aborted()){
 		return;
 	}
@@ -22,10 +22,10 @@ Gtsnovera.prototype.callback = function(step, reply) {
 	default:
 	case 1:
 		var postdata = "login="+this.username+"&password="+this.password;
-		http_post("https://uzivatel.gtsnovera.cz/cgi-bin/login.pl", postdata,this, 2);
+		Minimeter.http_post("https://uzivatel.gtsnovera.cz/cgi-bin/login.pl", postdata,this, 2);
 		break;
 	case 2:
-		http_get("https://uzivatel.gtsnovera.cz/cgi-bin/fup.pl", this, 3);
+		Minimeter.http_get("https://uzivatel.gtsnovera.cz/cgi-bin/fup.pl", this, 3);
 		break;
 	case 3:
 		reply = decodeURIComponent(reply);

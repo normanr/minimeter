@@ -1,5 +1,5 @@
 
-function Fulladsl(username, password) {
+Minimeter.Fulladsl = function(username, password) {
     this.username = (username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username).toLowerCase();
     this.password = password;
     this.image = "fulladsl.png"; // does not belong in class
@@ -8,9 +8,9 @@ function Fulladsl(username, password) {
 }
 // similaire à Adsl20, Starsadsl et Dxadsl
 
-Fulladsl.prototype = new Monitor();
+Minimeter["Fulladsl"].prototype = new Minimeter.Monitor();
 
-Fulladsl.prototype.callback = function(step, reply) {
+Minimeter["Fulladsl"].prototype.callback = function(step, reply) {
 
     if(this.aborted()){
       return;
@@ -20,7 +20,7 @@ Fulladsl.prototype.callback = function(step, reply) {
 		{
 			default:
 			case 1:
-        http_get("http://myaccount.fulladsl.be/Beheer/Index.aspx", this, 2);
+        Minimeter.http_get("http://myaccount.fulladsl.be/Beheer/Index.aspx", this, 2);
         break;
 			
 			case 2:
@@ -40,7 +40,7 @@ Fulladsl.prototype.callback = function(step, reply) {
         eventvalidation = encodeURIComponent(eventvalidation[1]);
     
         var postdata = ctl+"_ToolkitScriptManager1_HiddenField=&__EVENTTARGET="+ctl+"%24cphWhiteLabel%24lgBeheren%24LoginLinkButton&__EVENTARGUMENT=&__VIEWSTATE="+viewstate+"&"+ctl+"%24cphWhiteLabel%24lgBeheren%24UserName="+this.username+"&"+ctl+"%24cphWhiteLabel%24lgBeheren%24Password="+this.password+"&__EVENTVALIDATION="+eventvalidation;
-				http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx', postdata,this, 3);
+				Minimeter.http_post('http://myaccount.fulladsl.be/Beheer/Index.aspx', postdata,this, 3);
 				break;
 				
 			case 3:
@@ -58,7 +58,7 @@ Fulladsl.prototype.callback = function(step, reply) {
         var volumeusedtotal = regusedtotal.exec(reply);
         this.usedVolume = volumeusedtotal[1].replace(',','.')*1;
         this.totalVolume = volumeusedtotal[2].replace(',','.')*1;
-        this.remainingDays = getInterval("firstDayNextMonth");
+        this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
           
         this.update(true);
     }

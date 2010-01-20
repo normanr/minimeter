@@ -2,41 +2,35 @@
 <?xml-stylesheet href="chrome://minimeter/skin/style.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://minimeter/locale/minimeter.dtd">
 
-
 <overlay id="minimeterOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  
-
-  <script src="chrome://minimeter/content/Credentials.js"/>
-  <script src="chrome://minimeter/content/Utils.js"/>
-  <script src="chrome://minimeter/content/Monitor.js"/>
-
-  <script src="chrome://minimeter/content/settings.js"/>
+ 
   <script src="chrome://minimeter/content/overlay.js"/>
+  <script src="chrome://minimeter/content/Credentials.js"/>
+  <script src="chrome://minimeter/content/Monitor.js"/>
+  <!-- <script src="chrome://minimeter/content/settings.js"/> -->
+  <script src="chrome://minimeter/content/Utils.js"/>
   <script type="application/x-javascript">
-    window.addEventListener("load", initialize, false);
-    window.addEventListener("unload", unloadObserver, false);
+    window.addEventListener("load", Minimeter.initialize, false);
+    window.addEventListener("unload", Minimeter.unloadObserver, false);
   </script>
-
-
 	
 	<toolbarpalette id="BrowserToolbarPalette">                                            
 		<toolbaritem context="minimeter-context-menu" tooltip="minimeter-tooltip" id="minimeter-container" class="chromeclass-toolbar-additional" title="Minimeter"  align="center">
-    	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="clickIcon(event);" ondblclick="loadPage();"/>
+    	<box id="toolbarMeter" toolbar="true" size="50" style="background: url(chrome://minimeter/content/res/logo.png) no-repeat; height: 32px; width: 32px;" onclick="Minimeter.clickIcon(event);" ondblclick="Minimeter.loadPage();"/>
     	
 		</toolbaritem>
 	</toolbarpalette>
 
 	<window id="main-window">
 
-
 	<popupset id="minimeter-popupset">
     <popup id="minimeter-context-menu">
-      <menuitem label="&menu.refresh;" oncommand="checkNow();" />
-      <menuitem id="showPage" label="&menu.stats;" oncommand="loadPage();" />
+      <menuitem label="&menu.refresh;" oncommand="Minimeter.checkNow();" />
+      <menuitem id="showPage" label="&menu.stats;" oncommand="Minimeter.loadPage();" />
       <menuseparator/>
-      <menuitem label="&menu.preferences;" oncommand="loadPrefWindow();"/>
+      <menuitem label="&menu.preferences;" oncommand="Minimeter.loadPrefWindow();"/>
     </popup>
-    <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="fillTooltip(this)" noautohide="true">
+    <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="Minimeter.fillTooltip(this)" noautohide="true">
         <hbox style="padding-left: 4px; padding-top: 2px">  
           <image id="mtIcon" style="max-width: 16px; max-height: 16px;"/>
           <description style="padding-left: 2px;" id="message"/>
@@ -64,17 +58,11 @@
 	
 		</window>
 
-	
- 
   <statusbar id="status-bar">
     <statusbarpanel context="minimeter-context-menu" id="minimeter-statusbar"  
          insertafter="page-report-button"
          tooltip="minimeter-tooltip">
-      	<minimeter id="statusbarMeter" size="50" onclick="clickIcon(event);" ondblclick="loadPage();"/>
+      	<minimeter id="statusbarMeter" size="50" onclick="Minimeter.clickIcon(event);" ondblclick="Minimeter.loadPage();"/>
     </statusbarpanel>
   </statusbar>
-
-
-
-
 </overlay>

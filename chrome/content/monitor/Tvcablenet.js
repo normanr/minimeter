@@ -1,5 +1,5 @@
 
-function Tvcablenet(username, password) {
+Minimeter.Tvcablenet = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "tvcablenet.png";
@@ -10,9 +10,9 @@ function Tvcablenet(username, password) {
 
 // idem que Voo
 
-Tvcablenet.prototype = new Monitor();
+Minimeter["Tvcablenet"].prototype = new Minimeter.Monitor();
 
-Tvcablenet.prototype.callback = function(step, reply) {
+Minimeter["Tvcablenet"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }
@@ -22,7 +22,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
 			default:
 			case 1:
         var postdata = "login="+this.username+"&PASSE="+this.password+"&Remplacer=Valider";
-        http_post(this.urlstart+ '/acces/Acces-Actuel.asp', postdata,this, 2);
+        Minimeter.http_post(this.urlstart+ '/acces/Acces-Actuel.asp', postdata,this, 2);
 				break;
 			case 2:
         reply = decodeURIComponent(reply);
@@ -40,7 +40,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
           this.reportError(step, this.name, encodeURIComponent(reply));
         }
         else {
-        http_get(this.urlstart+ '/acces/Acces-ConsoMenu.asp',this, 3);
+        Minimeter.http_get(this.urlstart+ '/acces/Acces-ConsoMenu.asp',this, 3);
         }
 				break;
 			case 3:
@@ -52,7 +52,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
 				else {
           var NumEquip = regNum.exec(reply);
           
-          http_get(this.urlstart+ "/acces/Acces-ConsoGiga.asp?eq_no="+NumEquip[1], this, 4);
+          Minimeter.http_get(this.urlstart+ "/acces/Acces-ConsoGiga.asp?eq_no="+NumEquip[1], this, 4);
 				}
 				break;
       case 4:
@@ -73,7 +73,7 @@ Tvcablenet.prototype.callback = function(step, reply) {
 						if(volumeUsedTot[4] != 0)
 							this.amountToPay = volumeUsedTot[4] + " EUR";
 								
-					this.remainingDays = getInterval("firstDayNextMonth");
+					this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
 					this.update(true);
 				}
 		}	

@@ -1,4 +1,4 @@
-function Tmobile(username, password) {
+Minimeter.Tmobile = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "tmobile.png";
@@ -6,9 +6,9 @@ function Tmobile(username, password) {
     this.url = "https://mein.t-mobile.de/cpc-sp/actiondispatcher";
 }
 
-Tmobile.prototype = new Monitor();
+Minimeter["Tmobile"].prototype = new Minimeter.Monitor();
 
-Tmobile.prototype.callback = function(step, reply) {
+Minimeter["Tmobile"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -19,7 +19,7 @@ Tmobile.prototype.callback = function(step, reply) {
       default:
       case 1:
         var postdata = "action=loginnow&username="+this.username+"&passwort="+this.password;
-        http_post("https://mein.t-mobile.de/cpc-sp/actiondispatcher", postdata,this, 2);
+        Minimeter.http_post("https://mein.t-mobile.de/cpc-sp/actiondispatcher", postdata,this, 2);
         break;
           
       case 2:
@@ -35,7 +35,7 @@ Tmobile.prototype.callback = function(step, reply) {
           break;
         }
         var getURL = regGetURL.exec(reply);
-        http_get("https://mein.t-mobile.de"+getURL[1], this, 3);
+        Minimeter.http_get("https://mein.t-mobile.de"+getURL[1], this, 3);
         break;
           
       case 3:
@@ -53,7 +53,7 @@ Tmobile.prototype.callback = function(step, reply) {
 
         this.usedVolume = volumeused;
         this.totalVolume = this.getCapacity();
-        this.remainingDays = getInterval("firstDayNextMonth");
+        this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
         
         this.update(true);
     }

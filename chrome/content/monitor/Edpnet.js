@@ -1,4 +1,4 @@
-function Edpnet(username, password) {
+Minimeter.Edpnet = function(username, password) {
     this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "edpnet.png"; // does not belong in class
@@ -9,11 +9,12 @@ function Edpnet(username, password) {
       this.ligne = username.substr(username.indexOf(",")+1);
       this.url = "http://extra.edpnet.net/maint_dslconnection.aspx?ID="+this.ligne;
     }
-}
+};
 
-Edpnet.prototype = new Monitor();
 
-Edpnet.prototype.callback = function(step, reply) {
+Minimeter["Edpnet"].prototype = new Minimeter.Monitor();
+
+Minimeter["Edpnet"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;
@@ -23,7 +24,7 @@ Edpnet.prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        http_get("http://extra.edpnet.net/login.aspx", this, 2);
+        Minimeter.http_get("http://extra.edpnet.net/login.aspx", this, 2);
         break;
           
       case 2:
@@ -33,9 +34,9 @@ Edpnet.prototype.callback = function(step, reply) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
-        viewstateID = regViewstateID.exec(reply);
+        var viewstateID = regViewstateID.exec(reply);
         var postdata = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE_ID="+viewstateID[1]+"&__VIEWSTATE=&tbUserID="+this.username+"&tbPassword="+this.password+"&btnLogin=Login";
-        http_post('http://extra.edpnet.net/login.aspx', postdata,this, 3);
+        Minimeter.http_post('http://extra.edpnet.net/login.aspx', postdata,this, 3);
         break;
           
       case 3:
@@ -46,9 +47,9 @@ Edpnet.prototype.callback = function(step, reply) {
           break;
         }
         if (this.ligne == '')
-          http_get("http://extra.edpnet.net/list_dslconnections.aspx", this, 4);
+          Minimeter.http_get("http://extra.edpnet.net/list_dslconnections.aspx", this, 4);
         else
-          http_get(this.url, this, 5);
+          Minimeter.http_get(this.url, this, 5);
         break;
           
       case 4:
@@ -66,7 +67,7 @@ Edpnet.prototype.callback = function(step, reply) {
           }
 
           this.url = "http://extra.edpnet.net/maint_dslconnection.aspx?ID="+numConnection[1];
-          http_get(this.url, this, 5);
+          Minimeter.http_get(this.url, this, 5);
         break;
           
       case 5:
@@ -104,7 +105,7 @@ Edpnet.prototype.callback = function(step, reply) {
         
         if (regBonus.test(reply)) {
           bonus = regBonus.exec(reply);
-          consoleDump (bonus[2]);
+          Minimeter.consoleDump (bonus[2]);
           bonus = bonus[2].replace('.','');
           volumetotal = volumetotal*1 + bonus*1;
         }
@@ -122,7 +123,7 @@ Edpnet.prototype.callback = function(step, reply) {
         
         if( regDateEnd.test(reply) ){
           regDateEnd = regDateEnd.exec(reply);
-          this.remainingDays = getInterval("nearestOccurence", regDateEnd[1]);
+          this.remainingDays = Minimeter.getInterval("nearestOccurence", regDateEnd[1]);
         }
         this.update(true);
     }

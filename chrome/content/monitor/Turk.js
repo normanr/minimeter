@@ -1,5 +1,5 @@
 // thanks to Ethem Tolga and Ahmet Serkan
-function Turk(username, password) {
+Minimeter.Turk = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "turk.png"; // does not belong in class
@@ -7,9 +7,9 @@ function Turk(username, password) {
     this.url = "http://adslkota.ttnet.net.tr/adslkota/viewTransfer.do?dispatch=entry"
 }
 
-Turk.prototype = new Monitor();
+Minimeter["Turk"].prototype = new Minimeter.Monitor();
 
-Turk.prototype.callback = function(step, reply) {
+Minimeter["Turk"].prototype.callback = function(step, reply) {
 		reply = decodeURIComponent(reply);
     if(this.aborted()){
       return;
@@ -20,17 +20,17 @@ Turk.prototype.callback = function(step, reply) {
 			default:
 			case 1:
 				var postdata = "dispatch=login&userName="+this.username+"&password="+this.password;
-				http_post('http://adslkota.ttnet.net.tr/adslkota/login_tr.jsp', postdata,this, 2);
+				Minimeter.http_post('http://adslkota.ttnet.net.tr/adslkota/login_tr.jsp', postdata,this, 2);
 				break;
 			case 2:
-				http_get('http://adslkota.ttnet.net.tr/adslkota/viewTransfer.do?dispatch=entry', this, 3);
+				Minimeter.http_get('http://adslkota.ttnet.net.tr/adslkota/viewTransfer.do?dispatch=entry', this, 3);
 				break;
 			case 3:
 			   // up / dwn
 			  var reg = /<td width="100">([0-9.]*)<br>&nbsp;\(.* ?B\)<\/td>\s*<td width="100">([0-9.]*)<br>&nbsp;\(.* ?B\)<\/td><\/tr><\/tbody>/;
 			  if(!reg.test(reply)){
-          this.errorMessage = getString("error.reported");
-          minimeterprefs.setCharPref("error", "reported");
+          this.errorMessage = Minimeter.getString("error.reported");
+          Minimeter.prefs.setCharPref("error", "reported");
           this.extraMessage = "Minimeter can't login because there's a captcha.";
           this.storeCache();
           this.errorPing("failed");
