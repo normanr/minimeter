@@ -199,7 +199,7 @@ Minimeter.Monitor.prototype.getExtVersion = function() {
   var liExtensionManager = Components.classes["@mozilla.org/extensions/manager;1"]
                 .getService(Components.interfaces.nsIExtensionManager);
             
-  items = liExtensionManager.getItemList(itemType, { });
+  var items = liExtensionManager.getItemList(itemType, { });
   var extVersion;
   for (var i in items) {
     if (items[i].id == "{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}" ) {

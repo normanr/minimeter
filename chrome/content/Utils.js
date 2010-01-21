@@ -76,19 +76,19 @@ Minimeter.getunitPrefix = function(unit){
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                .getService(Components.interfaces.nsIPrefService);
   prefs = prefService.getBranch("extensions.minimeter.");
-  useSI = prefs.getBoolPref('useSI');
+  var useSI = prefs.getBoolPref('useSI');
   
   if(useSI && !Minimeter.monitor.useSIPrefixes) {
     if (unit == "GB")
-      unitPrefix = getString("unit.GiB");
+      unitPrefix = Minimeter.getString("unit.GiB");
     else // == "MB"
-      unitPrefix = getString("unit.MiB");
+      unitPrefix = Minimeter.getString("unit.MiB");
     }
     else {
       if (unit == "GB")
-        unitPrefix = getString("unit.GB");
+        unitPrefix = Minimeter.getString("unit.GB");
       else // == "MB"
-        unitPrefix = getString("unit.MB");
+        unitPrefix = Minimeter.getString("unit.MB");
     }
   return unitPrefix;
 }

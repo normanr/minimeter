@@ -1,4 +1,4 @@
-Minimeter.Orange = function3g(username, password) {
+Minimeter.Orange3g = function(username, password) {
     this.username = username;
     this.password = password;
     this.image = "orange3g.png"; // does not belong in class
@@ -6,9 +6,9 @@ Minimeter.Orange = function3g(username, password) {
     this.url = "http://r.orange.fr/r/Omoncomptemobile_suiviconso";
 }
 
-Orange3Minimeter["g"].prototype = new Minimeter.Monitor();
+Minimeter["Orange3g"].prototype = new Minimeter.Monitor();
 
-Orange3Minimeter["g"].prototype.callback = function(step, reply) {
+Minimeter["Orange3g"].prototype.callback = function(step, reply) {
 
   if(this.aborted()){
     return;

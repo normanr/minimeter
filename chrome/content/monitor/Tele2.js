@@ -1,5 +1,5 @@
 
-Minimeter.Tele = function2(username, password) {
+Minimeter.Tele2 = function(username, password) {
     this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
     this.password = password;
     this.image = "tele2.png";
@@ -8,9 +8,9 @@ Minimeter.Tele = function2(username, password) {
     this.adsllight = false;
 }
 
-Tele2Minimeter[""].prototype = new Minimeter.Monitor();
+Minimeter["Tele2"].prototype = new Minimeter.Monitor();
 
-Tele2Minimeter[""].prototype.callback = function(step, reply) {
+Minimeter["Tele2"].prototype.callback = function(step, reply) {
     if(this.aborted()){
       return;
     }

@@ -1,5 +1,5 @@
 
-Minimeter.Sat = function2way(username, password) {
+Minimeter.Sat2way = function(username, password) {
   this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
   this.password = password;
   this.image = "sat2way.png";
@@ -11,9 +11,9 @@ Minimeter.Sat = function2way(username, password) {
   this.useSIPrefixes = true;
 }
 
-Sat2Minimeter["way"].prototype = new Minimeter.Monitor();
+Minimeter["Sat2way"].prototype = new Minimeter.Monitor();
 
-Sat2Minimeter["way"].prototype.callback = function(step, reply) {
+Minimeter["Sat2way"].prototype.callback = function(step, reply) {
   if(this.aborted()){
     return;
   }
