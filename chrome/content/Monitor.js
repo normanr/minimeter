@@ -262,8 +262,8 @@ Minimeter.Monitor.prototype.update = function(success) {
   }
           
   if(success){
-    this.usedVolume = Math.round(this.usedVolume * 1000)/1000;
-    this.totalVolume = Math.round(this.totalVolume * 1000)/1000;
+    this.usedVolume = (Math.round(this.usedVolume * 1000)/1000).toFixed(3);
+    this.totalVolume = (Math.round(this.totalVolume * 1000)/1000).toFixed(3);
     this.state = this.STATE_DONE;
     if(this.remainingDays != null && (this.totalVolume - this.usedVolume) > 0) {
       var remainingGB = Math.floor((Minimeter.monitor.totalVolume - Minimeter.monitor.usedVolume) / Minimeter.monitor.remainingDays * 1000) /1000;
