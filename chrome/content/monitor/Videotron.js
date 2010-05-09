@@ -3,7 +3,7 @@ Minimeter.Videotron = function(username, password) {
     this.password = "vide";
     this.image = "videotron.png"; // does not belong in class
     this.name = "Vidéotron";
-    this.url = "https://www.videotron.com/services/secur/ConsommationInternet.do?compteInternet="+this.username;
+    this.url = "https://extranet.videotron.com/services/secur/extranet/tpia/Usage.do?lang=FRENCH&compteInternet="+this.username;
 }
 
 Minimeter["Videotron"].prototype = new Minimeter.Monitor();
@@ -18,13 +18,12 @@ Minimeter["Videotron"].prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        var postdata = "compteInternet=" + this.username;
-        Minimeter.http_post("https://www.videotron.com/services/secur/fr/votre_compte/StartTransaction.jsp", postdata,this, 2);
+        Minimeter.http_get(this.url, this, 2);
         break;
           
       case 2:
-        reply = decodeURIComponent(reply);
-        var regDateAndUsed = /<tbody>\s*<tr>\s*<td nowrap="nowrap">([0-9]*)-([0-9]*)-([0-9]*) (au|to)<br \/>[0-9-]*<\/td>\s*<td width="10"><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>\s*<td><\/td>\s*<td align="right">([0-9.]*)<\/td>\s*<td align="right">[0-9.]*<\/td>/;
+        var reply = decodeURIComponent(reply);
+        var regDateAndUsed = /<tr>\s*<td bgcolor="#FFFFFF" class="reg" nowrap="nowrap">[0-9]*-[0-9]*-([0-9]*) au<br \/>[0-9-]*<\/td>\s*<td bgcolor="#FFFFFF" align="right" valign="top" class="reg">([0-9.]*)<\/td>\s*<td bgcolor="#FFFFFF" align="right" valign="top" class="reg">[0-9.]*<\/td>\s*<td bgcolor="#FFFFFF" align="right" valign="top" class="reg">([0-9.]*)<\/td>\s*<td bgcolor="#FFFFFF" align="right" valign="top" class="reg">[0-9.]*<\/td>\s*<td bgcolor="#FFFFFF" align="right" valign="top" class="reg">([0-9.]*)<\/td>\s*<td bgcolor="#FFFFFF" align="right" valign="top" class="reg">[0-9.]*<\/td>\s*<\/tr>/;
         
         if(!regDateAndUsed.test(reply)){
           var regErrorLogin = /Assurez-vous d'avoir bien inscrit votre nom d'utilisateur Internet|Beware to enter your Internet username correctly/;
@@ -48,12 +47,12 @@ Minimeter["Videotron"].prototype.callback = function(step, reply) {
           
           this.extraMessage = "";
           
-          this.usedVolume = volumeused[7];
+          this.usedVolume = volumeused[4];
           
           if (this.totalVolume == 30) { // jusqu'en mars 2010, pour les connexions datant d'avant mars 2009
             var gb = " " + Minimeter.getunitPrefix("GB"); // Unit as selected in options and locale
-            var upload = Math.round(volumeused[6]/1024*1000)/1000;
-            var download = Math.round(volumeused[5]/1024*1000)/1000;
+            var upload = Math.round(volumeused[3]/1024*1000)/1000;
+            var download = Math.round(volumeused[2]/1024*1000)/1000;
             this.extraMessage = "       Upload : "+ upload.toString().replace(".",",")  + gb + "\n       Download : " + download.toString().replace(".",",") + gb;
           }
           
@@ -79,7 +78,7 @@ Minimeter["Videotron"].prototype.callback = function(step, reply) {
           
           }
         }
-        this.remainingDays = Minimeter.getInterval(volumeused[3]+"/"+volumeused[2]+"/"+volumeused[1]);
+        this.remainingDays = Minimeter.getInterval("nearestOccurence", volumeused[1]);
         this.update(true);
     }
 }

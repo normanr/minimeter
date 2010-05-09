@@ -23,7 +23,7 @@ Minimeter["Aanet"].prototype.callback = function(step, reply) {
       break;
         
     case 2:
-      reply = decodeURIComponent(reply);
+      var reply = decodeURIComponent(reply);
       var regErrorLogin=/Your login attempt failed./;
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
@@ -33,11 +33,11 @@ Minimeter["Aanet"].prototype.callback = function(step, reply) {
       break;
         
     case 3:
-      reply = decodeURIComponent(reply);
+      var reply = decodeURIComponent(reply);
       var regUsedDown = /Month's Downloads to Date<\/b><\/td>\s*<td class='body2' width=20% bgcolor=#B3D5EC>([0-9]*) MBs<\/td>/;
       var regUsedUp = /Month's Uploads to Date<\/b><\/td>\s*<td class='body2' bgcolor=#B3D5EC>([0-9]*) MBs<\/td>/;
       var regAllowed = /<b>Prepaid Upload\/Download<\/b><\/td>\s*<td class='body2'>([0-9]*) MBs<\/td>/;
-      var regDateEnd = /<td class='body2'> ([0-9]*)th of each month<\/td>/;
+      var regDateEnd = /<td class='body2'> ([0-9]*)(?:st|nd|rd|th) of each month<\/td>/; // 1st, 2nd, 3rd, 4th...
       var regamountToPay = /<td class='body2'>\$([0-9.]*)<\/td>/;
 
       if(!regUsedDown.test(reply) || !regUsedUp.test(reply) || !regAllowed.test(reply) || !regDateEnd.test(reply) || !regamountToPay.test(reply)) {
@@ -52,7 +52,7 @@ Minimeter["Aanet"].prototype.callback = function(step, reply) {
       var amounttopay    = regamountToPay.exec(reply);
       var volumeused = 0;
       
-      if (volumeusedup[1] > volumeuseddown[1])
+      if (volumeusedup[1]*1 > volumeuseddown[1]*1)
         volumeused = volumeusedup[1];
       else
         volumeused = volumeuseddown[1];

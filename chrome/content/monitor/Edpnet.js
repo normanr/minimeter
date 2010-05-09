@@ -28,7 +28,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         break;
           
       case 2:
-        reply = decodeURIComponent(reply);
+        var reply = decodeURIComponent(reply);
         var regViewstateID=/VIEWSTATE_ID" value="([0-9a-z-]*)"/;
         if (!regViewstateID.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
@@ -40,7 +40,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         break;
           
       case 3:
-        reply = decodeURIComponent(reply);
+        var reply = decodeURIComponent(reply);
         var regErrorLogin=/(Invalid user ID or password|Nom d'utilisateur ou mot de passe incorrect|Foutieve gebruikersnaam of wachtwoord)/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass("edpnet");
@@ -53,7 +53,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         break;
           
       case 4:
-        reply = decodeURIComponent(reply);
+        var reply = decodeURIComponent(reply);
         var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[^<]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         var numConnection;
@@ -72,7 +72,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         break;
           
       case 5:
-        reply = decodeURIComponent(reply);
+        var reply = decodeURIComponent(reply);
         var regUsed = /(Consommation en total \(Net\)|Totaal verbruik \(Netto\)|Total Consumption \(Net\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
         var regUsedBrut = /(Consommation en total \(Brut\)|Totaal verbruik \(Bruto\)|Total Consumption \(Gross\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
         var regIncluded = /(Trafic compris \(gratuit\) |Inbegrepen \(gratis\) trafiek|Included \(Free\) Traffic):<\/td><td align="right">([0-9.]*)<\/td>/;
@@ -92,7 +92,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         
         var volumeused = regUsed.exec(reply);
         
-        if (regNoLimit.test(reply)) {
+        if (regNoLimit.test(reply)) { // 1
           volumeused = regUsedBrut.exec(reply);
         }
         
@@ -110,6 +110,11 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           bonus = bonus[2].replace('.','');
           volumetotal = volumetotal*1 + bonus*1;
         }
+        
+        if (regNoLimit.test(reply)) { // 2
+          volumetotal = 0;
+        }
+
 
         this.usedVolume = volumeused/1024;
         this.totalVolume = volumetotal/1024;
