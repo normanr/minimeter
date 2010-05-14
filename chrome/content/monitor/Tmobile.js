@@ -18,8 +18,8 @@ Minimeter["Tmobile"].prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        var postdata = "action=loginnow&username="+this.username+"&passwort="+this.password;
-        Minimeter.http_post("https://mein.t-mobile.de/cpc-sp/actiondispatcher", postdata,this, 2);
+        var postdata = "idp=tmd&username="+this.username+"&password="+this.password+"&Login=Login";
+        Minimeter.http_post("https://mein.t-mobile.de/cpc-sp/actiondispatcher?action=loginnow", postdata,this, 2);
         break;
           
       case 2:
