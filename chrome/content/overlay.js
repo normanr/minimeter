@@ -37,7 +37,7 @@ var Minimeter = {
       this.prefs.setCharPref('provider', provider);
     }
   
-    prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
+   prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
   "http://extensions.geckozone.org/updates/Minimeter-"+provider+".rdf");
     provider = provider[0].toUpperCase() + provider.substr(1);
     scriptinc.loadSubScript("chrome://minimeter/content/monitor/"+provider+".js");
@@ -288,6 +288,18 @@ var Minimeter = {
               if (errorpref != "no" && errorpref != "checking") {
                 Minimeter.monitor.error = errorpref;
                 Minimeter.monitor.errorMessage = Minimeter.getString("error."+errorpref, "incomplete translation");
+                if (errorpref == "reported") {
+                  Minimeter.monitor.image = "info.png";
+                  if (this.toolbarMeter != null) {
+                    Minimeter.toolbarMeter.icon = Minimeter.monitor.image;
+                    Minimeter.toolbarMeter.showIcon = true;
+                  }
+                  else {
+                    Minimeter.statusbarMeter.icon = Minimeter.monitor.image;
+                    Minimeter.statusbarMeter.showIcon = true;
+                  }
+                  Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
+                }
                 Minimeter.monitor.state = Minimeter.monitor.STATE_ERROR;
                 Minimeter.monitor.notify();
               }

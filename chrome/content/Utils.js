@@ -117,7 +117,7 @@ Minimeter.http_get = function(purl, callback, step){
 		req.setRequestHeader('Cookie', 'usageConfirm=true');
 		  req.send('');	
 			
-		}catch(ex){Minimeter.consoleDump(ex);}			
+		}catch(ex){Minimeter.consoleDump("Error getting : " + ex);}			
 }
 
 Minimeter.http_post = function(purl, postdata, callback, step, cookie, contenttype){
@@ -153,7 +153,7 @@ Minimeter.http_post = function(purl, postdata, callback, step, cookie, contentty
         req.setRequestHeader('Cookie', cookie);
 			req.send(postdata);		
 			
-		}catch(ex){Minimeter.consoleDump("Error posting: " + ex);}			
+		}catch(ex){Minimeter.consoleDump("Error posting : " + ex);}			
 		
 }	
 

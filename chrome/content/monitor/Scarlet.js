@@ -29,15 +29,24 @@ Minimeter["Scarlet"].prototype.callback = function(step, reply) {
 				break;
       case 2:
         var reply = decodeURIComponent(reply);
-        var regErrorLogin=/(utilisateur ou mot de passe incorrect|gebruikersnaam of wachtwoord is fout)/;
-        if (regErrorLogin.test(reply)) {
-          this.badLoginOrPass();
-          break;
+        var regLoggedIn = /Mon Abonnement|Mijn abonnement"/;
+        var regErrorLogin=/utilisateur ou mot de passe incorrect|gebruikersnaam of wachtwoord is fout/;
+        var regServerError = /trop de tentatives de login|teveel op korte tijd aanlogt/
+        if (!regLoggedIn.test(reply)) {
+          if (regErrorLogin.test(reply))
+            this.badLoginOrPass();
+          else {
+            if (regServerError.test(reply))
+              this.error = "server";
+            this.reportError(step, this.name, encodeURIComponent(reply));
+          }
         }
-        if(this.contrat != null)
-          Minimeter.http_get('http://www.scarlet.be/customercare/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, "2b");
-        else 
-          Minimeter.http_get('http://www.scarlet.be/customercare/usage/dispatch.do', this, 3);
+        else {
+          if(this.contrat != null)
+            Minimeter.http_get('http://www.scarlet.be/customercare/selectbillcontract.do?method=select&selectedBillContract='+this.contrat,this, "2b");
+          else 
+            Minimeter.http_get('http://www.scarlet.be/customercare/usage/dispatch.do', this, 3);
+        }
         break;
       case "2b":
         Minimeter.http_get('http://www.scarlet.be/customercare/usage/dispatch.do', this, 3);

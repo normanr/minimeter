@@ -9,6 +9,7 @@ Minimeter.Monitor = function(){
 	this.remainingAverage = '';
 	this.newData = false; // is the new data different from the old one ? (for the animation)
 	this.error = "no";
+	this.errorTimeoutRetry = 60000; // délai entre tentatives après erreur serveur (augmente)
 	this.pageContent = null;
   this.trialNumber = 1; // nombre de tentatives (2 tentatives avant prise en compte erreur)
   this.useSIPrefixes = false; // si true, 1 Go = 1000 Mo (et jamais d'affichage de G*i*o)
@@ -69,8 +70,17 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
   }
 
   if (this.error == "connection" || this.error == "server") {
-    this.setErrorMessageAndPref(this.error, null, true);
-    setTimeout("Minimeter.monitor.check('silent');", 60000);
+    if (this.error == "connection")
+      setTimeout("Minimeter.monitor.check('silent');", 60000);
+    else
+    {
+      this.setErrorMessageAndPref(this.error, null, true);
+      setTimeout("Minimeter.monitor.check('silent');", this.errorTimeoutRetry);
+      this.errorTimeoutRetry = this.errorTimeoutRetry *2; // pour éviter de surcharger le serveur
+      var updateTimeout = Minimeter.prefs.getIntPref("updateTimeout") * 1000;
+      if (this.errorTimeoutRetry > updateTimeout)
+        this.errorTimeoutRetry = updateTimeout;
+    }
   }
   else {
     if (typeof(reply) == "undefined") { // 1st call of reportError
@@ -98,6 +108,8 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
       if (regoldversion.test(reply)) {
         this.setErrorMessageAndPref("reported", "extraReported", true);
         
+        var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+									 .getService(Components.interfaces.nsIPrefService);
         var browserprefs = prefService.getBranch("general.useragent.");
         var locale = browserprefs.getCharPref('locale');
         if (locale == "fr")
@@ -341,6 +353,18 @@ Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
           errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
           if (errorExtraMessage != '')
             this.extraMessage = Minimeter.getString("error."+errorExtraMessage, "incomplete translation");
+          if (errorpref == "reported") {
+            Minimeter.monitor.image = "info.png";
+            if (this.toolbarMeter != null) {
+              Minimeter.toolbarMeter.icon = Minimeter.monitor.image;
+              Minimeter.toolbarMeter.showIcon = true;
+            }
+            else {
+              Minimeter.statusbarMeter.icon = Minimeter.monitor.image;
+              Minimeter.statusbarMeter.showIcon = true;
+            }
+            Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
+          }
         }
         this.notify();
       }

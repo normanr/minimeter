@@ -1,4 +1,4 @@
-Minimeter.Adsl20 = (username, password) {
+Minimeter.Adsl20 = function (username, password) {
   this.username = username.indexOf('@') != -1 ? username.substr(0,username.indexOf('@')) : username;
   this.password = password;
   this.image = "adsl20.png";
