@@ -28,38 +28,134 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
         this.nbOfVPBought = 0;
         this.extraMessage = '';
         this.nbOfTrials = 0;
-        var postdata = "login-form-type=pwd&username="+this.username+"&password="+this.password;
-        Minimeter.http_post('https://admit.belgacom.be/pkmslogin.form', postdata,this, 2);
+        this.BgErrLoginEservices = false;
+        
+        Minimeter.http_get("https://login.belgacom.be/EAIWeb/Login?ru=https%3A%2F%2Flogin.belgacom.be%2F&pv=fls", this, 2);
         break;
         
       case 2:
         var reply = decodeURIComponent(reply);
-        this.BgErrLoginEservices = false;
-        var regErrorLogin = /HPDIA0200W   Authen/;
-        var regRedirection = /location='YPA\/ypa/; // vérifie qu'aucune erreur n'est indiquée
-        var regServerError = /Une erreur est survenue|An error occured|technical problem|Les e-Services ne sont pas disponibles|De e-Services zijn niet beschikbaar|The e-Services are unavailable|me technique|Patientez quelques minutes et renouvelez|An error has occurred|Une erreur s'est produite|A technical error occurred/;
-        if (regErrorLogin.test(reply)) {
-          this.BgErrLoginEservices = true;
-          this.tryAgain("oldMethod");
+        //this.reportError(step, this.name, encodeURIComponent(reply));
+        var regSAMLResponse = /name="SAMLResponse" value="([A-Za-z0-9+=\s]*)"/;
+        var regLoginAction = /loginFlow\?execution=([a-z0-9]*)/;
+        var LoginAction;
+        var SAMLResponse;
+        var regErrorLogin = /Wrong login|Verkeerde login|ou mot de passe invalide/;
+        if(!regSAMLResponse.test(reply)){ // then log in
+          if (regLoginAction.test(reply) && this.nbOfTrials < 1) {
+            this.nbOfTrials++;
+            LoginAction = regLoginAction.exec(reply);
+            var postdata = "loginForm%3AuserName="+this.username+"&loginForm%3Apassword="+this.password+"&loginForm%3Acontinue=OK&loginForm=loginForm";
+            Minimeter.http_post('https://login.belgacom.be/EAIWeb/mbp/loginFlow?execution='+LoginAction[1], postdata,this, 2);
+          }
+          else
+            if (regErrorLogin.test(reply)) {
+              this.BgErrLoginEservices = true;
+              this.trialNumber--;
+              this.tryAgain("oldMethod");
+              break;
+            }
+            else
+              this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
+        
+        SAMLResponse = regSAMLResponse.exec(reply);
+        SAMLResponse = encodeURIComponent(SAMLResponse[1].replace(/\s/g,""));
+        
+        var postdata = "RelayState=https%3A%2F%2Fadmit.belgacom.be%2FMBP%2FMBPLoginWeb%2Freturnframe.jsp%3Fpv%3Dfls&SAMLResponse="+SAMLResponse;
+        Minimeter.http_post('https://admit.belgacom.be/fim/sps/sp-saml-intern/saml20/login', postdata,this, 3);
+        break;
+        
+      case 3:
+        var reply = decodeURIComponent(reply);
+        var regRedirection = /Generic return url frame/; // vérifie qu'aucune erreur n'est indiquée
+        var regServerError = /Une erreur est survenue|An error occured|technical problem|Les e-Services ne sont pas disponibles|De e-Services zijn niet beschikbaar|The e-Services are unavailable|me technique|Patientez quelques minutes et renouvelez|An error has occurred|Une erreur s'est produite|A technical error occurred/;
         if (!regRedirection.test(reply)) {
           if (regServerError.test(reply))
             this.error = "server";
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
+        Minimeter.http_get("https://admit.belgacom.be/MBP/MBPLoginWeb/proxyIdp.html?domain=belgacom.be&SPproxy=http://www.belgacom.be/private/hbsres/jsp/dynamic/unstructuredTextFull.jsp?dcrName=login_redirect&url=https://admit.belgacom.be", this, "3b");
+        break;
         
-        Minimeter.http_get("https://admit.belgacom.be/eservices/wps/myportal/my_internet?pageChanged=true", this, 3);
+      case "3b":
+        var reply = decodeURIComponent(reply);
+        var regRedirection = /ProxyPage/; // vérifie qu'aucune erreur n'est indiquée
+        var regServerError = /Une erreur est survenue|An error occured|technical problem|Les e-Services ne sont pas disponibles|De e-Services zijn niet beschikbaar|The e-Services are unavailable|me technique|Patientez quelques minutes et renouvelez|An error has occurred|Une erreur s'est produite|A technical error occurred/;
+        if (!regRedirection.test(reply)) {
+          if (regServerError.test(reply))
+            this.error = "server";
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
+      
+        Minimeter.http_get("http://www.belgacom.be/private/hbsres/jsp/dynamic/unstructuredTextFull.jsp?dcrName=login_redirect&domain=belgacom.be&url=https://admit.belgacom.be", this, "3c");
+        break;
+     
+      case "3c":
+        var reply = decodeURIComponent(reply);
+        var regRedirection = /Redirecting/; // vérifie qu'aucune erreur n'est indiquée
+        var regServerError = /Une erreur est survenue|An error occured|technical problem|Les e-Services ne sont pas disponibles|De e-Services zijn niet beschikbaar|The e-Services are unavailable|me technique|Patientez quelques minutes et renouvelez|An error has occurred|Une erreur s'est produite|A technical error occurred/;
+        if (!regRedirection.test(reply)) {
+          if (regServerError.test(reply))
+            this.error = "server";
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
+      
+        Minimeter.http_get("https://admit.belgacom.be", this, "3d");
+        break;
+        
+      case "3d":
+        var reply = decodeURIComponent(reply);
+        var regRedirection = /location='YPA\/ypa'/; // vérifie qu'aucune erreur n'est indiquée
+        var regServerError = /Une erreur est survenue|An error occured|technical problem|Les e-Services ne sont pas disponibles|De e-Services zijn niet beschikbaar|The e-Services are unavailable|me technique|Patientez quelques minutes et renouvelez|An error has occurred|Une erreur s'est produite|A technical error occurred/;
+        if (!regRedirection.test(reply)) {
+          if (regServerError.test(reply))
+            this.error = "server";
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
+      
+        Minimeter.http_get("https://admit.belgacom.be/YPA/ypa", this, "3e");
+        break;
+        
+      case "3e":
+        var reply = decodeURIComponent(reply);
+        var regRedirection = /window.location.href="..\/..\/eservices\/wps\/myportal/; // vérifie qu'aucune erreur n'est indiquée
+        var regServerError = /Une erreur est survenue|An error occured|technical problem|Les e-Services ne sont pas disponibles|De e-Services zijn niet beschikbaar|The e-Services are unavailable|me technique|Patientez quelques minutes et renouvelez|An error has occurred|Une erreur s'est produite|A technical error occurred/;
+        if (!regRedirection.test(reply)) {
+          if (regServerError.test(reply))
+            this.error = "server";
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
+      
+        Minimeter.http_get("https://admit.belgacom.be/eservices/wps/myportal", this, "3f");
+        break;
+        
+      case "3f":
+        var reply = decodeURIComponent(reply);
+        var regMyInternet = /<a\s*href="(\/eservices\/wps\/myportal\/!ut\/p\/kcxml\/[0-9a-zA-Z_\-!]*\/delta\/base64xml\/[^\.]*!\?pageChanged=true)">(?:mon internet|my internet|mijn internet)<\/a>/;
+        var regServerError = /Une erreur est survenue|An error occured|technical problem|Les e-Services ne sont pas disponibles|De e-Services zijn niet beschikbaar|The e-Services are unavailable|me technique|Patientez quelques minutes et renouvelez|An error has occurred|Une erreur s'est produite|A technical error occurred/;
+        if (!regMyInternet.test(reply)) {
+          if (regServerError.test(reply))
+            this.error = "server";
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
+        Minimeter.http_get("https://admit.belgacom.be/eservices/wps/myportal/my_internet?pageChanged=true", this, 4);
         break;
         
       case "oldMethod":
         this.url = "https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume";
         var postdata = "fuseaction=CheckLoginConnection&form_login="+this.username+"&form_password="+this.password+"&Langue_Id=3&Submit=Connexion";
-        Minimeter.http_post('https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume', postdata,this, 4);
+        Minimeter.http_post('https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume', postdata,this, 5);
         break;
         
-      case 3:
+      case 4:
         var reply = decodeURIComponent(reply);
         var regAdrQuota = /function%3[dD]connection.getVolume!26farg.login%3[dD]([0-9a-z]*)!26farg.login_type%3[dD]connection!26farg.sso_date%3[dD]([0-9]*)!26farg.type%3[dD]([0-9])!26farg.key%3[dD]([0-9A-Z#_]*)">(Consulter le volume mensuel|Het maandelijkse volume raadplegen|Consult monthly volume)<\/a><\/div>/;
         var regNoConnectionLinked = /no Internet connection account linked|Aucun compte de connexion Internet|geen enkele internetaccount gelinkt|Ajouter une connexion Internet|Add an Account|Een Internetverbinding toevoegen/;
@@ -76,7 +172,7 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
           else {
 						if (backToTheHomepageFromAdvantage.test(reply)) { // is the advantages page shown ?
 							var adrBackLink = backToTheHomepageFromAdvantage.exec(reply);
-							Minimeter.http_get("https://admit.belgacom.be" + adrBackLink[1], this, 3);
+							Minimeter.http_get("https://admit.belgacom.be" + adrBackLink[1], this, 4);
 						}
 						else
               if (changePassword.test(reply))
@@ -85,13 +181,12 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
                 if (regMyHomePageSelected.test(reply) && !regServerError.test(reply) && this.nbOfTrials < 10) {
                   var url;
                   if (regMyInternet.test(reply)) {
-                    var adrMyInternet = regMyInternet.exec(reply);
-                    url = "https://admit.belgacom.be" + adrMyInternet[1];
+                    url = "https://admit.belgacom.be/eservices/wps/myportal/my_internet?pageChanged=true";
                   }
                   else
-                    url = "https://admit.belgacom.be/eservices/wps/myportal/my_internet?pageChanged=true";
+                    url = "https://admit.belgacom.be/eservices/wps/myportal";
                   this.nbOfTrials++;
-                  Minimeter.http_get(url, this, 3);
+                  Minimeter.http_get(url, this, 4);
                   break;
                 }
                 else
@@ -102,14 +197,13 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
         }
         else {
           var adrQuota = regAdrQuota.exec(reply);
-          //Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume&farg.login="+adrQuota[1]+"&farg.login_type=connection&farg.sso_date="+adrQuota[2]+"&farg.type="+adrQuota[3]+"&farg.key="+adrQuota[4], this, 4);
-          Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=customer.overview&farg.prod_type=vp&farg.login="+adrQuota[1]+"&farg.login_type=connection&farg.sso_date="+adrQuota[2]+"&farg.type="+adrQuota[3]+"&farg.key="+adrQuota[4], this, 4);
+          //Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume&farg.login="+adrQuota[1]+"&farg.login_type=connection&farg.sso_date="+adrQuota[2]+"&farg.type="+adrQuota[3]+"&farg.key="+adrQuota[4], this, 5);
+          Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=customer.overview&farg.prod_type=vp&farg.login="+adrQuota[1]+"&farg.login_type=connection&farg.sso_date="+adrQuota[2]+"&farg.type="+adrQuota[3]+"&farg.key="+adrQuota[4], this, 5);
         }
         
         break;
-        
 		
-      case 4:
+      case 5: // get number of vp bought this month
         var reply = decodeURIComponent(reply);
         var ladate = new Date();
         var lemois = ladate.getMonth() + 1;
@@ -138,11 +232,11 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
             //Minimeter.consoleDump(sizeofVPbought);
           }
         }
-        Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume", this, 5);
+        Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume", this, 6);
         
         break;
 
-      case 5:
+      case 6:
         var reply = decodeURIComponent(reply);
         var regmb = /(Volume mensuel utilis[&eacute;éÃ©]*|Gebruikt volume voor deze maand|Monthly volume used)\s*<strong>([0-9]+) MB<\/strong>\s*(sur|van de beschikbare|out of)\s*<strong>(.*) GB<\/strong>/;// 1(2),2(4)
         var reggb = /(Volume mensuel utilis[&eacute;éÃ©]*|Gebruikt volume voor deze maand|Monthly volume used)\s*<strong>([0-9]*) GB ([0-9]+) MB<\/strong>\s*(sur|van de beschikbare|out of)\s*<strong>(.*) GB<\/strong>/;// 1(2),2(3),3(5)

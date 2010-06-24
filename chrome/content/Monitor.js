@@ -70,11 +70,11 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
   }
 
   if (this.error == "connection" || this.error == "server") {
+    this.setErrorMessageAndPref(this.error, null, true);
     if (this.error == "connection")
       setTimeout("Minimeter.monitor.check('silent');", 60000);
     else
     {
-      this.setErrorMessageAndPref(this.error, null, true);
       setTimeout("Minimeter.monitor.check('silent');", this.errorTimeoutRetry);
       this.errorTimeoutRetry = this.errorTimeoutRetry *2; // pour éviter de surcharger le serveur
       var updateTimeout = Minimeter.prefs.getIntPref("updateTimeout") * 1000;
@@ -128,7 +128,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
         
         var regTestDebug = /debug/;
         
-        if (regTestDebug.test(reply) && this.pageContent !== null) {
+        if (regTestDebug.test(reply) /*&& this.pageContent !== null*/) {
           if (sendDebug) {
             this.pageContent = "&pageContent=" + this.pageContent;
             

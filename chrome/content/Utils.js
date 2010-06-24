@@ -106,7 +106,7 @@ Minimeter.http_get = function(purl, callback, step){
                 if(req.status == 500 || req.status == 503)
                   Minimeter.monitor.error = "server";
               }catch(ex){Minimeter.monitor.error = "connection";}
-              if (req.responseText == '')
+              if (req.status == 0)
                 Minimeter.monitor.error = "connection";
               callback.callback(step, encodeURIComponent(req.responseText));
             }
@@ -132,7 +132,7 @@ Minimeter.http_post = function(purl, postdata, callback, step, cookie, contentty
               if(req.status == 500 || req.status == 503)
                 Minimeter.monitor.error = "server";
             }catch(ex){Minimeter.monitor.error = "connection";}
-            if (req.responseText == '')
+            if (req.status == 0)
               Minimeter.monitor.error = "connection";
             if (callback == "reportError")
               Minimeter.monitor.reportError(null, null, null, encodeURIComponent(req.responseText));
@@ -151,7 +151,9 @@ Minimeter.http_post = function(purl, postdata, callback, step, cookie, contentty
         req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			if(cookie!=null)
         req.setRequestHeader('Cookie', cookie);
-			req.send(postdata);		
+      try{
+        req.sendAsBinary(postdata);
+      }catch(ex){req.send(postdata);}
 			
 		}catch(ex){Minimeter.consoleDump("Error posting : " + ex);}			
 		
