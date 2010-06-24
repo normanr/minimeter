@@ -44,10 +44,11 @@ Minimeter["Iinet"].prototype.callback = function(step, reply) {
         var reply = decodeURIComponent(reply);
         var regUsedTotPeak = /<b>peak<\/b><br>\s*<div class="usage_text">([0-9,]*)MB used of ([0-9,]*)MB/;
         var regUsedTotOffpeak = /<b>offpeak<\/b><br>\s*<div class="usage_text">([0-9,]*)MB used of ([0-9,]*)MB/;
+        var regUsedTotNonFree = /<b>non-free<\/b><br>\s*<div class="usage_text">([0-9,]*)MB used of ([0-9,]*)MB/; // Business
         var regRemainingDays = /selected>([0-9]+)/;
         var regNoData = /no volume was recorded for your account during this period/;
         
-        if((!regUsedTotPeak.test(reply) || !regUsedTotOffpeak.test(reply) || !regRemainingDays.test(reply)) && !regNoData.test(reply)){
+        if((!regUsedTotNonFree.test(reply) &&  (!regUsedTotPeak.test(reply) || !regUsedTotOffpeak.test(reply)) || !regRemainingDays.test(reply)) && !regNoData.test(reply)){
           var regErrorLogin = /Sorry, we couldn't log you in to your/;
           if (regErrorLogin.test(reply)) {
             this.badLoginOrPass();
@@ -70,30 +71,36 @@ Minimeter["Iinet"].prototype.callback = function(step, reply) {
           var remainingDays = regRemainingDays.exec(reply);
           
           if (!regNoData.test(reply)) {
-          
-            var volumeUsedTotPeak = regUsedTotPeak.exec(reply);
-            var volumeUsedTotOffpeak = regUsedTotOffpeak.exec(reply);
-            
-            volumeUsedPeak = volumeUsedTotPeak[1].replace(',','');
-            volumeTotPeak = volumeUsedTotPeak[2].replace(',','');
-            volumeUsedOffpeak = volumeUsedTotOffpeak[1].replace(',','');
-            volumeTotOffpeak = volumeUsedTotOffpeak[2].replace(',','');
-            
-            var d = new Date();
-            var hour = d.getHours();
-            if (hour > 2 && hour < 12) {
-              volumeUsed = volumeUsedOffpeak;
-              volumeTot = volumeTotOffpeak;
+            if (regUsedTotNonFree.test(reply)) {
+              var volumeUsedTotNonFree = regUsedTotNonFree.exec(reply);
+              volumeUsed = volumeUsedTotNonFree[1].replace(',','');;
+              volumeTot = volumeUsedTotNonFree[2].replace(',','');;
             }
             else {
-              volumeUsed = volumeUsedPeak;
-              volumeTot = volumeTotPeak;
-            }
-            
-            var mb = " " + Minimeter.getunitPrefix("MB"); // Unit as selected in locale
-            
-            this.extraMessage = "        Offpeak: "+ volumeUsedOffpeak + " / " + volumeTotOffpeak + mb + "\n        Peak: "+ volumeUsedPeak + " / " + volumeTotPeak + mb;
+              var volumeUsedTotPeak = regUsedTotPeak.exec(reply);
+              var volumeUsedTotOffpeak = regUsedTotOffpeak.exec(reply);
+              
+              volumeUsedPeak = volumeUsedTotPeak[1].replace(',','');
+              volumeTotPeak = volumeUsedTotPeak[2].replace(',','');
+              volumeUsedOffpeak = volumeUsedTotOffpeak[1].replace(',','');
+              volumeTotOffpeak = volumeUsedTotOffpeak[2].replace(',','');
+              
+              var d = new Date();
+              var hour = d.getHours();
+              if (hour > 2 && hour < 12) {
+                volumeUsed = volumeUsedOffpeak;
+                volumeTot = volumeTotOffpeak;
+              }
+              else {
+                volumeUsed = volumeUsedPeak;
+                volumeTot = volumeTotPeak;
+              }
+              
+              var mb = " " + Minimeter.getunitPrefix("MB"); // Unit as selected in locale
+              
+              this.extraMessage = "        Offpeak: "+ volumeUsedOffpeak + " / " + volumeTotOffpeak + mb + "\n        Peak: "+ volumeUsedPeak + " / " + volumeTotPeak + mb;
           
+            }
           }
           
           this.usedVolume = volumeUsed/1000;
