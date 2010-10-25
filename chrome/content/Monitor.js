@@ -61,7 +61,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
   }
   if (pageContent !== null) {
     pageContent = decodeURIComponent(pageContent);
-    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|temporarily unavailable|en cours de maintenance|currently unavailable|momentanément indisponible/;
+    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|temporarily unavailable|en cours de maintenance|currently unavailable|momentanément indisponible|System Error/;
     if (regServerError.test(pageContent))
       this.error = "server";
       

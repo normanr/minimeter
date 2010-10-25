@@ -25,7 +25,7 @@ Minimeter["Comcast"].prototype.callback = function(step, reply) {
           
       case 2:
         reply = decodeURIComponent(reply);
-        var regErrorLogin=/Incorrect User Name or Password/;
+        var regErrorLogin=/Your Comcast ID or email and password don/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
           break;

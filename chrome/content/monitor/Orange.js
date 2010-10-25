@@ -28,10 +28,10 @@ Minimeter["Orange"].prototype.callback = function(step, reply) {
           break;
         }
         var regChargement = /Chargement en cours/;
-        var regRemaining = /consommer :&nbsp;<\/td>\s*<td class="ligne_orange"><strong><nobr>([0-9.]*) Go/;
-        var regTotal = /mois :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
+        var regRemaining = /consommer : ([0-9.]*) Go/;
+        var regTotal = /dit du mois : ([0-9.]*) Go/;
         var regUsedNoLimit = /Volume consomm&eacute; \*\* :&nbsp;<\/td>\s*<td class="ligne_orange"><strong><nobr>([0-9.< ]*)Go<\/nobr>/
-        var regSupp = /dit :&nbsp;<\/td>\s*<td class="ligne_blanche"><strong><nobr>([0-9.]*) Go/;
+        var regSupp = /dit : ([0-9.]*) Go/;
         var regErrorServer = /pas disponibles pour le moment/;
        
         if((!regRemaining.test(reply) || !regTotal.test(reply)) && !regUsedNoLimit.test(reply)){

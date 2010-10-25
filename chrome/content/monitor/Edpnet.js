@@ -29,21 +29,25 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           
       case 2:
         var reply = decodeURIComponent(reply);
-        var regViewstateID=/VIEWSTATE_ID" value="([0-9a-z-]*)"/;
-        if (!regViewstateID.test(reply)) {
+        var regPageLogin=/Login My EDPnet/;
+        if (!regPageLogin.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
-        var viewstateID = regViewstateID.exec(reply);
-        var postdata = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE_ID="+viewstateID[1]+"&__VIEWSTATE=&tbUserID="+this.username+"&tbPassword="+this.password+"&btnLogin=Login";
+        var postdata = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=&tbUserID="+this.username+"&tbPassword="+this.password+"&btnLogin=Login";
         Minimeter.http_post('http://extra.edpnet.net/login.aspx', postdata,this, 3);
         break;
           
       case 3:
         var reply = decodeURIComponent(reply);
+        var regLoginOK = /My EDPnet - Control panel/;
         var regErrorLogin=/(Invalid user ID or password|Nom d'utilisateur ou mot de passe incorrect|Foutieve gebruikersnaam of wachtwoord)/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass("edpnet");
+          break;
+        }
+        if (!regLoginOK.test(reply)) {
+          this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         if (this.ligne == '')
@@ -54,8 +58,8 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           
       case 4:
         var reply = decodeURIComponent(reply);
-        var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
-        var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[^<]*<\/td><\/tr><\/table><\/td><td align="Center" valign="Top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
+        var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="center" valign="top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
+        var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[^<]*<\/td><\/tr><\/table><\/td><td align="center" valign="top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         var numConnection;
         if(regNumConn.test(reply))
           numConnection = regNumConn.exec(reply);
@@ -81,7 +85,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         var regServerError = /temporary not avail[ai]ble/;
         var regNoLimit = /No Limit/;
 
-        var regDateEnd = /([0-9]*)-[0-9]*-[0-9]*<\/b><\/span><\/td>/;
+        var regDateEnd = /([0-9]*)-[0-9]*-[0-9]*<\/span><\/td>/;
         
         if(!regUsed.test(reply) || (!regIncluded.test(reply) && !regAllowed.test(reply))){
 					if (regServerError.test(reply))

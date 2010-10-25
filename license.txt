@@ -18,24 +18,25 @@ License.
 The Original Code is Minimeter.
 
 The Initial Developer of the Original Code is
-Tom Germeau <tom.germeau@gmail.com>.
+Tom Germeau <tom.germeau at gmail.com>.
 Portions created by the Initial Developer are Copyright (C) 2006
 the Initial Developer. All Rights Reserved.
 
 Contributor(s):
-  Tom Germeau <tom.germeau@gmail.com>
-  Thomas Bertels <tbertels@gmail.com>
-  Lukáš Drozdík <soptik.cz@seznam.cz>
-  Norman Rasmussen <norman@rasmussen.co.za>
-  pcjco <pcjco@yahoo.com>
-  Michal Matyska <michal.matyska@gmail.com>
-  Jindřich Pozlovský <jindrich@pozlovsky.net>
+  Tom Germeau <tom.germeau at gmail.com>
+  Thomas Bertels <tbertels at gmail.com>
+  Lukáš Drozdík <soptik.cz at seznam.cz>
+  Norman Rasmussen <norman at rasmussen.co.za>
+  pcjco <pcjco at yahoo.com>
+  Michal Matyska <michal.matyska at gmail.com>
+  Jindřich Pozlovský <jindrich at pozlovsky.net>
   byblo <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=749>
   myster_e <http://forum.adsl-bc.org/profile.php?mode=viewprofile&u=3897>
-  Didier Cardoso <admin@ptitgnu.be>
-  ced1202 <ced1202@servperso.com>
-  Tommy Atkinson <tommy.atkinson@nsc.co.ba>
+  Didier Cardoso <admin at ptitgnu.be>
+  ced1202 <ced1202 at servperso.com>
+  Tommy Atkinson <tommy.atkinson at nsc.co.ba>
   airtonix <http://www.geckozone.org/forum/memberlist.php?mode=viewprofile&u=35905>
-  
+  Olivier Bossaer <olivier.bossaer at gmail.com>
+
 
 ***** END LICENSE BLOCK *****
