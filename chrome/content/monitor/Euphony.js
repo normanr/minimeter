@@ -66,4 +66,5 @@ Minimeter["Euphony"].prototype.callback = function(step, reply) {
         this.remainingDays = Minimeter.getInterval("firstDayNextMonth");
         this.update(true);
       }
+  }
 }

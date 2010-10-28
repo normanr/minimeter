@@ -288,7 +288,8 @@ var Minimeter = {
               if (errorpref != "no" && errorpref != "checking") {
                 Minimeter.monitor.error = errorpref;
                 Minimeter.monitor.errorMessage = Minimeter.getString("error."+errorpref, "incomplete translation");
-                if (errorpref == "reported") {
+                if (errorpref in { "reported":1, "badLoginOrPass":1, "badLoginOrPassEd":1,
+                                    "userActionRequired":1, "cookies":1 } ) {
                   Minimeter.monitor.image = "info.png";
                   if (this.toolbarMeter != null) {
                     Minimeter.toolbarMeter.icon = Minimeter.monitor.image;

@@ -353,7 +353,8 @@ Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
           errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
           if (errorExtraMessage != '')
             this.extraMessage = Minimeter.getString("error."+errorExtraMessage, "incomplete translation");
-          if (errorpref == "reported") {
+            if (errorpref in { "reported":1, "badLoginOrPass":1, "badLoginOrPassEd":1,
+                                "userActionRequired":1, "cookies":1 } ) {
             Minimeter.monitor.image = "info.png";
             if (this.toolbarMeter != null) {
               Minimeter.toolbarMeter.icon = Minimeter.monitor.image;

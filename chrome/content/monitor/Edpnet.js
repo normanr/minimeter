@@ -42,12 +42,16 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         var reply = decodeURIComponent(reply);
         var regLoginOK = /My EDPnet - Control panel/;
         var regErrorLogin=/(Invalid user ID or password|Nom d'utilisateur ou mot de passe incorrect|Foutieve gebruikersnaam of wachtwoord)/;
+        var regManualActionNeeded = /Customer details/ // màj infos client
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass("edpnet");
           break;
         }
         if (!regLoginOK.test(reply)) {
-          this.reportError(step, this.name, encodeURIComponent(reply));
+          if (regManualActionNeeded.test(reply))
+            this.userActionRequired();
+          else
+            this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         if (this.ligne == '')
