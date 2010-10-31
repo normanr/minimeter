@@ -59,10 +59,10 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         else
           Minimeter.http_get(this.url, this, 5);
         break;
-          
+          <img src="icons\/circle_green.gif"><\/td><td>&nbsp;[^<]*<\/td><\/tr><\/tbody><\/table><\/td><td align="center" valign="top">\s*<a href="maint_dslconnection.aspx\?ID=([0-9]*)"
       case 4:
         var reply = decodeURIComponent(reply);
-        var regNumConn = /<img src='icons\/circle_green.gif'><\/td><td>&nbsp;[a-zA-Z0-9&#;]*<\/td><\/tr><\/table><\/td><td align="center" valign="top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
+        var regNumConn = /<img src=(?:'|")icons\/circle_green.gif(?:'|")><\/td><td>&nbsp;[a-zA-Z0-9&#;é]*<\/td><\/tr>(?:<\/tbody>|)<\/table><\/td><td align="center" valign="top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
         var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[^<]*<\/td><\/tr><\/table><\/td><td align="center" valign="top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
         var numConnection;
         if(regNumConn.test(reply))

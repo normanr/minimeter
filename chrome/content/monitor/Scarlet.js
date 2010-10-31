@@ -29,7 +29,7 @@ Minimeter["Scarlet"].prototype.callback = function(step, reply) {
 				break;
       case 2:
         var reply = decodeURIComponent(reply);
-        var regLoggedIn = /Mon Abonnement|Mijn abonnement"/;
+        var regLoggedIn = /Mon Abonnement|Mijn abonnement/;
         var regErrorLogin=/utilisateur ou mot de passe incorrect|gebruikersnaam of wachtwoord is fout/;
         var regServerError = /trop de tentatives de login|teveel op korte tijd aanlogt/
         if (!regLoggedIn.test(reply)) {

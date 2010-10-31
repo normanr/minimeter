@@ -40,8 +40,11 @@ Minimeter["Sat2way"].prototype.callback = function(step, reply) {
       var reg1J = /1J: ([0-9.]*) \/ ([0-9]*) Mo \(([0-9.]*)%\)/;
       var reg1S = /1S: ([0-9.]*) \/ ([0-9]*) Mo \(([0-9.]*)%\)/;
       var reg4S = /4S: ([0-9.]*) \/ ([0-9]*) Mo \(([0-9.]*)%\)/;
+      var regServerError = /temporairement indisponible/;
       
       if (!reg1H.test(reply) || !reg4H.test(reply) || !reg1J.test(reply) || !reg1S.test(reply) || !reg4S.test(reply)) {
+        if (regServerError.test(reply))
+          this.error = "server";
         this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }
