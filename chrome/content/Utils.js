@@ -316,7 +316,7 @@ Minimeter.getString = function(id, altString) {
     if (altString != null)
       retValue = altString;
     else
-      throw ex;
+      retValue = "incomplete translation";
   }
  return retValue;
 }

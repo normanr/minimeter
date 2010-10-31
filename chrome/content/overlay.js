@@ -173,7 +173,7 @@ var Minimeter = {
     }
     
     var showtext = this.prefs.getBoolPref('showtext');
-    if(showtext){
+    if(showtext || this.monitor.totalVolume === 0){
       rbox.collapsed = true;
     }
     

@@ -3,7 +3,7 @@ Minimeter.Skynet = function(username, password) {
     this.password = password;
     this.image = "skynet.png"; // does not belong in class
     this.name = "Belgacom";
-    this.url = "https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume";
+    this.url = "https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume";
     this.BgErrLoginEservices = false;
     this.priceToPay = 0;
     this.totalVolOfVPBought = 0;
@@ -30,9 +30,17 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
         this.nbOfTrials = 0;
         this.BgErrLoginEservices = false;
         
-        Minimeter.http_get("https://login.belgacom.be/EAIWeb/Login?ru=https%3A%2F%2Flogin.belgacom.be%2F&pv=fls", this, 2);
+        var postdata = "fuseaction=CheckLoginConnection&form_login="+this.username+"&form_password="+this.password+"&Langue_Id=3&Submit=Connexion";
+        Minimeter.http_post('https://admit.belgacom.be/ecare-slf/index.cfm?function=customer.overview&farg.prod_type=vp', postdata,this, 2);
+        
+        //Minimeter.http_get("https://login.belgacom.be/EAIWeb/Login?ru=https%3A%2F%2Flogin.belgacom.be%2F&pv=fls", this, 2);
         break;
         
+      case 2:
+        Minimeter.http_get("https://admit.belgacom.be/ecare-slf/index.cfm?function=customer.overview&farg.prod_type=vp", this, 5);
+        break;
+        
+       /* 
       case 2:
         var reply = decodeURIComponent(reply);
         //this.reportError(step, this.name, encodeURIComponent(reply));
@@ -201,10 +209,20 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
           Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=customer.overview&farg.prod_type=vp&farg.login="+adrQuota[1]+"&farg.login_type=connection&farg.sso_date="+adrQuota[2]+"&farg.type="+adrQuota[3]+"&farg.key="+adrQuota[4], this, 5);
         }
         
-        break;
+        break;*/
 		
-      case 5: // get number of vp bought this month
+      case 5:
         var reply = decodeURIComponent(reply);
+        var regErrorLogin = /technical error occurred/;
+        var regVolumeOk = /Overview of activated subscriptions|Mes options|Mijn opties/
+        if (regErrorLogin.test(reply)) {
+          this.badLoginOrPass("belgacom");
+          break;
+        }
+        else if (!regVolumeOk.test(reply)) {
+          this.reportError(step, this.name, encodeURIComponent(reply));
+          break;
+        }
         var ladate = new Date();
         var lemois = ladate.getMonth() + 1;
         var re = new RegExp('<span class="topInfoLine"><strong>Internet ([0-9]*)G volume pack&nbsp;</strong></span><br>\\s*</td>\\s*<td width="1" background="pics/vert_dotted_ln.gif"><img src="pics/spacer.gif" width="1" height="1"></td>\\s*<td align="center" valign="middle" width="100" style="padding:10px;">\\s*<span class="topInfoLine"><strong>[0-9]*/[0]?'+lemois+'/'+ladate.getFullYear()+'</strong></span>',"g");
@@ -232,7 +250,8 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
             //Minimeter.consoleDump(sizeofVPbought);
           }
         }
-        Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume", this, 6);
+        Minimeter.http_get("https://admit.belgacom.be/ecare-slf/index.cfm?function=connection.getVolume", this, 6);
+        //Minimeter.http_get("https://admit.belgacom.be/SKY_ECE/index.cfm?function=connection.getVolume", this, 6);
         
         break;
 

@@ -27,7 +27,7 @@ Minimeter["Videotron"].prototype.callback = function(step, reply) {
         
         if(!regDateAndUsed.test(reply)){
           var regErrorLogin = /Assurez-vous d'avoir bien inscrit votre nom d'utilisateur Internet|Beware to enter your Internet username correctly/;
-          var regErrorServer = /ne sont pas disponibles|is not available|indisponible/;
+          var regErrorServer = /ne sont pas disponibles|is not available|indisponible|System Error/;
           if (regErrorLogin.test(reply)) {
             this.badLoginOrPass();
             break;

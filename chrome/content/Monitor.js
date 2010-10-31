@@ -157,8 +157,13 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
 Minimeter.Monitor.prototype.setFlatRateWithoutInfos = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
-  this.extraMessage = Minimeter.getString("error.extraFlatRate", "Quota is not available for this flat rate connection.");
-  Minimeter.prefs.setCharPref("errorExtraMessage", "extraFlatRate");
+  this.setErrorMessageAndPref(null, "extraFlatRate");
+};
+
+Minimeter.Monitor.prototype.setFairUseOk = function(provider) {
+  this.totalVolume = 0;
+  this.usedVolume = 0;
+  this.setErrorMessageAndPref(null, "extraFairUseOk");
 };
 
 Minimeter.Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
@@ -168,13 +173,13 @@ Minimeter.Monitor.prototype.isVersionLowerThan = function(versionToCheck, versio
   return (vc.compare(versionToCheck, versionRef) < 0);
 };
 
-
-
 Minimeter.Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
-  this.error = error;
-  Minimeter.prefs.setCharPref("error", error);
-  if (setMessage === true)
-    this.errorMessage = Minimeter.getString("error."+error, "incomplete translation");
+  if (error !== null) {
+    this.error = error;
+    Minimeter.prefs.setCharPref("error", error);
+    if (setMessage === true)
+      this.errorMessage = Minimeter.getString("error."+error, "incomplete translation");
+    }
   
   if (extraError !== null) {
     Minimeter.prefs.setCharPref("errorExtraMessage", extraError);
