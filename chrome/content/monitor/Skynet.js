@@ -213,7 +213,7 @@ Minimeter["Skynet"].prototype.callback = function(step, reply) {
 		
       case 5:
         var reply = decodeURIComponent(reply);
-        var regErrorLogin = /The password you have entered is incorrect|technical error occurred/;
+        var regErrorLogin = /The password you have entered is incorrect|technical error occurred|Une erreur technique est survenue|Er is een technische fout opgetreden/;
         var regVolumeOk = /Overview of activated subscriptions|Mes options|Mijn opties/
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass("belgacom");

@@ -70,7 +70,7 @@ Minimeter["Comcast"].prototype.callback = function(step, reply) {
         
       case 5:
         reply = decodeURIComponent(reply);
-        var regusedtotal=/>([0-9]*)GB of ([0-9]*)GB/;
+        var regusedtotal=/([0-9]*)GB of ([0-9]*)GB/;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;

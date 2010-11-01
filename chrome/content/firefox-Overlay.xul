@@ -24,12 +24,12 @@
 	<window id="main-window">
 
 	<popupset id="minimeter-popupset">
-    <popup id="minimeter-context-menu">
+    <menupopup id="minimeter-context-menu">
       <menuitem label="&menu.refresh;" oncommand="Minimeter.checkNow();" />
       <menuitem id="showPage" label="&menu.stats;" oncommand="Minimeter.loadPage();" />
       <menuseparator/>
       <menuitem label="&menu.preferences;" oncommand="Minimeter.loadPrefWindow();"/>
-    </popup>
+    </menupopup>
     <tooltip orient="vertical" id="minimeter-tooltip" onpopupshowing="Minimeter.fillTooltip(this)" noautohide="true">
         <hbox style="padding-left: 4px; padding-top: 2px">  
           <image id="mtIcon" style="max-width: 16px; max-height: 16px;"/>
