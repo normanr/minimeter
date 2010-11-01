@@ -16,6 +16,8 @@ var Minimeter = {
     Minimeter.loadMonitors();
     Minimeter.loadMonitor();
     Minimeter.configureMonitors();
+    
+    Minimeter.monitor.module = Minimeter.monitor.image.substring(0,Minimeter.monitor.image.indexOf("."));
    
     if(checknow && Minimeter.canLogin())
       Minimeter.monitor.checkCache();

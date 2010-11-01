@@ -13,6 +13,7 @@ Minimeter.Monitor = function(){
 	this.pageContent = null;
   this.trialNumber = 1; // nombre de tentatives (2 tentatives avant prise en compte erreur)
   this.useSIPrefixes = false; // si true, 1 Go = 1000 Mo (et jamais d'affichage de G*i*o)
+  this.module = null;
 
 }
 
@@ -98,8 +99,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
 					Minimeter.consoleDump(dumpMessage);
 				}
 				var extVersion = this.getExtVersion();
-				var module = this.image.substring(0,this.image.indexOf("."));
-				Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&extversion="+ extVersion +"&status=check", "reportError");
+				Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&extversion="+ extVersion +"&status=check", "reportError");
       }
     }
     else { // called from Minimeter.http_post
@@ -133,8 +133,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
             this.pageContent = "&pageContent=" + this.pageContent;
             
             var extVersion = this.getExtVersion();
-            var module = this.image.substring(0,this.image.indexOf("."));
-            var regLastExtVersion = new RegExp("<lastExtVersion(-"+module+"|)>([0-9.]*)<\/lastExtVersion(-"+module+"|)>", "");
+            var regLastExtVersion = new RegExp("<lastExtVersion(-"+this.module+"|)>([0-9.]*)<\/lastExtVersion(-"+this.module+"|)>", "");
             var lastExtVersion;
             if (regLastExtVersion.test(reply)) {
               lastExtVersion = regLastExtVersion.exec(reply);
@@ -142,7 +141,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
             }
             if (!this.isVersionLowerThan(extVersion, lastExtVersion)) {
             
-              Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
+              Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
             }
 
           }
@@ -258,9 +257,8 @@ Minimeter.Monitor.prototype.errorPing = function(status) {
   if (allowPing && date != lastPing) {
 		var extVersion = this.getExtVersion();
     Minimeter.prefs.setIntPref('lastPing', date);
-    var module = this.image.substring(0,this.image.indexOf("."));
     
-    Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+module+"&version="+extVersion+"&status="+status, "errorPing");
+    Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&version="+extVersion+"&status="+status, "errorPing");
   }
 };
 
