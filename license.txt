@@ -37,6 +37,7 @@ Contributor(s):
   Tommy Atkinson <tommy.atkinson at nsc.co.ba>
   airtonix <http://www.geckozone.org/forum/memberlist.php?mode=viewprofile&u=35905>
   Olivier Bossaer <olivier.bossaer at gmail.com>
+  Jonah Bishop <support@borngeek.com> (Googlebar Lite code)
 
 
 ***** END LICENSE BLOCK *****

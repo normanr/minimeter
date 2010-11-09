@@ -46,7 +46,7 @@ Minimeter["Iinet"].prototype.callback = function(step, reply) {
         var regUsedTotOffpeak = /<b>offpeak<\/b><br>\s*<div class="usage_text">([0-9,]*)MB used of ([0-9,]*)MB/;
         var regUsedTotNonFree = /<b>non-free<\/b><br>\s*<div class="usage_text">([0-9,]*)MB used of ([0-9,]*)MB/; // Business
         var regRemainingDays = /selected>([0-9]+)/;
-        var regNoData = /no volume was recorded for your account during this period/;
+        var regNoData = /no volume\s* was recorded for your account during this period/;
         
         if((!regUsedTotNonFree.test(reply) &&  (!regUsedTotPeak.test(reply) || !regUsedTotOffpeak.test(reply)) || !regRemainingDays.test(reply)) && !regNoData.test(reply)){
           var regErrorLogin = /Sorry, we couldn't log you in to your/;
@@ -101,10 +101,14 @@ Minimeter["Iinet"].prototype.callback = function(step, reply) {
               this.extraMessage = "        Offpeak: "+ volumeUsedOffpeak + " / " + volumeTotOffpeak + mb + "\n        Peak: "+ volumeUsedPeak + " / " + volumeTotPeak + mb;
           
             }
+            this.usedVolume = volumeUsed/1000;
+            this.totalVolume = volumeTot/1000;
+            this.saveCapacity();
           }
-          
-          this.usedVolume = volumeUsed/1000;
-          this.totalVolume = volumeTot/1000;
+          else {
+            this.usedVolume = 0;
+            this.totalVolume = this.getCapacity();
+          }
           
           this.remainingDays = Minimeter.getInterval("nearestOccurence", remainingDays[1]);
           this.update(true);

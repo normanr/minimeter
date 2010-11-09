@@ -36,13 +36,17 @@ Minimeter["Bouygues"].prototype.callback = function(step, reply) {
       reply = decodeURIComponent(reply);
       var regErrorLogin=/erreur de saisie/;
       var regLoginOk = /viewDetailsConso.jsf/;
+      var regCookiesDisabled = /Vos cookies sont d/ // cookies désactivés
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
         break;
       }
       var regPageLogin = /Saisissez votre code secret/;
       if (regPageLogin.test(reply) || !regLoginOk.test(reply)) {
-        this.reportError(step, this.name, encodeURIComponent(reply));
+        if (regCookiesDisabled.test(reply))
+          this.cookiesDisabled();
+        else
+          this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }
       Minimeter.http_get("http://www.espaceclient.bouyguestelecom.fr/ECF/jsf/client/conso-factures/details-conso/viewDetailsConso.jsf", this, 4);
@@ -57,8 +61,8 @@ Minimeter["Bouygues"].prototype.callback = function(step, reply) {
       }
       var regused=/<strong><span>([0-9.]*) (Mo|Go)<\/span><\/strong>/;
       var regDateEnd = /dateEmissionFacture">([0-9]+)\/([0-9]+)\/([0-9]+)/;
-      var regtotal = /illimit/;
-      if (!regused.test(reply) || !regtotal.test(reply) || !regDateEnd.test(reply)) {
+      //var regtotal = /illimit/;
+      if (!regused.test(reply) /*|| !regtotal.test(reply)*/ || !regDateEnd.test(reply)) {
         this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }

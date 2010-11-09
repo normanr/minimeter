@@ -55,6 +55,10 @@ Minimeter.Monitor.prototype.getCapacity = function(){
 	return capacity;
 };
 
+Minimeter.Monitor.prototype.saveCapacity = function() {
+  Minimeter.prefs.setCharPref('capacitychar', this.totalVolume);
+};
+
 Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
   if (this.trialNumber < 2) {
     this.tryAgain(1);
@@ -88,7 +92,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
 			var prefService = Components.classes["@mozilla.org/preferences-service;1"]
 									 .getService(Components.interfaces.nsIPrefService).getBranch("network.cookie.");
 			if (prefService.getIntPref('cookieBehavior') != 0) {
-				this.setErrorMessageAndPref("cookies", "extraCookies", true);
+				this.cookiesDisabled();
 			}
 			else {
         this.setErrorMessageAndPref("unknown", null, false);
@@ -172,20 +176,6 @@ Minimeter.Monitor.prototype.isVersionLowerThan = function(versionToCheck, versio
   return (vc.compare(versionToCheck, versionRef) < 0);
 };
 
-Minimeter.Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
-  if (error !== null) {
-    this.error = error;
-    Minimeter.prefs.setCharPref("error", error);
-    if (setMessage === true)
-      this.errorMessage = Minimeter.getString("error."+error, "incomplete translation");
-    }
-  
-  if (extraError !== null) {
-    Minimeter.prefs.setCharPref("errorExtraMessage", extraError);
-    this.extraMessage = Minimeter.getString("error."+extraError, "incomplete translation");
-  }
-};
-
 Minimeter.Monitor.prototype.noConnectionLinked = function() {
   this.setErrorMessageAndPref("noConnectionLinked", "noConnectionLinkedExtra", true);
 
@@ -194,6 +184,18 @@ Minimeter.Monitor.prototype.noConnectionLinked = function() {
 
 Minimeter.Monitor.prototype.userActionRequired = function() {
   this.setErrorMessageAndPref("userActionRequired", "userActionRequiredExtra", true);
+
+	this.update(false);
+};
+
+Minimeter.Monitor.prototype.cookiesDisabled = function() {
+  this.setErrorMessageAndPref("cookies", "extraCookies", true);
+
+	this.update(false);
+};
+
+Minimeter.Monitor.prototype.noInfo = function() {
+  this.setErrorMessageAndPref("noInfo", null, true);
 
 	this.update(false);
 };
@@ -207,6 +209,20 @@ Minimeter.Monitor.prototype.badLoginOrPass = function(provider) {
     this.setErrorMessageAndPref("badLoginOrPass", null, true);
     
 	this.update(false);
+};
+
+Minimeter.Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
+  if (error !== null) {
+    this.error = error;
+    Minimeter.prefs.setCharPref("error", error);
+    if (setMessage === true)
+      this.errorMessage = Minimeter.getString("error."+error, "incomplete translation");
+    }
+  
+  if (extraError !== null) {
+    Minimeter.prefs.setCharPref("errorExtraMessage", extraError);
+    this.extraMessage = Minimeter.getString("error."+extraError, "incomplete translation");
+  }
 };
 
 Minimeter.Monitor.prototype.getExtVersion = function() {

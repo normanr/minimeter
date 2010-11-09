@@ -33,18 +33,24 @@ Minimeter["Orange"].prototype.callback = function(step, reply) {
         var regUsedNoLimit = /Volume consomm&eacute; \*\* :&nbsp;<\/td>\s*<td class="ligne_orange"><strong><nobr>([0-9.< ]*)Go<\/nobr>/
         var regSupp = /dit : ([0-9.]*) Go/;
         var regErrorServer = /pas disponibles pour le moment/;
+        var regSuiviConsoOk = /mon suivi conso/;
        
         if((!regRemaining.test(reply) || !regTotal.test(reply)) && !regUsedNoLimit.test(reply)){
-          if (this.trialNumber == 2 && regChargement.test(reply)) {
-            this.tryAgain(3);
-						break;
-					}
-					else {
-            if (regErrorServer.test(reply))
-              this.error = "server";
-            this.reportError(step, this.name, encodeURIComponent(reply));
+          if (regSuiviConsoOk.test(reply)) {
+            this.noInfo();
             break;
           }
+          else
+            if (this.trialNumber == 2 && regChargement.test(reply)) {
+              this.tryAgain(3);
+              break;
+            }
+            else {
+              if (regErrorServer.test(reply))
+                this.error = "server";
+              this.reportError(step, this.name, encodeURIComponent(reply));
+              break;
+            }
         }
         else {
           var volume = null;
