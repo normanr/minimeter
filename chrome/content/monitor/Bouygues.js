@@ -23,8 +23,12 @@ Minimeter["Bouygues"].prototype.callback = function(step, reply) {
     case 2:
       reply = decodeURIComponent(reply);
       var regIdCorrelation = /name="idCorrelation" value="([^"]*)"/;
+      var regVoirConso = /\/ECF\/jsf\/client\/conso-factures\/details-conso\/viewDetailsConso\.jsf/;
       if (!regIdCorrelation.test(reply)) {
-        this.reportError(step, this.name, encodeURIComponent(reply));
+        if (regVoirConso.test(reply)) // déja connecté
+          Minimeter.http_get("http://www.espaceclient.bouyguestelecom.fr/ECF/jsf/client/conso-factures/details-conso/viewDetailsConso.jsf", this, 4);
+        else
+          this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }
       var idCorrelation = regIdCorrelation.exec(reply);
@@ -35,12 +39,12 @@ Minimeter["Bouygues"].prototype.callback = function(step, reply) {
     case 3:
       reply = decodeURIComponent(reply);
       var regErrorLogin=/erreur de saisie/;
+      var regVoirConso = /\/ECF\/jsf\/client\/conso-factures\/details-conso\/viewDetailsConso\.jsf/;
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
         break;
       }
-      var regPageLogin = /Saisissez votre code secret/;
-      if (regPageLogin.test(reply)) {
+      if (!regVoirConso.test(reply)) {
         this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }
