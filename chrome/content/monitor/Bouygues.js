@@ -20,33 +20,28 @@ Minimeter["Bouygues"].prototype.callback = function(step, reply) {
       Minimeter.http_get("https://www.espaceclient.bouyguestelecom.fr/ECF/jsf/submitLogin.jsf", this, 2);
       break;
       
-    case 2:/*
+    case 2:
       reply = decodeURIComponent(reply);
-      var regIdCorrelation = /name="idCorrelation" value="(.*)"/;
+      var regIdCorrelation = /name="idCorrelation" value="([^"]*)"/;
       if (!regIdCorrelation.test(reply)) {
         this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }
       var idCorrelation = regIdCorrelation.exec(reply);
-      var postdata = "j_username="+this.username+"&j_password="+this.password+"&application_name=ecf&idCorrelation="+encodeURIComponent(idCorrelation[1]);
+      var postdata = "manageLogin%3Aiwebf_input_choix_sas=forfaitmobile&j_username="+this.username+"&j_password="+this.password+"&application_name=ESPACE_CLIENT_WEB_FORFAIT&idCorrelation="+encodeURIComponent(idCorrelation[1]);
       Minimeter.http_post('https://www.espaceclient.bouyguestelecom.fr/ECF/jsf/j_security_check', postdata,this, 3);
       break;
         
-    case 3:*/
+    case 3:
       reply = decodeURIComponent(reply);
       var regErrorLogin=/erreur de saisie/;
-      var regLoginOk = /viewDetailsConso.jsf/;
-      var regCookiesDisabled = /Vos cookies sont d/ // cookies désactivés
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
         break;
       }
       var regPageLogin = /Saisissez votre code secret/;
-      if (regPageLogin.test(reply) || !regLoginOk.test(reply)) {
-        if (regCookiesDisabled.test(reply))
-          this.cookiesDisabled();
-        else
-          this.reportError(step, this.name, encodeURIComponent(reply));
+      if (regPageLogin.test(reply)) {
+        this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }
       Minimeter.http_get("http://www.espaceclient.bouyguestelecom.fr/ECF/jsf/client/conso-factures/details-conso/viewDetailsConso.jsf", this, 4);
@@ -61,8 +56,8 @@ Minimeter["Bouygues"].prototype.callback = function(step, reply) {
       }
       var regused=/<strong><span>([0-9.]*) (Mo|Go)<\/span><\/strong>/;
       var regDateEnd = /dateEmissionFacture">([0-9]+)\/([0-9]+)\/([0-9]+)/;
-      //var regtotal = /illimit/;
-      if (!regused.test(reply) /*|| !regtotal.test(reply)*/ || !regDateEnd.test(reply)) {
+      var regtotal = /illimit/;
+      if (!regused.test(reply) || !regtotal.test(reply) || !regDateEnd.test(reply)) {
         this.reportError(step, this.name, encodeURIComponent(reply));
         break;
       }

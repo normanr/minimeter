@@ -17,8 +17,6 @@ var Minimeter = {
     Minimeter.loadMonitor();
     Minimeter.configureMonitors();
     
-    Minimeter.monitor.module = Minimeter.monitor.image.substring(0,Minimeter.monitor.image.indexOf("."));
-   
     if(checknow && Minimeter.canLogin())
       Minimeter.monitor.checkCache();
     else
@@ -33,12 +31,12 @@ var Minimeter = {
                           .getService(Components.interfaces.nsIPrefService).getBranch("extensions.");
   
     var provider = this.prefs.getCharPref('provider');
-    provider = provider.toLowerCase();
+    
     if (provider == "chellobe") {
       provider = "telenet";
       this.prefs.setCharPref('provider', provider);
     }
-  
+    
    prefExt.setCharPref("{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}.update.url",
   "http://extensions.geckozone.org/updates/Minimeter-"+provider+".rdf");
     provider = provider[0].toUpperCase() + provider.substr(1);
@@ -106,7 +104,7 @@ var Minimeter = {
   },
   
   loadMonitor: function(){
-    var provider = this.prefs.getCharPref('provider');
+    var provider = this.prefs.getCharPref('provider');;
   
     var credentials = new Minimeter.Credentials("chrome://minimeter/");
     var user = credentials.load();	
@@ -119,6 +117,7 @@ var Minimeter = {
     //eval("monitor = new " + providerClass + "(user.username, user.password)");
     this.monitor = new Minimeter[providerClass](user.username, user.password);
     //alert("loading: " + providerClass);
+    Minimeter.monitor.module = provider;
     
     document.getElementById("showPage").setAttribute("disabled", (this.monitor.url == null));
   },

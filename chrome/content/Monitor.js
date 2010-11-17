@@ -163,10 +163,16 @@ Minimeter.Monitor.prototype.setFlatRateWithoutInfos = function() {
   this.setErrorMessageAndPref(null, "extraFlatRate");
 };
 
-Minimeter.Monitor.prototype.setFairUseOk = function(provider) {
+Minimeter.Monitor.prototype.setFairUseOk = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
   this.setErrorMessageAndPref(null, "extraFairUseOk");
+};
+
+Minimeter.Monitor.prototype.setFairUseTooHigh = function() {
+  this.totalVolume = 0;
+  this.usedVolume = 0;
+  this.setErrorMessageAndPref(null, "extraFairUseTooHigh");
 };
 
 Minimeter.Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
@@ -395,7 +401,6 @@ Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
     }
   }
   else {
-    var provider = Minimeter.prefs.getCharPref('provider');
     var cache = Minimeter.prefs.getCharPref('cache');
     var now = new Date().getTime();
     
@@ -404,7 +409,7 @@ Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
     if(cache.length >= 5){ // empty cache ?
       // check time
       
-      if (cache[0] == provider) {
+      if (cache[0] == Minimeter.monitor.module) {
         var now = new Date().getTime();
         now -= (updateTimeout);
         if(cache[1] > (now + 4000) && cache[1] < (now + 4000 + updateTimeout)) {
@@ -447,12 +452,20 @@ Minimeter.Monitor.prototype.loadCache = function(isNotNewWindow){
 
 //this.extraMessage += "(from cache)";
     
+    
   if(isNotNewWindow == true)
     this.checkIfDataIsNew(true);
   else
     this.newData = false;
     
   this.notify();
+  
+  if (this.totalVolume == 0) {
+    Minimeter.statusbarMeter.showText = false;
+    var errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
+    if (errorExtraMessage == "extraFlatRate")
+      Minimeter.statusbarMeter.showProgressmeter = false;
+  }
 };
 
 Minimeter.Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
@@ -463,6 +476,8 @@ Minimeter.Monitor.prototype.checkIfDataIsNew = function(checkCacheNewData){
   {
     if(this.usedVolume != cache[2] || this.totalVolume != cache[3] || this.remainingDays != cache[4])
       this.newData = true;
+    else
+      this.newData = false;
   }
   else
     this.newData = (cache[6] == "true");

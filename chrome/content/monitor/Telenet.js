@@ -29,21 +29,24 @@ Minimeter["Telenet"].prototype.callback = function(step, reply) {
         var regOK = /ns2:RetrieveUsageResponse/;
         var regError = /ERRTLMTLS_0000([0-9])/;
         var regFairUseOk = /Uw volumeverbruik ligt in lijn met wat typisch is voor uw product/;
+        var regFairUseTooHigh = /Uw volumeverbruik ligt hoger dan wat typisch is voor uw product/;
         
-        if (!regOK.test(reply) && !regFairUseOk.test(reply)) {
+        if (!regOK.test(reply) && !regFairUseOk.test(reply) && !regFairUseTooHigh.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         
         if (!regError.test(reply)) {
         
-          if ((!regAllowed.test(reply) || !regUsed.test(reply) || !regDateEnd.test(reply)) && !regFairUseOk.test(reply)) {
+          if ((!regAllowed.test(reply) || !regUsed.test(reply) || !regDateEnd.test(reply))
+              && !regFairUseOk.test(reply) && !regFairUseTooHigh.test(reply)) {
             this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }
-          else if (regFairUseOk.test(reply)) {
+          else if (regFairUseOk.test(reply))
             this.setFairUseOk();
-          }
+            else if (regFairUseTooHigh.test(reply))
+              this.setFairUseTooHigh();
           else {
             var volumeused = regUsed.exec(reply);
             var volumetotal = regAllowed.exec(reply);

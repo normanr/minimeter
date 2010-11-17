@@ -80,8 +80,6 @@
         return 100 / this.getAttribute('size') * this.getAttribute('bar');
       </getter>
       <setter>
-				
-      	
         var r = this.getAttribute('size') / 100;
         this.setAttribute('bar', val * r);
         return val;
@@ -143,7 +141,11 @@
 					if(monitor.state ==  monitor.STATE_DONE){
 						this.label =  this.textLabel ;
 						this.setBusy(false);
-						this.animate(monitor.usedVolume / monitor.totalVolume * 100, monitor.newData);
+						var totalVolume = monitor.totalVolume <= 0 ? 0 : monitor.totalVolume;
+						if (Minimeter.prefs.getCharPref('errorExtraMessage') == "extraFairUseTooHigh")
+              this.animate(100, monitor.newData);
+            else
+              this.animate(monitor.usedVolume / totalVolume * 100, monitor.newData);
 					}
         ]]>
       </body>
@@ -155,8 +157,6 @@
       <parameter name="newData"/>
       <body>
         <![CDATA[
-        	if( Minimeter.monitor.totalVolume <= 0) newValue = 0;
-        	
         	document.getElementById("bar").removeAttribute('collapsed');
         	
         	if(!newData)
