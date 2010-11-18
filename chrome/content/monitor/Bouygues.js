@@ -60,7 +60,7 @@ Minimeter["Bouygues"].prototype.callback = function(step, reply) {
       }
       var regused=/<strong><span>([0-9.]*) (Mo|Go)<\/span><\/strong>/;
       var regDateEnd = /dateEmissionFacture">([0-9]+)\/([0-9]+)\/([0-9]+)/;
-      var regtotal = /illimit/;
+      var regtotal = /(?:illimit|3G\+ 24\/24)/;
       if (!regused.test(reply) || !regtotal.test(reply) || !regDateEnd.test(reply)) {
         this.reportError(step, this.name, encodeURIComponent(reply));
         break;
