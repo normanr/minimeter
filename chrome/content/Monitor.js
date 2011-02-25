@@ -459,10 +459,10 @@ Minimeter.Monitor.prototype.loadCache = function(isNotNewWindow){
   this.notify();
   
   if (this.totalVolume == 0) {
-    Minimeter.statusbarMeter.showText = false;
+    Minimeter.statusbarMeter.showProgressmeter = false;
     var errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
     if (errorExtraMessage == "extraFlatRate")
-      Minimeter.statusbarMeter.showProgressmeter = false;
+      Minimeter.statusbarMeter.showText = false;
   }
 };
 
