@@ -32,12 +32,16 @@ Minimeter["Dommel"].prototype.callback = function(step, reply) {
       break;
     case 2:
       reply = decodeURIComponent(reply);
+      var regConnOk = /my packages|mijn pakketten/;
       var regErrorLogin=/your login is incorrect|uw paswoord werd niet aanvaard/;
       if (regErrorLogin.test(reply)) {
         this.badLoginOrPass();
         break;
       }
-      Minimeter.http_get('https://crm.schedom-europe.net/user.php?op=view&tile=mypackages', this, 3);
+      if (!regConnOk.test(reply))
+        this.reportError(step, this.name, encodeURIComponent(reply));
+      else
+        Minimeter.http_get('https://crm.schedom-europe.net/user.php?op=view&tile=mypackages', this, 3);
       break;
     case 3:
       reply = decodeURIComponent(reply);

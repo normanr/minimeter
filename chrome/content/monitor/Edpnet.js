@@ -3,11 +3,11 @@ Minimeter.Edpnet = function(username, password) {
     this.password = password;
     this.image = "edpnet.png"; // does not belong in class
     this.name = "EDPnet";
-    this.url = "http://extra.edpnet.net/login.aspx";
+    this.url = "http://extra.edpnet.net/src/login.aspx";
     this.ligne = '';
     if(username.indexOf(",") > 0) {
       this.ligne = username.substr(username.indexOf(",")+1);
-      this.url = "http://extra.edpnet.net/maint_dslconnection.aspx?ID="+this.ligne;
+      this.url = "http://extra.edpnet.net/src/maint_dslconnection.aspx?ID="+this.ligne;
     }
 };
 
@@ -24,7 +24,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        Minimeter.http_get("http://extra.edpnet.net/login.aspx", this, 2);
+        Minimeter.http_get("http://extra.edpnet.net/src/login.aspx", this, 2);
         break;
           
       case 2:
@@ -34,14 +34,14 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
-        var postdata = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=&tbUserID="+this.username+"&tbPassword="+this.password+"&btnLogin=Login";
-        Minimeter.http_post('http://extra.edpnet.net/login.aspx', postdata,this, 3);
+        var postdata = "__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=&ctl00%24MainContent%24tbUserID="+this.username+"&ctl00%24MainContent%24tbPassword="+this.password+"&ctl00%24MainContent%24btnLogin=Login+%C2%BB";
+        Minimeter.http_post('http://extra.edpnet.net/src/login.aspx', postdata,this, 3);
         break;
           
       case 3:
         var reply = decodeURIComponent(reply);
-        var regLoginOK = /My EDPnet - Control panel/;
-        var regErrorLogin=/(Invalid user ID or password|Nom d'utilisateur ou mot de passe incorrect|Foutieve gebruikersnaam of wachtwoord)/;
+        var regLoginOK = /Logged in as/;
+        var regErrorLogin=/The provided combination is not known by the/;
         var regManualActionNeeded = /Customer details/ // màj infos client
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass("edpnet");
@@ -61,8 +61,8 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         break;
       case 4:
         var reply = decodeURIComponent(reply);
-        var regNumConn = /<img src=(?:'|")icons\/circle_green.gif(?:'|")><\/td><td>&nbsp;[a-zA-Z0-9&#;é]*<\/td><\/tr>(?:<\/tbody>|)<\/table><\/td><td align="center" valign="top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
-        var regNumConnYellow = /<img src='icons\/circle_orange.gif'><\/td><td>&nbsp;[^<]*<\/td><\/tr><\/table><\/td><td align="center" valign="top">\s*<a href='maint_dslconnection.aspx\?ID=([0-9]*)'/;
+        var regNumConn = /<td class = (?:'|")status_g(?:'|")>[a-zA-Z0-9&#;é]*<\/td><\/tr><\/table><\/td><td class="align-top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
+        var regNumConnYellow = /<td class = (?:'|")status_y(?:'|")>[a-zA-Z0-9&#;é]*<\/td><\/tr><\/table><\/td><td class="align-top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
         var numConnection;
         if(regNumConn.test(reply))
           numConnection = regNumConn.exec(reply);
@@ -80,11 +80,11 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           
       case 5:
         var reply = decodeURIComponent(reply);
-        var regUsed = /(Consommation en total \(Net\)|Totaal verbruik \(Netto\)|Total Consumption \(Net\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
-        var regUsedBrut = /(Consommation en total \(Brut\)|Totaal verbruik \(Bruto\)|Total Consumption \(Gross\))<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">[0-9.,]*<\/td>\s*<td align="right">([0-9.,]*)<\/td>/;
-        var regIncluded = /(Trafic compris \(gratuit\) |Inbegrepen \(gratis\) trafiek|Included \(Free\) Traffic):<\/td><td align="right">([0-9.]*)<\/td>/;
-        var regAllowed = /(Trafic maximum autorisé en Mo|Maximum toegestane trafiek in MB|Maximum Allowed Traffic in MB):<\/td><td align="right">([0-9.]*)<\/td>/;
-        var regBonus = /(Bonus d'ancienneté en Mo:|Getrouwheidsbonus in MB|Loyalty bonus in MB)<\/td><td align="right">([0-9.]*)<\/td>/;
+        var regUsed = /(Consommation en total \(Net\)|Totaal verbruik \(Netto\)|Total Consumption \(Net\))<\/td>\s*<td>[0-9.,]*<\/td>\s*<td>[0-9.,]*<\/td>\s*<td>([0-9.,]*)<\/td>/;
+        var regUsedBrut = /(Consommation en total \(Brut\)|Totaal verbruik \(Bruto\)|Total Consumption \(Gross\))<\/td>\s*<td>[0-9.,]*<\/td>\s*<td>[0-9.,]*<\/td>\s*<td>([0-9.,]*)<\/td>/;
+        var regIncluded = /(Trafic compris \(gratuit\) |Inbegrepen \(gratis\) trafiek|Included \(Free\) Traffic):<\/td><td>([0-9.]*)<\/td>/;
+        var regAllowed = /(Trafic maximum autorisé en Mo|Maximum toegestane trafiek in MB|Maximum Allowed Traffic in MB):<\/td><td>([0-9.]*)<\/td>/;
+        var regBonus = /(Bonus d'ancienneté en Mo:|Getrouwheidsbonus in MB|Loyalty bonus in MB)<\/td><td>([0-9.]*)<\/td>/;
         var regServerError = /temporary not avail[ai]ble/;
         var regNoLimit = /No Limit/;
 

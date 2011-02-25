@@ -6,6 +6,7 @@ var Minimeter = {
   statusbarMeter: null,
   singleClick: true,
   OriginalCustomizeDone: null,
+  version: '',
   
   initialize: function(){
     if (Minimeter.monitor == null)
@@ -13,6 +14,7 @@ var Minimeter = {
   
     var checknow = !Minimeter.prefs.getBoolPref('click_check');
   
+    Minimeter.getExtVersion();
     Minimeter.loadMonitors();
     Minimeter.loadMonitor();
     Minimeter.configureMonitors();
@@ -289,6 +291,8 @@ var Minimeter = {
               if (errorpref != "no" && errorpref != "checking") {
                 Minimeter.monitor.error = errorpref;
                 Minimeter.monitor.errorMessage = Minimeter.getString("error."+errorpref, "incomplete translation");
+                if (errorpref == "unknown")
+                  Minimeter.monitor.errorMessage = Minimeter.monitor.errorMessage.replace("%monitor", Minimeter.monitor.name);
                 if (errorpref in { "reported":1, "badLoginOrPass":1, "badLoginOrPassEd":1,
                                     "userActionRequired":1, "cookies":1 } ) {
                   Minimeter.monitor.image = "info.png";
@@ -330,8 +334,32 @@ var Minimeter = {
         }
       }catch(ex){Minimeter.consoleDump(ex);}
     }
+  },
+  
+  getExtVersion: function() {
+    if (Minimeter.version == "") {
+      var addonID = "{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}";
+      var ascope = {};
+      if (typeof(Components.classes["@mozilla.org/extensions/manager;1"]) != 'undefined') { // < Firefox 4
+        var nsIUpdateItem = Components.interfaces.nsIUpdateItem;
+        var itemType = nsIUpdateItem.TYPE_EXTENSION;
+        var liExtensionManager = Components.classes["@mozilla.org/extensions/manager;1"]
+                      .getService(Components.interfaces.nsIExtensionManager);
+                  
+        var items = liExtensionManager.getItemList(itemType, { });
+        for (var i in items) {
+          if (items[i].id == addonID ) {
+            Minimeter.version = items[i].version;
+          }
+        }
+      }
+      else
+        if (typeof(Components.utils) != 'undefined' && typeof(Components.utils.import) != 'undefined') {
+          Components.utils.import("resource://gre/modules/AddonManager.jsm", ascope);
+          ascope.AddonManager.getAddonByID(addonID, function (addon) { Minimeter.version = addon.version; } );
+        }
+    }
   }
-
 
 };
 

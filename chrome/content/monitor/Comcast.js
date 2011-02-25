@@ -47,9 +47,13 @@ Minimeter["Comcast"].prototype.callback = function(step, reply) {
       case 3:
         reply = decodeURIComponent(reply);
         
-        var regHome = /Retrieving your account information, one moment please/;
-        if (!regHome.test(reply)) {
-          this.reportError(step, this.name, encodeURIComponent(reply));
+        var regLoadingHome = /Retrieving your account information, one moment please/;
+        var regHome = /My Account Summary/;
+        if (!regLoadingHome.test(reply)) {
+          if (!regHome.test(reply))
+            this.reportError(step, this.name, encodeURIComponent(reply));
+          else
+            Minimeter.http_get("https://customer.comcast.com/Secure/Users.aspx", this, step+2);
           break;
         }
         
@@ -59,13 +63,14 @@ Minimeter["Comcast"].prototype.callback = function(step, reply) {
       case 4:
         reply = decodeURIComponent(reply);
         
-        var regHome = /Retrieving your account information, one moment please/;
-        if (!regHome.test(reply)) {
+        var regHomeLoad = /Retrieving your account information, one moment please/;
+        var regHome = /My Account Summary/;
+        if (!regHomeLoad.test(reply) && !regHome.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
         
-        Minimeter.http_get("https://customer.comcast.com/Secure/DeviceListAjaxResponse.aspx", this, step+1);
+        Minimeter.http_get("https://customer.comcast.com/Secure/Users.aspx", this, step+1);
         break;
         
       case 5:

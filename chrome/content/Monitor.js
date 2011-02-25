@@ -1,5 +1,5 @@
 Minimeter.Monitor = function(){
-
+  // this. dans Monitor.js = Minimeter.monitor. ici
 	this.listeners = new Minimeter.JArray();
   this.state = this.STATE_DONE;	
   this.errorMessage = '';
@@ -14,6 +14,7 @@ Minimeter.Monitor = function(){
   this.trialNumber = 1; // nombre de tentatives (2 tentatives avant prise en compte erreur)
   this.useSIPrefixes = false; // si true, 1 Go = 1000 Mo (et jamais d'affichage de G*i*o)
   this.module = null;
+  this.reply = null;
 
 }
 
@@ -59,27 +60,37 @@ Minimeter.Monitor.prototype.saveCapacity = function() {
   Minimeter.prefs.setCharPref('capacitychar', this.totalVolume);
 };
 
-Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, reply) {
+Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, reply, callbackVersion) {
   if (this.trialNumber < 2) {
     this.tryAgain(1);
     return;
   }
-  if (pageContent !== null) {
-    pageContent = decodeURIComponent(pageContent);
-    var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|temporarily unavailable|en cours de maintenance|currently unavailable|momentanément indisponible|System Error/;
-    if (regServerError.test(pageContent))
-      this.error = "server";
-      
-    this.cleanPage(encodeURIComponent(pageContent));
-    this.pageContent = this.pageContent + "&step="+ step;
+  
+  if (callbackVersion != true) {
+    if (pageContent !== null) {
+      pageContent = decodeURIComponent(pageContent);
+      var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|temporarily unavailable|en cours de maintenance|currently unavailable|momentanément indisponible|System Error/;
+      if (regServerError.test(pageContent))
+        this.error = "server";
+        
+      this.cleanPage(encodeURIComponent(pageContent));
+      this.pageContent = this.pageContent + "&step="+ step;
+    }
+    this.reply = reply; // save reply the first time we encounter it
+  }
+  reply = this.reply; // avoid modifying further code
+  
+  if (Minimeter.version == "") { // depuis Firefox 4 obtention asynchrone de la version -> callback
+    setTimeout("Minimeter.monitor.reportError('"+step+"', '"+monitor+"', null, null, true);", 2000); // callbackVersion
+    return;
   }
 
   if (this.error == "connection" || this.error == "server") {
-    this.setErrorMessageAndPref(this.error, null, true);
+    this.setErrorMessagesAndPrefs(this.error, null, true);
     if (this.error == "connection")
       setTimeout("Minimeter.monitor.check('silent');", 60000);
     else
-    {
+    { // server error
       setTimeout("Minimeter.monitor.check('silent');", this.errorTimeoutRetry);
       this.errorTimeoutRetry = this.errorTimeoutRetry *2; // pour éviter de surcharger le serveur
       var updateTimeout = Minimeter.prefs.getIntPref("updateTimeout") * 1000;
@@ -94,23 +105,23 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
 			if (prefService.getIntPref('cookieBehavior') != 0) {
 				this.cookiesDisabled();
 			}
-			else {
-        this.setErrorMessageAndPref("unknown", null, false);
+			else { // module error
+        this.setErrorMessagesAndPrefs("unknown", "", true);
+        this.errorMessage = this.errorMessage.replace("%monitor", monitor);
 				this.errorPing("failed");
 				if (step !== null) {
 					var dumpMessage = Minimeter.getString("error.unknownErrorDump", "Undefined error on step n°%step in the module %monitor").replace("%step", step);
 					dumpMessage = dumpMessage.replace("%monitor", monitor);
 					Minimeter.consoleDump(dumpMessage);
 				}
-				var extVersion = this.getExtVersion();
-				Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&extversion="+ extVersion +"&status=check", "reportError");
+				Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&extversion="+ this.version +"&status=check", "reportError");
       }
     }
     else { // called from Minimeter.http_post
       reply = decodeURIComponent(reply);
       var regoldversion = /oldversion/;
       if (regoldversion.test(reply)) {
-        this.setErrorMessageAndPref("reported", "extraReported", true);
+        this.setErrorMessagesAndPrefs("reported", "extraReported", true);
         
         var prefService = Components.classes["@mozilla.org/preferences-service;1"]
 									 .getService(Components.interfaces.nsIPrefService);
@@ -124,10 +135,9 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
       }
       else {
         var sendDebug = Minimeter.prefs.getBoolPref('sendDebug');
-        this.errorMessage = Minimeter.getString("error.unknown", "Module error");
+       
         if (!sendDebug) {
-          this.extraMessage = Minimeter.getString("error.extraDebug", "You can make it possible to correct the module\nby enabling the corresponding option in Minimeter settings.");
-          Minimeter.prefs.setCharPref("errorExtraMessage", "extraDebug");
+          this.setErrorMessagesAndPrefs(null, "extraDebug", true);
         }
         
         var regTestDebug = /debug/;
@@ -135,17 +145,15 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
         if (regTestDebug.test(reply) /*&& this.pageContent !== null*/) {
           if (sendDebug) {
             this.pageContent = "&pageContent=" + this.pageContent;
-            
-            var extVersion = this.getExtVersion();
             var regLastExtVersion = new RegExp("<lastExtVersion(-"+this.module+"|)>([0-9.]*)<\/lastExtVersion(-"+this.module+"|)>", "");
             var lastExtVersion;
             if (regLastExtVersion.test(reply)) {
               lastExtVersion = regLastExtVersion.exec(reply);
               lastExtVersion = lastExtVersion[2];
             }
-            if (!this.isVersionLowerThan(extVersion, lastExtVersion)) {
+            if (!this.isVersionLowerThan(this.version, lastExtVersion)) {
             
-              Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+this.pageContent+"&version="+extVersion+"&status=debug", "errorPing");
+              Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+this.pageContent+"&version="+this.version+"&status=debug", "errorPing");
             }
 
           }
@@ -160,19 +168,19 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
 Minimeter.Monitor.prototype.setFlatRateWithoutInfos = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
-  this.setErrorMessageAndPref(null, "extraFlatRate");
+  this.setErrorMessagesAndPrefs(null, "extraFlatRate");
 };
 
 Minimeter.Monitor.prototype.setFairUseOk = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
-  this.setErrorMessageAndPref(null, "extraFairUseOk");
+  this.setErrorMessagesAndPrefs(null, "extraFairUseOk");
 };
 
 Minimeter.Monitor.prototype.setFairUseTooHigh = function() {
   this.totalVolume = 0;
   this.usedVolume = 0;
-  this.setErrorMessageAndPref(null, "extraFairUseTooHigh");
+  this.setErrorMessagesAndPrefs(null, "extraFairUseTooHigh");
 };
 
 Minimeter.Monitor.prototype.isVersionLowerThan = function(versionToCheck, versionRef) {
@@ -183,69 +191,53 @@ Minimeter.Monitor.prototype.isVersionLowerThan = function(versionToCheck, versio
 };
 
 Minimeter.Monitor.prototype.noConnectionLinked = function() {
-  this.setErrorMessageAndPref("noConnectionLinked", "noConnectionLinkedExtra", true);
+  this.setErrorMessagesAndPrefs("noConnectionLinked", "noConnectionLinkedExtra", true);
 
 	this.update(false);
 };
 
 Minimeter.Monitor.prototype.userActionRequired = function() {
-  this.setErrorMessageAndPref("userActionRequired", "userActionRequiredExtra", true);
+  this.setErrorMessagesAndPrefs("userActionRequired", "userActionRequiredExtra", true);
 
 	this.update(false);
 };
 
 Minimeter.Monitor.prototype.cookiesDisabled = function() {
-  this.setErrorMessageAndPref("cookies", "extraCookies", true);
+  this.setErrorMessagesAndPrefs("cookies", "extraCookies", true);
 
 	this.update(false);
 };
 
 Minimeter.Monitor.prototype.noInfo = function() {
-  this.setErrorMessageAndPref("noInfo", null, true);
+  this.setErrorMessagesAndPrefs("noInfo", null, true);
 
 	this.update(false);
 };
 
 Minimeter.Monitor.prototype.badLoginOrPass = function(provider) {
   if(provider=="belgacom")
-    this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassBg", true);
+    this.setErrorMessagesAndPrefs("badLoginOrPass", "badLoginOrPassBg", true);
   else if (provider=="edpnet")
-    this.setErrorMessageAndPref("badLoginOrPass", "badLoginOrPassEd", true);
+    this.setErrorMessagesAndPrefs("badLoginOrPass", "badLoginOrPassEd", true);
   else
-    this.setErrorMessageAndPref("badLoginOrPass", null, true);
+    this.setErrorMessagesAndPrefs("badLoginOrPass", null, true);
     
 	this.update(false);
 };
 
-Minimeter.Monitor.prototype.setErrorMessageAndPref = function(error, extraError, setMessage) {
+Minimeter.Monitor.prototype.setErrorMessagesAndPrefs = function(error, extraError, setMessage) {
   if (error !== null) {
     this.error = error;
     Minimeter.prefs.setCharPref("error", error);
-    if (setMessage === true)
+    if (setMessage === true && error != "")
       this.errorMessage = Minimeter.getString("error."+error, "incomplete translation");
     }
   
   if (extraError !== null) {
     Minimeter.prefs.setCharPref("errorExtraMessage", extraError);
-    this.extraMessage = Minimeter.getString("error."+extraError, "incomplete translation");
+    if (extraError != "")
+      this.extraMessage = Minimeter.getString("error."+extraError, "incomplete translation");
   }
-};
-
-Minimeter.Monitor.prototype.getExtVersion = function() {
-  var nsIUpdateItem = Components.interfaces.nsIUpdateItem;
-  var itemType = nsIUpdateItem.TYPE_EXTENSION;
-  var liExtensionManager = Components.classes["@mozilla.org/extensions/manager;1"]
-                .getService(Components.interfaces.nsIExtensionManager);
-            
-  var items = liExtensionManager.getItemList(itemType, { });
-  var extVersion;
-  for (var i in items) {
-    if (items[i].id == "{08ab63e1-c4bc-4fb7-a0b2-55373b596eb7}" ) {
-      extVersion = items[i].version;
-    }
-  }
-  
-  return extVersion;
 };
 
 Minimeter.Monitor.prototype.cleanPage = function(pageContent) {
@@ -272,15 +264,18 @@ Minimeter.Monitor.prototype.cleanPage = function(pageContent) {
 };
 
 Minimeter.Monitor.prototype.errorPing = function(status) {
+  if (this.version == "") {
+    setTimeout("Minimeter.monitor.errorPing('"+status+"');", 2000);
+    return;
+  }
   var date = new Date().getDate();
   var allowPing = Minimeter.prefs.getBoolPref('allowPing');
   var lastPing = Minimeter.prefs.getIntPref('lastPing');
 
   if (allowPing && date != lastPing) {
-		var extVersion = this.getExtVersion();
     Minimeter.prefs.setIntPref('lastPing', date);
     
-    Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&version="+extVersion+"&status="+status, "errorPing");
+    Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&version="+this.version+"&status="+status, "errorPing");
   }
 };
 
@@ -348,6 +343,7 @@ Minimeter.Monitor.prototype.notify = function(){
 
 Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
   var updateTimeout = Minimeter.prefs.getIntPref('updateTimeout');
+  var errorExtraMessage;
   if (updateTimeout < 60) {
     if (updateTimeout == 0)
       updateTimeout = 1;
@@ -375,11 +371,13 @@ Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
           this.state = this.STATE_ERROR;
           this.error = errorpref;
           this.errorMessage = Minimeter.getString("error."+this.error, "incomplete translation");
-          errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
+          if (this.error == "unknown")
+            Minimeter.monitor.errorMessage = this.errorMessage.replace("%monitor", Minimeter.monitor.name);
+          errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage'); // ne pas utiliser setErrorMessagesAndPrefs
           if (errorExtraMessage != '')
             this.extraMessage = Minimeter.getString("error."+errorExtraMessage, "incomplete translation");
-            if (errorpref in { "reported":1, "badLoginOrPass":1, "badLoginOrPassEd":1,
-                                "userActionRequired":1, "cookies":1 } ) {
+          if (errorpref in { "reported":1, "badLoginOrPass":1, "badLoginOrPassEd":1,
+                              "userActionRequired":1, "cookies":1 } ) {
             Minimeter.monitor.image = "info.png";
             if (this.toolbarMeter != null) {
               Minimeter.toolbarMeter.icon = Minimeter.monitor.image;

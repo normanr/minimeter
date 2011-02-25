@@ -239,6 +239,13 @@ Minimeter.encode64 = function(str) {
 
 	return res;
 }
+/*
+Minimeter.addslashes = function(ch){
+  ch = ch.replace(/\\/g,"\\\\")
+  ch = ch.replace(/\'/g,"\\'")
+  ch = ch.replace(/\"/g,"\\\"")
+  return ch;
+}*/
 
 Minimeter.debug = function(va){
       const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"]
