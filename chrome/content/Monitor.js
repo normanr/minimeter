@@ -114,7 +114,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
 					dumpMessage = dumpMessage.replace("%monitor", monitor);
 					Minimeter.consoleDump(dumpMessage);
 				}
-				Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&extversion="+ this.version +"&status=check", "reportError");
+				Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&extversion="+ Minimeter.version +"&status=check", "reportError");
       }
     }
     else { // called from Minimeter.http_post
@@ -151,9 +151,9 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
               lastExtVersion = regLastExtVersion.exec(reply);
               lastExtVersion = lastExtVersion[2];
             }
-            if (!this.isVersionLowerThan(this.version, lastExtVersion)) {
+            if (!this.isVersionLowerThan(Minimeter.version, lastExtVersion)) {
             
-              Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+this.pageContent+"&version="+this.version+"&status=debug", "errorPing");
+              Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+this.pageContent+"&version="+Minimeter.version+"&status=debug", "errorPing");
             }
 
           }
@@ -264,7 +264,7 @@ Minimeter.Monitor.prototype.cleanPage = function(pageContent) {
 };
 
 Minimeter.Monitor.prototype.errorPing = function(status) {
-  if (this.version == "") {
+  if (Minimeter.version == "") {
     setTimeout("Minimeter.monitor.errorPing('"+status+"');", 2000);
     return;
   }
@@ -275,7 +275,7 @@ Minimeter.Monitor.prototype.errorPing = function(status) {
   if (allowPing && date != lastPing) {
     Minimeter.prefs.setIntPref('lastPing', date);
     
-    Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&version="+this.version+"&status="+status, "errorPing");
+    Minimeter.http_post("http://extensions.geckozone.org/actions/minimeter.php", "module="+this.module+"&version="+Minimeter.version+"&status="+status, "errorPing");
   }
 };
 
