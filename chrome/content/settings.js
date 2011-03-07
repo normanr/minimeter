@@ -16,7 +16,7 @@
                             "_Russia", "Omsk:Omsk TeleCommunications",
                             "_South Africa", "Cybersmart", "Iburst", "#Internetsolutions:Internet Solutions", "#Saix:Saix ISPs", "#Mweb",
                             "_Turkey", "#Turk:Türk Telekom",
-                            "_United Kingdom", "Bt",
+                            "_United Kingdom", "BT",
                             "_United States", "Comcast"
                             );
                             

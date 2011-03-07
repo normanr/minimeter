@@ -29,7 +29,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           
       case 2:
         var reply = decodeURIComponent(reply);
-        var regPageLogin=/Login My EDPnet/;
+        var regPageLogin=/My EDPnet - Login/;
         if (!regPageLogin.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
@@ -40,7 +40,7 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           
       case 3:
         var reply = decodeURIComponent(reply);
-        var regLoginOK = /Logged in as/;
+        var regLoginOK = /Dashboard/;
         var regErrorLogin=/The provided combination is not known by the/;
         var regManualActionNeeded = /Customer details/ // màj infos client
         if (regErrorLogin.test(reply)) {
@@ -61,8 +61,9 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
         break;
       case 4:
         var reply = decodeURIComponent(reply);
-        var regNumConn = /<td class = (?:'|")status_g(?:'|")>[a-zA-Z0-9&#;é]*<\/td><\/tr><\/table><\/td><td class="align-top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
-        var regNumConnYellow = /<td class = (?:'|")status_y(?:'|")>[a-zA-Z0-9&#;é]*<\/td><\/tr><\/table><\/td><td class="align-top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
+        var regNumConn = /<td class = (?:'|")status_g(?:'|")>[a-zA-Z0-9&#;é ]*<\/td><\/tr><\/table><\/td><td class="align-top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
+        var regNumConnYellow = /<td class = (?:'|")status_y(?:'|")>[a-zA-Z0-9&#;é ]*<\/td><\/tr><\/table><\/td><td class="align-top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
+        var regNumConnRed = /<td class = (?:'|")status_r(?:'|")>[a-zA-Z0-9&#;é ]*<\/td><\/tr><\/table><\/td><td class="align-top">\s*<a href=(?:'|")maint_dslconnection.aspx\?ID=([0-9]*)(?:'|")/;
         var numConnection;
         if(regNumConn.test(reply))
           numConnection = regNumConn.exec(reply);
@@ -70,7 +71,10 @@ Minimeter["Edpnet"].prototype.callback = function(step, reply) {
           if (regNumConnYellow.test(reply))
             numConnection = regNumConnYellow.exec(reply);
           else {
-            this.reportError(step, this.name, encodeURIComponent(reply));
+            if (regNumConnRed.test(reply))
+              this.userActionRequired();
+            else
+              this.reportError(step, this.name, encodeURIComponent(reply));
             break;
           }
 

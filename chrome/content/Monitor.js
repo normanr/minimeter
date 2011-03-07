@@ -69,7 +69,7 @@ Minimeter.Monitor.prototype.reportError = function(step, monitor, pageContent, r
   if (callbackVersion != true) {
     if (pageContent !== null) {
       pageContent = decodeURIComponent(pageContent);
-      var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|temporarily unavailable|en cours de maintenance|currently unavailable|momentanément indisponible|System Error/;
+      var regServerError = /Service Unavailable|Service Temporarily Unavailable|temporary not avail[ai]ble|temporarily unavailable|maintenance|currently unavailable|momentanément indisponible|System Error/;
       if (regServerError.test(pageContent))
         this.error = "server";
         
@@ -387,7 +387,8 @@ Minimeter.Monitor.prototype.checkCache = function(calledByTimeout){
               Minimeter.statusbarMeter.icon = Minimeter.monitor.image;
               Minimeter.statusbarMeter.showIcon = true;
             }
-            Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
+            if (errorpref == "reported")
+              Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
           }
         }
         this.notify();
@@ -459,10 +460,12 @@ Minimeter.Monitor.prototype.loadCache = function(isNotNewWindow){
   this.notify();
   
   if (this.totalVolume == 0) {
-    Minimeter.statusbarMeter.showProgressmeter = false;
+    var errorMessage = Minimeter.prefs.getCharPref('error');
+    if (errorMessage == "no")
+      Minimeter.statusbarMeter.showText = false;
     var errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
     if (errorExtraMessage == "extraFlatRate")
-      Minimeter.statusbarMeter.showText = false;
+      Minimeter.statusbarMeter.showProgressmeter = false;
   }
 };
 

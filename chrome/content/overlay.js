@@ -289,6 +289,7 @@ var Minimeter = {
             }
             else
               if (errorpref != "no" && errorpref != "checking") {
+                Minimeter.statusbarMeter.showText = true;
                 Minimeter.monitor.error = errorpref;
                 Minimeter.monitor.errorMessage = Minimeter.getString("error."+errorpref, "incomplete translation");
                 if (errorpref == "unknown")
@@ -304,7 +305,8 @@ var Minimeter = {
                     Minimeter.statusbarMeter.icon = Minimeter.monitor.image;
                     Minimeter.statusbarMeter.showIcon = true;
                   }
-                  Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
+                  if (Minimeter.prefs.getCharPref('url') != "")
+                    Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
                 }
                 Minimeter.monitor.state = Minimeter.monitor.STATE_ERROR;
                 Minimeter.monitor.notify();
@@ -327,9 +329,12 @@ var Minimeter = {
             var errorExtraMessage = Minimeter.prefs.getCharPref('errorExtraMessage');
             if (errorExtraMessage != '')
               Minimeter.monitor.extraMessage = Minimeter.getString("error."+errorExtraMessage, "incomplete translation");
+            else
+              Minimeter.monitor.extraMessage = "";
             break;
           case "url":
-            Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
+            if (Minimeter.prefs.getCharPref('url') != "")
+              Minimeter.monitor.url = Minimeter.prefs.getCharPref('url');
             break;
         }
       }catch(ex){Minimeter.consoleDump(ex);}

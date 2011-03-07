@@ -3,7 +3,7 @@ Minimeter.Tmobile = function(username, password) {
     this.password = password;
     this.image = "tmobile.png";
     this.name = "T-Mobile";
-    this.url = "https://mein.t-mobile.de/cpc-sp/actiondispatcher";
+    this.url = "https://mein.t-mobile.de/cpc-sp/loginhomepage.do";
 }
 
 Minimeter["Tmobile"].prototype = new Minimeter.Monitor();
@@ -18,13 +18,13 @@ Minimeter["Tmobile"].prototype.callback = function(step, reply) {
     {
       default:
       case 1:
-        var postdata = "idp=tmd&username="+this.username+"&password="+this.password+"&Login=Login";
-        Minimeter.http_post("https://mein.t-mobile.de/cpc-sp/actiondispatcher?action=loginnow", postdata,this, 2);
+        var postdata = "idp=TMD&target=%2Fcpc%2FshowHomepage.do%3FSiteSRC%3Dtelekom.de&username="+this.username+"&password="+this.password+"&Login=Login";
+        Minimeter.http_post("https://mein.t-mobile.de/cpc-sp/loginhomepage.do", postdata,this, 2);
         break;
           
       case 2:
         reply = decodeURIComponent(reply);
-        var regErrorLogin=/Benutzername oder Passwort ist falsch/;
+        var regErrorLogin=/Benutzername oder Passwort Ihres Kund/;
         if (regErrorLogin.test(reply)) {
           this.badLoginOrPass();
           break;

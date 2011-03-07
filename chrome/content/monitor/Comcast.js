@@ -1,10 +1,13 @@
 
 Minimeter.Comcast = function(username, password) {
-    this.username = username;
+    this.username = username.indexOf(',') != -1 ? username.substr(0,username.indexOf(',')) : username;
     this.password = password;
     this.image = "comcast.png";
     this.name = "Comcast";
     this.url = "https://customer.comcast.com/Secure/Users.aspx";
+    this.ligne = '';
+    if(username.indexOf(",") > 0)
+      this.ligne = username.substr(username.indexOf(",")+1);
 }
 
 Minimeter["Comcast"].prototype = new Minimeter.Monitor();
@@ -75,12 +78,25 @@ Minimeter["Comcast"].prototype.callback = function(step, reply) {
         
       case 5:
         reply = decodeURIComponent(reply);
-        var regusedtotal=/([0-9]*)GB of ([0-9]*)GB/;
+        var regusedtotal=/([0-9]*)GB of ([0-9]*)GB/g;
+        var volumeusedtotal;
         if (!regusedtotal.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
-        var volumeusedtotal = regusedtotal.exec(reply);
+        regusedtotal.lastIndex = 0; // reset match counter
+        volumeusedtotal = regusedtotal.exec(reply);
+        if (this.ligne != '') {
+          var i=1;
+          var volumeusedtotalback;
+          while (i<this.ligne && volumeusedtotal !== null) {
+            volumeusedtotalback = volumeusedtotal;
+            volumeusedtotal = regusedtotal.exec(reply);
+            i++;
+          }
+          if (volumeusedtotal === null)
+            volumeusedtotal = volumeusedtotalback;
+        }
         this.usedVolume = volumeusedtotal[1]*1;
         this.totalVolume = volumeusedtotal[2]*1;
         this.remainingDays = Minimeter.getInterval("firstDayNextMonth");

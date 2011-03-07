@@ -18,8 +18,8 @@ Minimeter["Cybersmart"].prototype.callback = function(step, reply) {
   {
     default:
     case 1:
-      var postdata = "accountName="+this.username+"&password="+this.password+"&submit.x=44&submit.y=18&submit=submit";
-      Minimeter.http_get('http://www.cybersmart.co.za/getAccountDetails.cgi', this, 2);
+      var postdata = "accountName="+this.username+"&password="+this.password+"&submit=submit";
+      Minimeter.http_post('http://www.cybersmart.co.za/getAccountDetails.cgi', postdata, this, 2);
       break;
         
     case 2:
