@@ -31,7 +31,7 @@ Minimeter["Internetsolutions"].prototype.callback = function(step, reply) {
           this.badLoginOrPass();
           break;
         }
-        if (!regLoggedIn.test(reply) {
+        if (!regLoggedIn.test(reply)) {
           this.reportError(step, this.name, encodeURIComponent(reply));
           break;
         }
