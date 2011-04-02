@@ -14,7 +14,7 @@
                             "_Germany","#Tmobile:T-Mobile",
                             "_New Zealand", "Vodaphonenz:Vodaphone", "Xtra",
                             "_Russia", "Omsk:Omsk TeleCommunications",
-                            "_South Africa", "Cybersmart", "Iburst", "#Internetsolutions:Internet Solutions", "#Saix:Saix ISPs", "#Mweb",
+                            "_South Africa", "Cellc:Cell C", "Cybersmart", "Iburst", "#Internetsolutions:Internet Solutions", "#Saix:Saix ISPs", "#Mweb",
                             "_Turkey", "#Turk:Türk Telekom",
                             "_United Kingdom", "BT",
                             "_United States", "Comcast"
